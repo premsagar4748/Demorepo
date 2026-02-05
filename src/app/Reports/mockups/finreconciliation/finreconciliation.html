@@ -1,0 +1,187 @@
+<main>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="d-flex align-items-center justify-content-between pb-2" >
+                    <div class="filter-dropdowns d-flex align-items-center">
+                        <div class="dropdown">
+                            <button class="dropdown-toggle" (click)="togglePopover(0)">Stores ( 5
+                                Western Acura )
+                                <span class="arrow"></span></button>
+                            <app-stores [ngStyle]="{'display' : activePopover === 0 ? 'block' : 'none'}"
+                                [storesFilterData]="storesFilterData" (StoresData)="StoresData($event)"></app-stores>
+                        </div>
+                         <div class="dropdown">
+                        <button class="dropdown-toggle" (click)="togglePopover(1)">
+                            <span> {{displaytime}}</span>
+                                    <span class="arrow"></span></button>
+                                <div class="timeframe" *ngIf="activePopover === 1">
+                                    <!-- <app-date-range-picker [Dates]="Dates"
+                                        (updatedDates)="updatedDates($event)"></app-date-range-picker> -->
+                                        <!-- <div class="date-filter-card mt-2" *ngIf="Dates != undefined && Dates.length > 0">
+                                            <button class="outline-button mt-0" *ngFor="let dates of Dates"
+                                                [ngClass]="{'active':DateType == dates.code}" (click)="updatedDates(dates)">{{dates.name}}</button>
+                                            <hr>
+                                            <button class="outline-button custom-btn mt-0">
+                                                Custom
+                                                <i class="fa-solid fa-calendar-days calendar-icon"></i>
+                                            </button>
+                                        </div> -->
+                                        <div class="date-filter-card mt-2">
+                                    <button class="outline-button" [ngClass]="{ 'active-filter': activeTimeframe === 'MTD' }"
+                                        (click)="setTimeframe('MTD', $event)">MTD</button>
+                                    <button class="outline-button" [ngClass]="{ 'active-filter': activeTimeframe === 'YTD' }"
+                                        (click)="setTimeframe('YTD', $event)">YTD</button>
+                                    <button class="outline-button" [ngClass]="{ 'active-filter': activeTimeframe === 'PYTD' }"
+                                        (click)="setTimeframe('PYTD', $event)">PYTD</button>
+                                    <button class="outline-button" [ngClass]="{ 'active-filter': activeTimeframe === 'Last Month' }"
+                                        (click)="setTimeframe('Last Month', $event)">Last Month</button>
+                                    <button class="outline-button" [ngClass]="{ 'active-filter': activeTimeframe === 'Same Mon PY' }"
+                                        (click)="setTimeframe('Same Mon PY', $event)">Same Mon PY</button>
+                                    <hr>
+                                    <button class="outline-button custom-btn"  [ngClass]="{ 'active-filter': activeTimeframe === 'Custom' }">
+                                        Custom
+                                        <i class="fa-solid fa-calendar-days calendar-icon"></i>
+                                    </button>
+                                </div>
+                                </div>
+                            </div>
+                            
+                        <button class="apply-button">
+                            Apply
+                        </button>
+                    </div>
+                </div>
+
+                 <div class="performance-scorecard mt-2">
+                    <table class="table mb-0">
+                        <thead>
+                            <tr>
+                                <th (click)="openComments()" style="cursor: pointer;">Notes
+                                    <i alt="" class="fa fa-eye" *ngIf="!notesViewState" aria-hidden="true"
+                                        (click)="notesView()"></i>
+                                    <i alt="" class="fa-solid fa-eye-slash" *ngIf="notesViewState"
+                                        (click)="notesView()"></i>
+                                </th>
+                                <th (click)="sort('STORE_NAME')" style="cursor: pointer;">Store</th>
+
+                                <th (click)="sort('FINANCE_RESERVE')" style="cursor: pointer;">Finance Reserve</th>
+
+
+                                <th (click)="sort('DEAL_NUMBER')" style="cursor: pointer;">Deal #</th>
+                                <th (click)="sort('CUSTOMER')" style="cursor: pointer;">Customer</th>
+                                <th (click)="sort('LENDER')" style="cursor: pointer;">Lender</th>
+                                <th (click)="sort('FINANCE_RSV_PER_ROUTEONE')" style="cursor: pointer;">Finance RSV Per
+                                    Route One</th>
+                                <th (click)="sort('DIFF')" style="cursor: pointer;">Diff</th>
+                            </tr>
+                        </thead>
+
+                          <tbody *ngFor="let fp of FinanceReserveReconData ; let i = index"
+                        [ngClass]="{ 'total-row': fp?.STORE_NAME === 'Report Totals' || fp?.AS_ID === -1 }">
+                        <tr [ngClass]="{ even: i % 2 == 0, odd: i % 2 != 0 }" >
+
+                            <td class="text-center" *ngIf="fp?.STORE_NAME !== 'Report Totals' && fp?.AS_ID !== -1">
+                                <img *ngIf="fp.NOTES_STATUS == 'N'" src="https://stxtract.axelone.app/images/Actionblack.png" title="Add Notes"
+                                    (click)="addNotes(fp,notes)" style="cursor: pointer;">
+                                <img *ngIf="fp.NOTES_STATUS == 'Y'" src="/images/notes_unread.png" title="Add Notes"
+                                    (click)="addNotes(fp,notes)" style="cursor: pointer;">
+                            </td>
+
+                            <td class="text-center" *ngIf="fp?.STORE_NAME === 'Report Totals' || fp?.AS_ID === -1"></td>
+                            <td class="text-start">{{ fp.STORE_NAME || '-' }}</td>
+
+                            <td style="text-align: right;" [ngClass]="{ negative: !inTheGreen(fp.FINANCE_RESERVE) }"> {{
+                                fp.FINANCE_RESERVE && fp.FINANCE_RESERVE !== 0
+                                ? (fp.FINANCE_RESERVE | currency:'USD':'symbol':'1.2-2')
+                                : '-'
+                                }}</td>
+
+
+
+                            <td class="text-center popuppointer" (click)="viewDeal(fp)">{{ fp.DEAL_NUMBER || '-' }}</td>
+                            <td class="text-start">{{ fp.CUSTOMER || '-' }}</td>
+                            <td class="text-start">{{ fp.LENDER || '-' }}</td>
+                            <!-- <td style="text-align: right;" [ngClass]="{ negative: !inTheGreen(fp.FINANCE_RSV_PER_ROUTEONE) }"> {{
+                                fp.FINANCE_RSV_PER_ROUTEONE && fp.FINANCE_RSV_PER_ROUTEONE !== 0
+                                ? (fp.FINANCE_RSV_PER_ROUTEONE | currency:'USD':'symbol':'1.2-2')
+                                : '-'
+                                }}</td> -->
+
+                            <td style="text-align: right;"
+                                [ngClass]="{ negative: !inTheGreen(fp.FINANCE_RSV_PER_ROUTEONE) ,  'total-row': fp?.STORE_NAME === 'Report Totals'}">
+
+                                <!-- VIEW MODE -->
+                                <ng-container *ngIf="!fp.isEditing; else editMode">
+                                    {{
+                                    fp.FINANCE_RSV_PER_ROUTEONE && fp.FINANCE_RSV_PER_ROUTEONE !== 0
+                                    ? (fp.FINANCE_RSV_PER_ROUTEONE | currency:'USD':'symbol':'1.2-2')
+                                    : '-'
+                                    }}
+                                    <button class="btn btn-link p-0 ms-2" (click)="enableEdit(fp)"
+                                       *ngIf="fp?.STORE_NAME !== 'Report Totals' && fp?.AS_ID !== -1">
+                                        ✏️
+                                    </button>
+                                </ng-container>
+
+                                <!-- EDIT MODE -->
+                                <ng-template #editMode>
+                                    <input type="number" class="form-control form-control-sm d-inline-block"
+                                        style="width: 120px;" [(ngModel)]="fp.editValue" />
+
+                                    <button class="btn btn-success btn-sm ms-1" (click)="saveFinanceRouteOne(fp)">
+                                        Save
+                                    </button>
+
+                                    <button class="btn btn-secondary btn-sm ms-1" (click)="cancelEdit(fp)">
+                                        Cancel
+                                    </button>
+                                </ng-template>
+
+                            </td>
+                            <td style="text-align: right;" [ngClass]="{
+    negative: fp.DIFF < 0,
+    highlight: fp.IS_HIGHLIGHT === 'Y'
+  }">
+                                {{
+                                fp.DIFF !== null && fp.DIFF !== undefined
+                                ? formatDiff(fp.DIFF | currency:'USD':'symbol':'1.2-2')
+                                : '-' 
+                                }}
+                            </td>
+
+                        </tr>
+
+                        <!-- Notes Row -->
+                        <ng-container *ngIf="fp.COMMENT != null && notesViewState"
+                            style="border-bottom: 1px solid #e0e1e2 !important;">
+                            <tr style="background-color: #fff !important;pointer-events: none;">
+                                <td colspan="8">
+                                    <div class="title">Notes</div>
+
+                                    <div class="notes" *ngFor="let notes of fp.COMMENT">
+                                        {{notes.GN_TEXT}}
+                                    </div>
+                                </td>
+
+
+                            </tr>
+                        </ng-container>
+
+                    </tbody>
+                    <!-- No Data -->
+                    <tbody *ngIf="NoData">
+                        <tr>
+                            <td colspan="8" class="text-center">No Records Found</td>
+                        </tr>
+                    </tbody>
+
+                       
+
+                    </table>
+            </div>
+
+        </div>
+        </div>
+    </div>
+</main>

@@ -1,0 +1,118 @@
+<main>
+    <div class="container-fluid" >
+        <div class="row">
+            <div class="col-12">
+                <div class="d-flex align-items-center justify-content-between pb-2" style="pointer-events: none;">
+                    <div class="filter-dropdowns d-flex align-items-center">
+                        <div class="dropdown">
+                            <button class="dropdown-toggle" (click)="togglePopover(0)">Stores ( 5
+                                Western Acura )
+                                <span class="arrow"></span></button>
+                            <app-stores [ngStyle]="{'display' : activePopover === 0 ? 'block' : 'none'}"
+                                [storesFilterData]="storesFilterData" (StoresData)="StoresData($event)"></app-stores>
+                        </div>
+                        <div class="date-filter-card d-flex align-items-center justify-content-start " >
+                            <div class="open-calendar position-relative">
+                                <input type="text" placeholder="Select Year" value="January/2026"
+                                    class="form-control year-input" />
+                            </div>
+                        </div>
+                        <button class="apply-button">
+                            Apply
+                        </button>
+                    </div>
+                </div>
+
+
+                 <div class="performance-scorecard table-responsive srtbl">
+                    <table class="table mb-0" style="background-color: #c6dbff;">
+                        <thead>
+                            <tr>
+
+                                <th colspan="2" class="text-center"></th>
+                                <th  style=" border-right: 1px solid #e0e1e2;">Avg Washout Cycles</th>
+
+                                <th style=" border-right: 1px solid #e0e1e2;">Avg Front Gross</th>
+
+                                <th style=" border-right: 1px solid #e0e1e2;">Avg Back Gross</th>
+
+                                 <th style=" border-right: 1px solid #e0e1e2;">Avg Total Gross</th>
+
+                                <th cstyle=" border-right: 1px solid #e0e1e2;">Avg Days to Threshold</th>
+
+                                <th >Trade %</th>
+                            </tr>
+                            <tr>
+
+                                <th colspan="2">Report Averages</th>
+                                <th>4.8</th>
+                                <th>$ 9,353</th>
+                                <th>$ 9,353</th>
+                                <th>$ 18,705</th>
+
+                                <th>45.0</th>
+                                <th>86.7%</th>
+                                                               
+                            </tr>
+
+                             <tr>
+
+                                <th colspan="2">DealerShip Name 1</th>
+                                <th>4.8</th>
+                                <th>$ 9,353</th>
+                                <th>$ 9,353</th>
+                                <th>$ 18,705</th>
+
+                                <th>45.0</th>
+                                <th>86.7%</th>
+                                                               
+                            </tr>
+                             <tr>
+
+                                <th colspan="2">Report Averages</th>
+                                <th>4.8</th>
+                                <th>$ 9,353</th>
+                                <th>$ 9,353</th>
+                                <th>$ 18,705</th>
+
+                                <th>45.0</th>
+                                <th>86.7%</th>
+                                                               
+                            </tr>
+                             <tr>
+
+                                <th colspan="2">Report Averages</th>
+                                <th>4.8</th>
+                                <th>$ 9,353</th>
+                                <th>$ 9,353</th>
+                                <th>$ 18,705</th>
+
+                                <th>45.0</th>
+                                <th>86.7%</th>
+                                                               
+                            </tr>
+                             <tr>
+
+                                <th colspan="2">Report Averages</th>
+                                <th>4.8</th>
+                                <th>$ 9,353</th>
+                                <th>$ 9,353</th>
+                                <th>$ 18,705</th>
+
+                                <th>45.0</th>
+                                <th>86.7%</th>
+                                                               
+                            </tr>
+                        </thead>
+
+
+
+                    </table>
+                 </div>
+
+
+
+            </div>
+        </div>
+    </div>
+</main>

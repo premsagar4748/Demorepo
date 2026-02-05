@@ -1,0 +1,1426 @@
+<ngx-spinner bdColor="rgba(0, 0, 0, 0.8)" size="medium" color="#fff" type="ball-clip-rotate" [fullScreen]="true">
+    <p style="color: white"> Loading.. </p>
+  </ngx-spinner>
+  
+  <!-- <div class="content-wrapper pt-3"> -->
+  <div class="wrapper" [ngClass]="{ 'expanded': isSidebarCollapsed() }" style="margin-top: 52px">
+    <div class="container-fluid p-3">
+      <!-- <div class="filter-dropdowns"> -->
+      <app-parts-reports [activeFilters]="activeFilters()" (applyFilters)="onFiltersApplied($event)"></app-parts-reports>
+      <!-- </div> -->
+      <!-- </div> -->
+  
+  
+  
+      @if(showGlobalView()){
+      <div class="performance-scorecard mt-2">
+        <table class="table parts-table">
+  
+          <thead>
+  
+            <tr class="group-header-row sg-header">
+  
+              <th class="global-sticky-col dealer-col">
+                <div class="date-box">
+                  {{ getDateRange() }}
+                </div>
+              </th>
+              <!-- <th class="comment-col text-center"></th> -->
+  
+              <th colspan="5" class="text-center">Total Parts</th>
+  
+              <th colspan="4" class="text-center">
+                <div class="sg-header-flex">
+                  <button class="details-btn" (click)="GoServiceView()">
+                    Service Details <i class="fa fa-arrow-right table-arrow-icon"></i>
+                  </button>
+                  <span>Mechanical</span>
+                </div>
+              </th>
+  
+              <th colspan="4" class="text-center">
+                <div class="sg-header-flex">
+                  <button class="details-btn parts-btn" (click)="GoPartsView()">
+                    Parts Details <i class="fa fa-arrow-right table-arrow-icon"></i>
+                  </button>
+                  <span>Retail / Wholesale</span>
+                </div>
+              </th>
+  
+              <th colspan="3" class="text-center">Performance</th>
+            </tr>
+  
+            <!-- ===================== SUBHEADER ROW ===================== -->
+            <tr class="sg-subheader">
+              <th class="global-sticky-col dealer-col"></th>
+              <!-- <th class="comment-col text-center"></th> -->
+  
+              <th class="text-right">Sales</th>
+              <th class="text-right">Gross</th>
+              <th class="text-right">Pace</th>
+              <th class="text-right">Target</th>
+              <th class="text-right">Diff</th>
+  
+              <th class="text-right">Gross</th>
+              <th class="text-right">Pace</th>
+              <th class="text-right">Target</th>
+              <th class="text-right">Diff</th>
+  
+              <th class="text-right">Gross</th>
+              <th class="text-right">Pace</th>
+              <th class="text-right">Target</th>
+              <th class="text-right">Diff</th>
+  
+              <th class="text-right">Parts/RO</th>
+              <th class="text-right">Lost/Day</th>
+              <th class="text-right">GP%</th>
+            </tr>
+  
+          </thead>
+          @if (!noRecords()) {
+          @if (selectedTotalPosition === 'T') {
+          <tbody class="top-totals">
+            @let foot = BuildGlobalFooterTotals();
+            <tr class="total-row top-total" [ngClass]="AnyGlobalRowExpanded() ? 'expanded-total' : 'collapsed-total'">
+  
+              <td class="global-sticky-col dealer-col text-bold bdr-bt">REPORT TOTALS</td>
+              <!-- <td class="comment-col text-center bt"><i class="fa-regular fa-comment comment-icon"></i></td> -->
+  
+              <td class="text-right">
+                <span class="spanalign">{{FR(foot?.Sales) != '-' ? '$' : ''}}
+                  <span>{{FR(foot?.Sales)}}</span>
+                </span>
+              </td>
+              <td class="text-right">
+                <span class="spanalign">{{FR(foot?.Gross) != '-' ? '$' : ''}}
+                  <span>{{FR(foot?.Gross)}}</span>
+                </span>
+              </td>
+              <td class="text-right">
+                <span class="spanalign">{{FR(foot?.Pace) != '-' ? '$' : ''}}
+                  <span>{{FR(foot?.Pace)}}</span></span>
+              </td>
+              <td class="text-right">
+                <span class="spanalign">{{FR(foot?.Target) != '-' ? '$' : ''}}
+                  <span>{{FR(foot?.Target)}}</span></span>
+              </td>
+              <td class="text-right ">
+                <span class="spanalign">{{FR(foot?.Diff) != '-' ? '$' : ''}}
+                  <span>{{FR(foot?.Diff)}}</span></span>
+              </td>
+  
+              <td class="text-right ">
+                <span class="spanalign">{{FR(foot?.MechanicalGross) != '-' ? '$' : ''}}
+                  <span>{{FR(foot?.MechanicalGross)}}</span></span>
+              </td>
+              <td class="text-right ">
+                <span class="spanalign">{{FR(foot?.MechanicalPace) != '-' ? '$' : ''}}
+                  <span>{{FR(foot?.MechanicalPace)}}</span></span>
+              </td>
+              <td class="text-right ">
+                <span class="spanalign">{{FR(foot?.MechanicalTarget) != '-' ? '$' : ''}}
+                  <span>{{FR(foot?.MechanicalTarget)}}</span></span>
+              </td>
+              <td class="text-right ">
+                <span class="spanalign">{{FR(foot?.MechanicalDiff) != '-' ? '$' : ''}}
+                  <span>{{FR(foot?.MechanicalDiff)}}</span></span>
+              </td>
+  
+              <td class="text-right ">
+                <span class="spanalign">{{FR(foot?.RetailGross) != '-' ? '$' : ''}}
+                  <span>{{FR(foot?.RetailGross)}}</span></span>
+              </td>
+              <td class="text-right ">
+                <span class="spanalign">{{FR(foot?.RetailPace) != '-' ? '$' : ''}}
+                  <span>{{FR(foot?.RetailPace)}}</span></span>
+              </td>
+              <td class="text-right ">
+                <span class="spanalign">{{FR(foot?.RetailTarget) != '-' ? '$' : ''}}
+                  <span>{{FR(foot?.RetailTarget)}}</span></span>
+              </td>
+              <td class="text-right ">
+                <span class="spanalign">{{FR(foot?.RetailDiff) != '-' ? '$' : ''}}
+                  <span>{{FR(foot?.RetailDiff)}}</span></span>
+              </td>
+  
+              <td class="text-right ">
+                <span class="spanalign">{{F(foot?.PartsRO) != '-' ? '$' : ''}}
+                  <span>{{F(foot?.PartsRO)}}</span></span>
+              </td>
+              <td class="text-right ">
+                <span class="spanalign">{{F(foot?.LostDay) != '-' ? '$' : ''}}
+                  <span>{{F(foot?.LostDay)}}</span></span>
+              </td>
+              <td class="text-right">{{ PR(foot?.GP) }}</td>
+  
+            </tr>
+          </tbody>
+          }
+  
+  
+          <tbody>
+            @if (!noRecords()) {
+  
+            @for (row of BuildFinalGlobalTable(); track $index) {
+  
+            <!-- Parent Row -->
+            <!-- <tr [ngClass]="GetGlobalRowClasses(row)" [style]="GetLayerIndent(row)"> -->
+            <tr
+              [ngClass]="GetGlobalRowClasses(row) + ' ' + (ExpandedRows()[row.SNO] ? 'expanded-parent' : 'collapsed-parent')"
+              [style]="GetLayerIndent(row)">
+              <td class="global-sticky-col dealer-col main-head">
+                <span class="dealer-link" [class.clickable]="activeFilters().var2 === ''"
+                  (click)="activeFilters().var2 === '' && openDetailsPopup(row)">
+                  {{ mapSaleType(row.data1) || '-' }}
+                </span>
+                <!-- @if (IsExpandable(row)) {
+                                      <i class="expand-icon"
+                                        [class]="GetExpandIcon(ExpandedRows()[row.SNO])"
+                                        (click)="ToggleGlobalExpand(row)"
+                                        style="margin-left: 8px; cursor: pointer;">
+                                      </i>
+                                    }  -->
+                @if (IsExpandable(row)) {
+                <span class="expand-wrapper">
+                  @if (!ExpandedRows()[row.SNO]) {
+                  <img src="images/Add_Circle2.png" class="expand-img" (click)="ToggleGlobalExpand(row)">
+                  } @else {
+                  <img src="images/Minus_CircleIcon.svg" class="expand-img" (click)="ToggleGlobalExpand(row)">
+                  }
+                </span>
+                }
+              </td>
+  
+  
+              <!-- <td class="comment-col text-center">
+                                    <i class="fa-regular fa-comment comment-icon"></i>
+                                </td> -->
+  
+  
+              <!-- TOTAL PARTS -->
+              <!-- <td class="text-right" [innerHTML]="FR(row.Sales)"></td> -->
+              <td class="text-right ">
+                <span class="spanalign">{{FR(row?.Sales) != '-' ? '$' : ''}}
+                  <span>{{FR(row.Sales)}}</span></span>
+              </td>
+              <td class="text-right ">
+                <span class="spanalign">{{FR(row?.Gross) != '-' ? '$' : ''}}
+                  <span>{{FR(row?.Gross)}}</span></span>
+              </td>
+              <td class="text-right ">
+                <span class="spanalign">{{FR(row?.Pace) != '-' ? '$' : ''}}
+                  <span>{{FR(row?.Pace)}}</span></span>
+              </td>
+              <td class="text-right ">
+                <span class="spanalign">{{FR(row?.Target) != '-' ? '$' : ''}}
+                  <span>{{FR(row?.Target)}}</span></span>
+              </td>
+              <td class="text-right ">
+                <span class="spanalign">{{FR(row?.Diff) != '-' ? '$' : ''}}
+                  <span>{{FR(row?.Diff)}}</span></span>
+              </td>
+  
+              <!-- MECHANICAL -->
+              <td class="text-right ">
+                <span class="spanalign">{{FR(row?.MechanicalGross) != '-' ? '$' : ''}}
+                  <span>{{FR(row?.MechanicalGross)}}</span></span>
+              </td>
+              <td class="text-right ">
+                <span class="spanalign">{{FR(row?.MechanicalPace) != '-' ? '$' : ''}}
+                  <span>{{FR(row?.MechanicalPace)}}</span></span>
+              </td>
+              <td class="text-right ">
+                <span class="spanalign">{{FR(row?.MechanicalTarget) != '-' ? '$' : ''}}
+                  <span>{{FR(row?.MechanicalTarget)}}</span></span>
+              </td>
+              <td class="text-right ">
+                <span class="spanalign">{{FR(row?.MechanicalDiff) != '-' ? '$' : ''}}
+                  <span>{{FR(row?.MechanicalDiff)}}</span></span>
+              </td>
+  
+              <!-- RETAIL -->
+              <td class="text-right ">
+                <span class="spanalign">{{FR(row?.RetailGross) != '-' ? '$' : ''}}
+                  <span>{{FR(row?.RetailGross)}}</span></span>
+              </td>
+              <td class="text-right ">
+                <span class="spanalign">{{FR(row?.RetailPace) != '-' ? '$' : ''}}
+                  <span>{{FR(row?.RetailPace)}}</span></span>
+              </td>
+              <td class="text-right ">
+                <span class="spanalign">{{FR(row?.RetailTarget) != '-' ? '$' : ''}}
+                  <span>{{FR(row?.RetailTarget)}}</span></span>
+              </td>
+              <td class="text-right ">
+                <span class="spanalign">{{FR(row?.RetailDiff) != '-' ? '$' : ''}}
+                  <span>{{FR(row?.RetailDiff)}}</span></span>
+              </td>
+  
+              <!-- PERFORMANCE -->
+              <td class="text-right ">
+                <span class="spanalign">{{F(row?.TotalRO) != '-' ? '$' : ''}}
+                  <span>{{F(row?.TotalRO)}}</span></span>
+              </td>
+              <td class="text-right ">
+                <span class="spanalign">{{F(row?.LostDay) != '-' ? '$' : ''}}
+                  <span>{{F(row?.LostDay)}}</span></span>
+              </td>
+              <td class="text-right">{{ PR(row.GPPercent) }}</td>
+  
+            </tr>
+  
+            <!-- Layer 2 Rows -->
+            @if (ExpandedRows()[row.SNO]) {
+            @for (r2 of row.Data2; track $index) {
+            <tr class="member-row">
+              <td class="global-sticky-col dealer-col clickable" (click)="openDetailsPopup(r2)">{{
+                mapSaleType(r2.AdvisorName) }}</td>
+  
+              <!-- <td class="comment-col text-center">
+                                <i class="fa-regular fa-comment comment-icon"></i>
+                              </td> -->
+  
+              <!-- <td class="text-right">{{ F(r2.Sales) }}</td> -->
+              <td class="text-right ">
+                <span class="spanalign">{{F(r2.Sales) != '-' ? '$' : ''}}
+                  <span>{{F(r2.Sales)}}</span></span>
+              </td>
+              <td class="text-right ">
+                <span class="spanalign">{{F(r2.Gross) != '-' ? '$' : ''}}
+                  <span>{{F(r2.Gross)}}</span></span>
+              </td>
+              <td class="text-right ">
+                <span class="spanalign">{{F(r2.Pace) != '-' ? '$' : ''}}
+                  <span>{{F(r2.Pace)}}</span></span>
+              </td>
+              <td class="text-right ">
+                <span class="spanalign">{{F(r2.Target) != '-' ? '$' : ''}}
+                  <span>{{F(r2.Target)}}</span></span>
+              </td>
+              <td class="text-right ">
+                <span class="spanalign">{{F(r2.Diff) != '-' ? '$' : ''}}
+                  <span>{{F(r2.Diff)}}</span></span>
+              </td>
+  
+              <td class="text-right ">
+                <span class="spanalign">{{F(r2.MechanicalGross) != '-' ? '$' : ''}}
+                  <span>{{F(r2.MechanicalGross)}}</span></span>
+              </td>
+              <td class="text-right ">
+                <span class="spanalign">{{F(r2.MechanicalPace) != '-' ? '$' : ''}}
+                  <span>{{F(r2.MechanicalPace)}}</span></span>
+              </td>
+              <td class="text-right ">
+                <span class="spanalign">{{F(r2.MechanicalTarget) != '-' ? '$' : ''}}
+                  <span>{{F(r2.MechanicalTarget)}}</span></span>
+              </td>
+              <td class="text-right ">
+                <span class="spanalign">{{F(r2.MechanicalDiff) != '-' ? '$' : ''}}
+                  <span>{{F(r2.MechanicalDiff)}}</span></span>
+              </td>
+  
+              <td class="text-right ">
+                <span class="spanalign">{{F(r2.RetailGross) != '-' ? '$' : ''}}
+                  <span>{{F(r2.RetailGross)}}</span></span>
+              </td>
+              <td class="text-right ">
+                <span class="spanalign">{{F(r2.RetailPace) != '-' ? '$' : ''}}
+                  <span>{{F(r2.RetailPace)}}</span></span>
+              </td>
+              <td class="text-right ">
+                <span class="spanalign">{{F(r2.RetailTarget) != '-' ? '$' : ''}}
+                  <span>{{F(r2.RetailTarget)}}</span></span>
+              </td>
+              <td class="text-right ">
+                <span class="spanalign">{{F(r2.RetailDiff) != '-' ? '$' : ''}}
+                  <span>{{F(r2.RetailDiff)}}</span></span>
+              </td>
+  
+              <td class="text-right ">
+                <span class="spanalign">{{F(r2.TotalRO) != '-' ? '$' : ''}}
+                  <span>{{F(r2.TotalRO)}}</span></span>
+              </td>
+              <td class="text-right ">
+                <span class="spanalign">{{F(r2.LostDay) != '-' ? '$' : ''}}
+                  <span>{{F(r2.LostDay)}}</span></span>
+              </td>
+              <td class="text-right">{{ P(r2.GPPercent) }}</td>
+            </tr>
+            }
+            }
+  
+            }
+            }
+  
+          </tbody>
+  
+          @if (selectedTotalPosition === 'B') {
+          <tfoot>
+            @let foot = BuildGlobalFooterTotals();
+            <!-- <tr class="total-row bottom-total" [class.hide-border]="AnyGlobalRowExpanded()"> -->
+            <tr class="total-row bottom-total" [ngClass]="AnyGlobalRowExpanded() ? 'expanded-total' : 'collapsed-total'">
+              <td class="global-sticky-col dealer-col text-bold">REPORT TOTALS</td>
+              <!-- <td class="comment-col text-center"><i class="fa-regular fa-comment comment-icon"></i></td> -->
+              <td class="text-right ">
+                <span class="spanalign">{{FR(foot?.Sales) != '-' ? '$' : ''}}
+                  <span>{{FR(foot?.Sales)}}</span></span>
+              </td>
+              <td class="text-right ">
+                <span class="spanalign">{{FR(foot?.Gross) != '-' ? '$' : ''}}
+                  <span>{{FR(foot?.Gross)}}</span></span>
+              </td>
+              <td class="text-right ">
+                <span class="spanalign">{{FR(foot?.Pace) != '-' ? '$' : ''}}
+                  <span>{{FR(foot?.Pace)}}</span></span>
+              </td>
+              <td class="text-right ">
+                <span class="spanalign">{{FR(foot?.Target) != '-' ? '$' : ''}}
+                  <span>{{FR(foot?.Target)}}</span></span>
+              </td>
+              <td class="text-right ">
+                <span class="spanalign">{{FR(foot?.Diff) != '-' ? '$' : ''}}
+                  <span>{{FR(foot?.Diff)}}</span></span>
+              </td>
+  
+              <td class="text-right ">
+                <span class="spanalign">{{FR(foot?.MechanicalGross) != '-' ? '$' : ''}}
+                  <span>{{FR(foot?.MechanicalGross)}}</span></span>
+              </td>
+              <td class="text-right ">
+                <span class="spanalign">{{FR(foot?.MechanicalPace) != '-' ? '$' : ''}}
+                  <span>{{FR(foot?.MechanicalPace)}}</span></span>
+              </td>
+              <td class="text-right ">
+                <span class="spanalign">{{FR(foot?.MechanicalTarget) != '-' ? '$' : ''}}
+                  <span>{{FR(foot?.MechanicalTarget)}}</span></span>
+              </td>
+              <td class="text-right ">
+                <span class="spanalign">{{FR(foot?.MechanicalDiff) != '-' ? '$' : ''}}
+                  <span>{{FR(foot?.MechanicalDiff)}}</span></span>
+              </td>
+  
+              <td class="text-right ">
+                <span class="spanalign">{{FR(foot?.RetailGross) != '-' ? '$' : ''}}
+                  <span>{{FR(foot?.RetailGross)}}</span></span>
+              </td>
+              <td class="text-right ">
+                <span class="spanalign">{{FR(foot?.RetailPace) != '-' ? '$' : ''}}
+                  <span>{{FR(foot?.RetailPace)}}</span></span>
+              </td>
+              <td class="text-right ">
+                <span class="spanalign">{{FR(foot?.RetailTarget) != '-' ? '$' : ''}}
+                  <span>{{FR(foot?.RetailTarget)}}</span></span>
+              </td>
+              <td class="text-right ">
+                <span class="spanalign">{{FR(foot?.RetailDiff) != '-' ? '$' : ''}}
+                  <span>{{FR(foot?.RetailDiff)}}</span></span>
+              </td>
+  
+              <td class="text-right ">
+                <span class="spanalign">{{F(foot?.PartsRO) != '-' ? '$' : ''}}
+                  <span>{{F(foot?.PartsRO)}}</span></span>
+              </td>
+              <td class="text-right ">
+                <span class="spanalign">{{F(foot?.LostDay) != '-' ? '$' : ''}}
+                  <span>{{F(foot?.LostDay)}}</span></span>
+              </td>
+              <td class="text-right">{{ PR(foot?.GP) }}</td>
+  
+            </tr>
+          </tfoot>
+          }
+          }
+          @if (noRecords()) {
+          <tbody>
+            <tr>
+              <td colspan="18" class="no-data text-center">
+                <span>No Records Found</span>
+              </td>
+            </tr>
+          </tbody>
+          }
+        </table>
+      </div>
+      }
+  
+      @if(showServiceBreakdownView()){
+      <div class="performance-scorecard mt-2">
+        <table class="parts-table">
+  
+          <thead>
+            <tr class="group-header-row sg-header">
+  
+              <th class="sticky-col sb-dealer-col text-left">
+                <div class="date-box">
+                  {{ getDateRange() }}
+                </div>
+              </th>
+              <th colspan="5" class="text-center">Total Parts</th>
+              <th colspan="4" class="text-center">
+                <div class="sg-header-flex">
+                  <button class="details-btn back-btn inline-btn" (click)="BackToOverview()">
+                    ← Back To Overview
+                  </button>
+                  <span class="header-label">Service</span>
+                </div>
+              </th>
+  
+              <th colspan="4" class="text-center">
+                Customer Pay
+              </th>
+              <th colspan="4" class="text-center">Warranty</th>
+              <th colspan="4" class="text-center">Internal</th>
+            </tr>
+  
+            <tr class="sg-subheader">
+              <th class="sticky-col sb-dealer-col text-left"></th>
+              <th>Sales</th>
+              <th>Gross</th>
+              <th>Pace</th>
+              <th>Target</th>
+              <th>Diff</th>
+              <th>MTD</th>
+              <th>Pace</th>
+              <th>Target</th>
+              <th>Diff</th>
+              <th>MTD</th>
+              <th>Pace</th>
+              <th>Target</th>
+              <th>Diff</th>
+              <th>MTD</th>
+              <th>Pace</th>
+              <th>Target</th>
+              <th>Diff</th>
+              <th>MTD</th>
+              <th>Pace</th>
+              <th>Target</th>
+              <th>Diff</th>
+            </tr>
+          </thead>
+  
+  
+          <!-- ================= TOP TOTAL ROW ================= -->
+          @if (!noRecords()) {
+          @if (selectedTotalPosition === 'T') {
+          @let t = ServiceTotals();
+          @if (t) {
+          <tbody class="total-top">
+            <!-- <tr class="total-row"> -->
+            <tr class="total-row" [ngClass]="ServiceAnyRowExpanded() ? 'expanded-total' : 'collapsed-total'">
+  
+              <td class="sticky-col sb-dealer-col text-bold">REPORT TOTALS</td>
+              <td>
+                <span class="spanalign">{{F(t.Total_PartsSale) != '-' ? '$' : ''}}
+                  <span>{{F(t.Total_PartsSale)}}</span></span>
+              </td>
+              <td>
+                <span class="spanalign">{{F(t.Total_PartsGross) != '-' ? '$' : ''}}
+                  <span>{{F(t.Total_PartsGross)}}</span></span>
+              </td>
+              <td>
+                <span class="spanalign">{{F(t.Total_PartsGross_Pace) != '-' ? '$' : ''}}
+                  <span>{{F(t.Total_PartsGross_Pace)}}</span></span>
+              </td>
+              <td>
+                <span class="spanalign">{{F(t.Total_PartsGrossTarget) != '-' ? '$' : ''}}
+                  <span>{{F(t.Total_PartsGrossTarget)}}</span></span>
+              </td>
+              <td>
+                <span class="spanalign">{{F(t.Total_PartsGross_Diff) != '-' ? '$' : ''}}
+                  <span>{{F(t.Total_PartsGross_Diff)}}</span></span>
+              </td>
+              <!-- SERVICE -->
+              <td>
+                <span class="spanalign">{{F(t.ServiceGross) != '-' ? '$' : ''}}
+                  <span>{{F(t.ServiceGross)}}</span></span>
+              </td>
+              <td>
+                <span class="spanalign">{{F(t.ServiceGross_Pace) != '-' ? '$' : ''}}
+                  <span>{{F(t.ServiceGross_Pace)}}</span></span>
+              </td>
+              <td>
+                <span class="spanalign">{{F(t.ServiceGross_Target) != '-' ? '$' : ''}}
+                  <span>{{F(t.ServiceGross_Target)}}</span></span>
+              </td>
+              <td>
+                <span class="spanalign">{{F(t.ServiceGross_Diff) != '-' ? '$' : ''}}
+                  <span>{{F(t.ServiceGross_Diff)}}</span></span>
+              </td>
+  
+              <!-- CUSTOMER PAY -->
+              <td>
+                <span class="spanalign">{{F(t.CPgross) != '-' ? '$' : ''}}
+                  <span>{{F(t.CPgross)}}</span></span>
+              </td>
+              <td>
+                <span class="spanalign">{{F(t.CPgross_Pace) != '-' ? '$' : ''}}
+                  <span>{{F(t.CPgross_Pace)}}</span></span>
+              </td>
+              <td>
+                <span class="spanalign">{{F(t.CPgross_Target) != '-' ? '$' : ''}}
+                  <span>{{F(t.CPgross_Target)}}</span></span>
+              </td>
+              <td>
+                <span class="spanalign">{{F(t.CPgross_Diff) != '-' ? '$' : ''}}
+                  <span>{{F(t.CPgross_Diff)}}</span></span>
+              </td>
+  
+              <!-- WARRANTY -->
+              <td>
+                <span class="spanalign">{{F(t.Wgross) != '-' ? '$' : ''}}
+                  <span>{{F(t.Wgross)}}</span></span>
+              </td>
+              <td>
+                <span class="spanalign">{{F(t.Wgross_Pace) != '-' ? '$' : ''}}
+                  <span>{{F(t.Wgross_Pace)}}</span></span>
+              </td>
+              <td>
+                <span class="spanalign">{{F(t.Wgross_Target) != '-' ? '$' : ''}}
+                  <span>{{F(t.Wgross_Target)}}</span></span>
+              </td>
+              <td>
+                <span class="spanalign">{{F(t.Wgross_Diff) != '-' ? '$' : ''}}
+                  <span>{{F(t.Wgross_Diff)}}</span></span>
+              </td>
+  
+              <!-- INTERNAL -->
+              <td>
+                <span class="spanalign">{{F(t.Igross) != '-' ? '$' : ''}}
+                  <span>{{F(t.Igross)}}</span></span>
+              </td>
+              <td>
+                <span class="spanalign">{{F(t.Igross_Pace) != '-' ? '$' : ''}}
+                  <span>{{F(t.Igross_Pace)}}</span></span>
+              </td>
+              <td>
+                <span class="spanalign">{{F(t.Igross_Target) != '-' ? '$' : ''}}
+                  <span>{{F(t.Igross_Target)}}</span></span>
+              </td>
+              <td>
+                <span class="spanalign">{{F(t.Igross_Diff) != '-' ? '$' : ''}}
+                  <span>{{F(t.Igross_Diff)}}</span></span>
+              </td>
+  
+            </tr>
+          </tbody>
+          }
+          }
+  
+  
+  
+          <!-- ================= MAIN BODY ================= -->
+          <tbody>
+            @for (row of BuildFinalServiceTable(); track $index) {
+  
+            <!-- PARENT ROW ONLY -->
+            @if (!row.isLayer2) {
+            <!-- <tr [ngClass]="GetServiceRowClasses(row)"> -->
+            <tr
+              [ngClass]="{ 'expanded-parent': ServiceExpandedRows()[row.SNO],'collapsed-parent': !ServiceExpandedRows()[row.SNO]}">
+              <td class="sticky-col sb-dealer-col parent-cell main-head" [class.clickable]="activeFilters().var2 === ''"
+                (click)="activeFilters().var2 === '' && openDetailsPopup(row)">
+                {{ row.DisplayLabel }}
+  
+                <!-- @if (row.Data2?.length > 0) {
+                              <i 
+                                (click)="ToggleServiceExpand(row)"
+                                [class]="GetExpandIcon(ServiceExpandedRows()[row.SNO])">
+                              </i>
+                            } -->
+  
+                @if (row.Data2?.length > 0) {
+                <span class="expand-wrapper">
+  
+                  @if (!ServiceExpandedRows()[row.SNO]) {
+                  <img src="images/Add_Circle2.png" class="expand-img" (click)="ToggleServiceExpand(row)">
+                  } @else {
+                  <img src="images/Minus_CircleIcon.svg" class="expand-img" (click)="ToggleServiceExpand(row)">
+                  }
+  
+                </span>
+                }
+              </td>
+              <td>
+                <span class="spanalign">{{F(row.Total_PartsSale) != '-' ? '$' : ''}}
+                  <span>{{F(row.Total_PartsSale)}}</span></span>
+              </td>
+              <td>
+                <span class="spanalign">{{F(row.Total_PartsGross) != '-' ? '$' : ''}}
+                  <span>{{F(row.Total_PartsGross)}}</span></span>
+              </td>
+              <td>
+                <span class="spanalign">{{F(row.Total_PartsGross_Pace) != '-' ? '$' : ''}}
+                  <span>{{F(row.Total_PartsGross_Pace)}}</span></span>
+              </td>
+              <td>
+                <span class="spanalign">{{F(row.Total_PartsGrossTarget) != '-' ? '$' : ''}}
+                  <span>{{F(row.Total_PartsGrossTarget)}}</span></span>
+              </td>
+              <td>
+                <span class="spanalign">{{F(row.Total_PartsGross_Diff) != '-' ? '$' : ''}}
+                  <span>{{F(row.Total_PartsGross_Diff)}}</span></span>
+              </td>
+              <td>
+                <span class="spanalign">{{F(row.ServiceGross) != '-' ? '$' : ''}}
+                  <span>{{F(row.ServiceGross)}}</span></span>
+              </td>
+              <td>
+                <span class="spanalign">{{F(row.ServiceGross_Pace) != '-' ? '$' : ''}}
+                  <span>{{F(row.ServiceGross_Pace)}}</span></span>
+              </td>
+              <td>
+                <span class="spanalign">{{F(row.ServiceGross_Target) != '-' ? '$' : ''}}
+                  <span>{{F(row.ServiceGross_Target)}}</span></span>
+              </td>
+              <td>
+                <span class="spanalign">{{F(row.ServiceGross_Diff) != '-' ? '$' : ''}}
+                  <span>{{F(row.ServiceGross_Diff)}}</span></span>
+              </td>
+  
+              <td>
+                <span class="spanalign">{{F(row.CPgross) != '-' ? '$' : ''}}
+                  <span>{{F(row.CPgross)}}</span></span>
+              </td>
+              <td>
+                <span class="spanalign">{{F(row.CPgross_Pace) != '-' ? '$' : ''}}
+                  <span>{{F(row.CPgross_Pace)}}</span></span>
+              </td>
+              <td>
+                <span class="spanalign">{{F(row.CPgross_Target) != '-' ? '$' : ''}}
+                  <span>{{F(row.CPgross_Target)}}</span></span>
+              </td>
+              <td>
+                <span class="spanalign">{{F(row.CPgross_Diff) != '-' ? '$' : ''}}
+                  <span>{{F(row.CPgross_Diff)}}</span></span>
+              </td>
+  
+              <td>
+                <span class="spanalign">{{F(row.Wgross) != '-' ? '$' : ''}}
+                  <span>{{F(row.Wgross)}}</span></span>
+              </td>
+              <td>
+                <span class="spanalign">{{F(row.Wgross_Pace) != '-' ? '$' : ''}}
+                  <span>{{F(row.Wgross_Pace)}}</span></span>
+              </td>
+              <td>
+                <span class="spanalign">{{F(row.Wgross_Target) != '-' ? '$' : ''}}
+                  <span>{{F(row.Wgross_Target)}}</span></span>
+              </td>
+              <td>
+                <span class="spanalign">{{F(row.Wgross_Diff) != '-' ? '$' : ''}}
+                  <span>{{F(row.Wgross_Diff)}}</span></span>
+              </td>
+  
+              <td>
+                <span class="spanalign">{{F(row.Igross) != '-' ? '$' : ''}}
+                  <span>{{F(row.Igross)}}</span></span>
+              </td>
+              <td>
+                <span class="spanalign">{{F(row.Igross_Pace) != '-' ? '$' : ''}}
+                  <span>{{F(row.Igross_Pace)}}</span></span>
+              </td>
+              <td>
+                <span class="spanalign">{{F(row.Igross_Target) != '-' ? '$' : ''}}
+                  <span>{{F(row.Igross_Target)}}</span></span>
+              </td>
+              <td>
+                <span class="spanalign">{{F(row.Igross_Diff) != '-' ? '$' : ''}}
+                  <span>{{F(row.Igross_Diff)}}</span></span>
+              </td>
+            </tr>
+            }
+  
+            <!-- CHILD ROWS -->
+            @if (row.isLayer2) {
+            <tr class="member-row">
+              <td class="sticky-col sb-dealer-col clickable" style="padding-left:26px;" (click)="openDetailsPopup(row)">
+                {{ mapSaleType(row.AdvisorName) }}
+              </td>
+              <td>
+                <span class="spanalign">{{F(row.Total_PartsSale) != '-' ? '$' : ''}}
+                  <span>{{F(row.Total_PartsSale)}}</span></span>
+              </td>
+              <td>
+                <span class="spanalign">{{F(row.Total_PartsGross) != '-' ? '$' : ''}}
+                  <span>{{F(row.Total_PartsGross)}}</span></span>
+              </td>
+              <td>
+                <span class="spanalign">{{F(row.Total_PartsGross_Pace) != '-' ? '$' : ''}}
+                  <span>{{F(row.Total_PartsGross_Pace)}}</span></span>
+              </td>
+              <td>
+                <span class="spanalign">{{F(row.Total_PartsGrossTarget) != '-' ? '$' : ''}}
+                  <span>{{F(row.Total_PartsGrossTarget)}}</span></span>
+              </td>
+              <td>
+                <span class="spanalign">{{F(row.Total_PartsGross_Diff) != '-' ? '$' : ''}}
+                  <span>{{F(row.Total_PartsGross_Diff)}}</span></span>
+              </td>
+  
+              <td>
+                <span class="spanalign">{{F(row.ServiceGross) != '-' ? '$' : ''}}
+                  <span>{{F(row.ServiceGross)}}</span></span>
+              </td>
+              <td>
+                <span class="spanalign">{{F(row.ServiceGross_Pace) != '-' ? '$' : ''}}
+                  <span>{{F(row.ServiceGross_Pace)}}</span></span>
+              </td>
+              <td>
+                <span class="spanalign">{{F(row.ServiceGross_Target) != '-' ? '$' : ''}}
+                  <span>{{F(row.ServiceGross_Target)}}</span></span>
+              </td>
+              <td>
+                <span class="spanalign">{{F(row.ServiceGross_Diff) != '-' ? '$' : ''}}
+                  <span>{{F(row.ServiceGross_Diff)}}</span></span>
+              </td>
+  
+              <td>
+                <span class="spanalign">{{F(row.CPgross) != '-' ? '$' : ''}}
+                  <span>{{F(row.CPgross)}}</span></span>
+              </td>
+              <td>
+                <span class="spanalign">{{F(row.CPgross_Pace) != '-' ? '$' : ''}}
+                  <span>{{F(row.CPgross_Pace)}}</span></span>
+              </td>
+              <td>
+                <span class="spanalign">{{F(row.CPgross_Target) != '-' ? '$' : ''}}
+                  <span>{{F(row.CPgross_Target)}}</span></span>
+              </td>
+              <td>
+                <span class="spanalign">{{F(row.CPgross_Diff) != '-' ? '$' : ''}}
+                  <span>{{F(row.CPgross_Diff)}}</span></span>
+              </td>
+  
+              <td>
+                <span class="spanalign">{{F(row.Wgross) != '-' ? '$' : ''}}
+                  <span>{{F(row.Wgross)}}</span></span>
+              </td>
+              <td>
+                <span class="spanalign">{{F(row.Wgross_Pace) != '-' ? '$' : ''}}
+                  <span>{{F(row.Wgross_Pace)}}</span></span>
+              </td>
+              <td>
+                <span class="spanalign">{{F(row.Wgross_Target) != '-' ? '$' : ''}}
+                  <span>{{F(row.Wgross_Target)}}</span></span>
+              </td>
+              <td>
+                <span class="spanalign">{{F(row.Wgross_Diff) != '-' ? '$' : ''}}
+                  <span>{{F(row.Wgross_Diff)}}</span></span>
+              </td>
+  
+              <td>
+                <span class="spanalign">{{F(row.Igross) != '-' ? '$' : ''}}
+                  <span>{{F(row.Igross)}}</span></span>
+              </td>
+              <td>
+                <span class="spanalign">{{F(row.Igross_Pace) != '-' ? '$' : ''}}
+                  <span>{{F(row.Igross_Pace)}}</span></span>
+              </td>
+              <td>
+                <span class="spanalign">{{F(row.Igross_Target) != '-' ? '$' : ''}}
+                  <span>{{F(row.Igross_Target)}}</span></span>
+              </td>
+              <td>
+                <span class="spanalign">{{F(row.Igross_Diff) != '-' ? '$' : ''}}
+                  <span>{{F(row.Igross_Diff)}}</span></span>
+              </td>
+            </tr>
+            }
+  
+            }
+          </tbody>
+  
+  
+  
+          <!-- ================= BOTTOM TOTAL ROW ================= -->
+  
+          @if (selectedTotalPosition === 'B') {
+          <tfoot>
+            @let t = ServiceTotals();
+            @if (t) {
+            <tr class="total-row bottom-total" [ngClass]="ServiceAnyRowExpanded() ? 'expanded-total' : 'collapsed-total'">
+  
+              <td class="sticky-col sb-dealer-col text-bold">REPORT TOTALS</td>
+              <td>
+                <span class="spanalign">{{F(t.Total_PartsSale) != '-' ? '$' : ''}}
+                  <span>{{F(t.Total_PartsSale)}}</span></span>
+              </td>
+              <td>
+                <span class="spanalign">{{F(t.Total_PartsGross) != '-' ? '$' : ''}}
+                  <span>{{F(t.Total_PartsGross)}}</span></span>
+              </td>
+              <td>
+                <span class="spanalign">{{F(t.Total_PartsGross_Pace) != '-' ? '$' : ''}}
+                  <span>{{F(t.Total_PartsGross_Pace)}}</span></span>
+              </td>
+              <td>
+                <span class="spanalign">{{F(t.Total_PartsGrossTarget) != '-' ? '$' : ''}}
+                  <span>{{F(t.Total_PartsGrossTarget)}}</span></span>
+              </td>
+              <td>
+                <span class="spanalign">{{F(t.Total_PartsGross_Diff) != '-' ? '$' : ''}}
+                  <span>{{F(t.Total_PartsGross_Diff)}}</span></span>
+              </td>
+              <!-- SERVICE -->
+              <td>
+                <span class="spanalign">{{F(t.ServiceGross) != '-' ? '$' : ''}}
+                  <span>{{F(t.ServiceGross)}}</span></span>
+              </td>
+              <td>
+                <span class="spanalign">{{F(t.ServiceGross_Pace) != '-' ? '$' : ''}}
+                  <span>{{F(t.ServiceGross_Pace)}}</span></span>
+              </td>
+              <td>
+                <span class="spanalign">{{F(t.ServiceGross_Target) != '-' ? '$' : ''}}
+                  <span>{{F(t.ServiceGross_Target)}}</span></span>
+              </td>
+              <td>
+                <span class="spanalign">{{F(t.ServiceGross_Diff) != '-' ? '$' : ''}}
+                  <span>{{F(t.ServiceGross_Diff)}}</span></span>
+              </td>
+  
+              <!-- CUSTOMER PAY -->
+              <td>
+                <span class="spanalign">{{F(t.CPgross) != '-' ? '$' : ''}}
+                  <span>{{F(t.CPgross)}}</span></span>
+              </td>
+              <td>
+                <span class="spanalign">{{F(t.CPgross_Pace) != '-' ? '$' : ''}}
+                  <span>{{F(t.CPgross_Pace)}}</span></span>
+              </td>
+              <td>
+                <span class="spanalign">{{F(t.CPgross_Target) != '-' ? '$' : ''}}
+                  <span>{{F(t.CPgross_Target)}}</span></span>
+              </td>
+              <td>
+                <span class="spanalign">{{F(t.CPgross_Diff) != '-' ? '$' : ''}}
+                  <span>{{F(t.CPgross_Diff)}}</span></span>
+              </td>
+  
+              <!-- WARRANTY -->
+              <td>
+                <span class="spanalign">{{F(t.Wgross) != '-' ? '$' : ''}}
+                  <span>{{F(t.Wgross)}}</span></span>
+              </td>
+              <td>
+                <span class="spanalign">{{F(t.Wgross_Pace) != '-' ? '$' : ''}}
+                  <span>{{F(t.Wgross_Pace)}}</span></span>
+              </td>
+              <td>
+                <span class="spanalign">{{F(t.Wgross_Target) != '-' ? '$' : ''}}
+                  <span>{{F(t.Wgross_Target)}}</span></span>
+              </td>
+              <td>
+                <span class="spanalign">{{F(t.Wgross_Diff) != '-' ? '$' : ''}}
+                  <span>{{F(t.Wgross_Diff)}}</span></span>
+              </td>
+  
+              <!-- INTERNAL -->
+              <td>
+                <span class="spanalign">{{F(t.Igross) != '-' ? '$' : ''}}
+                  <span>{{F(t.Igross)}}</span></span>
+              </td>
+              <td>
+                <span class="spanalign">{{F(t.Igross_Pace) != '-' ? '$' : ''}}
+                  <span>{{F(t.Igross_Pace)}}</span></span>
+              </td>
+              <td>
+                <span class="spanalign">{{F(t.Igross_Target) != '-' ? '$' : ''}}
+                  <span>{{F(t.Igross_Target)}}</span></span>
+              </td>
+              <td>
+                <span class="spanalign">{{F(t.Igross_Diff) != '-' ? '$' : ''}}
+                  <span>{{F(t.Igross_Diff)}}</span></span>
+              </td>
+  
+            </tr>
+            }
+          </tfoot>
+          }
+          }
+  
+          @if (noRecords()) {
+          <tbody>
+            <tr>
+              <td colspan="22" class="no-data text-center">
+                <span>No Records Found</span>
+              </td>
+            </tr>
+          </tbody>
+          }
+        </table>
+      </div>
+      }
+  
+      @if(showPartsView()){
+      <div class="performance-scorecard mt-2">
+        <table class="parts-table">
+  
+          <thead>
+  
+            <!-- GROUP HEADER -->
+            <tr class="group-header-row sg-header">
+              <!-- <th class="sticky-col expand-col"></th>
+                            <th class="sticky-col dealer-col"></th> -->
+              <th class="sticky-col sb-dealer-col text-left">
+                <div class="date-box">
+                  {{ getDateRange() }}
+                </div>
+              </th>
+  
+              <th colspan="5">Total Parts</th>
+              <th colspan="4" class="text-center">
+                <div class="sg-header-flex">
+                  <button class="details-btn back-btn inline-btn" (click)="BackToOverview()">← Back To Overview</button>
+                  <span>Retail</span>
+                </div>
+              </th>
+              <th colspan="4">Wholesale</th>
+              <th colspan="4">Parts</th>
+  
+            </tr>
+  
+            <!-- SUBHEADER -->
+            <tr class="sg-subheader">
+  
+              <th class="sticky-col"></th>
+              <!-- TOTAL PARTS -->
+              <th>Sales</th>
+              <th>Gross</th>
+              <th>Pace</th>
+              <th>Target</th>
+              <th>Diff</th>
+  
+              <!-- RETAIL -->
+              <th>Gross</th>
+              <th>Pace</th>
+              <th>Target</th>
+              <th>Diff</th>
+  
+              <!-- WHOLESALE -->
+              <th>Gross</th>
+              <th>Pace</th>
+              <th>Target</th>
+              <th>Diff</th>
+  
+              <!-- PARTS -->
+              <th>Gross</th>
+              <th>Pace</th>
+              <th>Target</th>
+              <th>Diff</th>
+  
+  
+  
+            </tr>
+  
+          </thead>
+  
+          <!-- TOP TOTAL ROW (when toporbottom = 'T') -->
+          @if (!noRecords()) {
+          @if (selectedTotalPosition === 'T') {
+          @let foot = PartsTotals();
+          @if(foot) {
+          <tr class="total-row top-total" [class.expanded-total]="PartsAnyRowExpanded()"
+            [class.collapsed-total]="!PartsAnyRowExpanded()">
+            <td class="sticky-col dealer-col">REPORT TOTALS</td>
+  
+            <!-- TOTAL PARTS -->
+            <!-- <td>{{ foot.TotSales }}</td>
+                        <td>{{ foot.TotGross }}</td> -->
+            <td>
+              <span class="spanalign">{{FR(foot.TotSales) != '-' ? '$' : ''}}
+                <span>{{FR(foot.TotSales)}}</span></span>
+            </td>
+            <td>
+              <span class="spanalign">{{FR(foot.TotGross) != '-' ? '$' : ''}}
+                <span>{{FR(foot.TotGross)}}</span></span>
+            </td>
+            <td>
+              <span class="spanalign">{{FR(foot.TotPace) != '-' ? '$' : ''}}
+                <span>{{FR(foot.TotPace)}}</span></span>
+            </td>
+            <td>
+              <span class="spanalign">{{FR(foot.TotTarget) != '-' ? '$' : ''}}
+                <span>{{FR(foot.TotTarget)}}</span></span>
+            </td>
+            <td>
+              <span class="spanalign">{{FR(foot.TotDiff) != '-' ? '$' : ''}}
+                <span>{{FR(foot.TotDiff)}}</span></span>
+            </td>
+  
+            <!-- RETAIL -->
+  
+            <td>
+              <span class="spanalign">{{FR(foot.RetailGross) != '-' ? '$' : ''}}
+                <span>{{FR(foot.RetailGross)}}</span></span>
+            </td>
+            <td>
+              <span class="spanalign">{{FR(foot.RetailPace) != '-' ? '$' : ''}}
+                <span>{{FR(foot.RetailPace)}}</span></span>
+            </td>
+            <td>
+              <span class="spanalign">{{FR(foot.RetailTarget) != '-' ? '$' : ''}}
+                <span>{{FR(foot.RetailTarget)}}</span></span>
+            </td>
+            <td>
+              <span class="spanalign">{{FR(foot.RetailDiff) != '-' ? '$' : ''}}
+                <span>{{FR(foot.RetailDiff)}}</span></span>
+            </td>
+            <!-- WHOLESALE -->
+            <td>
+              <span class="spanalign">{{FR(foot.WholeGross) != '-' ? '$' : ''}}
+                <span>{{FR(foot.WholeGross)}}</span></span>
+            </td>
+            <td>
+              <span class="spanalign">{{FR(foot.WholePace) != '-' ? '$' : ''}}
+                <span>{{FR(foot.WholePace)}}</span></span>
+            </td>
+            <td>
+              <span class="spanalign">{{FR(foot.WholeTarget) != '-' ? '$' : ''}}
+                <span>{{FR(foot.WholeTarget)}}</span></span>
+            </td>
+            <td>
+              <span class="spanalign">{{FR(foot.WholeDiff) != '-' ? '$' : ''}}
+                <span>{{FR(foot.WholeDiff)}}</span></span>
+            </td>
+  
+  
+            <!-- PARTS -->
+            <td>
+              <span class="spanalign">{{FR(foot.PartsGross) != '-' ? '$' : ''}}
+                <span>{{FR(foot.PartsGross)}}</span></span>
+            </td>
+            <td>
+              <span class="spanalign">{{FR(foot.PartsPace) != '-' ? '$' : ''}}
+                <span>{{FR(foot.PartsPace)}}</span></span>
+            </td>
+            <td>
+              <span class="spanalign">{{FR(foot.PartsTarget) != '-' ? '$' : ''}}
+                <span>{{FR(foot.PartsTarget)}}</span></span>
+            </td>
+            <td>
+              <span class="spanalign">{{FR(foot.PartsDiff) != '-' ? '$' : ''}}
+                <span>{{FR(foot.PartsDiff)}}</span></span>
+            </td>
+  
+          </tr>
+          }
+          }
+  
+          <tbody>
+  
+            @for (row of BuildFinalPartsTable(); track $index) {
+  
+            <!-- ===================== PARENT ROW ===================== -->
+            @if (!row.isLayer2) {
+            <tr [ngClass]="GetPartsRowClasses(row)" [class.expanded-parent]="PartsExpandedRows()[row.SNO]">
+  
+              <td class="sticky-col dealer-col parent-cell main-head" [class.clickable]="activeFilters().var2 === ''"
+                (click)="activeFilters().var2 === '' && openDetailsPopup(row)">
+  
+                {{ mapSaleType(row.data1) }}
+                <!-- Expand Icon -->
+                @if (row.Data2?.length > 0) {
+                <!-- <i 
+                                (click)="TogglePartsExpand(row)"
+                                [class]="GetExpandIcon(PartsExpandedRows()[row.SNO])"
+                                class="expand-icon"
+                                style="cursor:pointer; margin-right:6px;">
+                              </i> -->
+                <span class="expand-wrapper">
+                  @if (!PartsExpandedRows()[row.SNO]) {
+  
+                  <!-- Collapsed → Show + icon -->
+                  <img src="images/Add_Circle2.png" class="expand-img" (click)="TogglePartsExpand(row)">
+                  } @else {
+                  <!-- Expanded → Show - icon -->
+                  <img src="images/Minus_CircleIcon.svg" class="expand-img" (click)="TogglePartsExpand(row)">
+                  }
+                </span>
+                }
+  
+  
+              </td>
+  
+              <!-- TOTAL PARTS -->
+              <td>
+                <span class="spanalign">{{F(row.TotSales) != '-' ? '$' : ''}}
+                  <span>{{F(row.TotSales)}}</span></span>
+              </td>
+              <td>
+                <span class="spanalign">{{F(row.TotGross) != '-' ? '$' : ''}}
+                  <span>{{F(row.TotGross)}}</span></span>
+              </td>
+              <td>
+                <span class="spanalign">{{F(row.TotPace) != '-' ? '$' : ''}}
+                  <span>{{F(row.TotPace)}}</span></span>
+              </td>
+              <td>
+                <span class="spanalign">{{F(row.TotTarget) != '-' ? '$' : ''}}
+                  <span>{{F(row.TotTarget)}}</span></span>
+              </td>
+              <td>
+                <span class="spanalign">{{F(row.TotDiff) != '-' ? '$' : ''}}
+                  <span>{{F(row.TotDiff)}}</span></span>
+              </td>
+  
+              <!-- RETAIL -->
+              <td>
+                <span class="spanalign">{{F(row.RetailGross) != '-' ? '$' : ''}}
+                  <span>{{F(row.RetailGross)}}</span></span>
+              </td>
+              <td>
+                <span class="spanalign">{{F(row.RetailPace) != '-' ? '$' : ''}}
+                  <span>{{F(row.RetailPace)}}</span></span>
+              </td>
+              <td>
+                <span class="spanalign">{{F(row.RetailTarget) != '-' ? '$' : ''}}
+                  <span>{{F(row.RetailTarget)}}</span></span>
+              </td>
+              <td>
+                <span class="spanalign">{{F(row.RetailDiff) != '-' ? '$' : ''}}
+                  <span>{{F(row.RetailDiff)}}</span></span>
+              </td>
+  
+              <!-- WHOLESALE -->
+              <td>
+                <span class="spanalign">{{F(row.WholeGross) != '-' ? '$' : ''}}
+                  <span>{{F(row.WholeGross)}}</span></span>
+              </td>
+              <td>
+                <span class="spanalign">{{F(row.WholePace) != '-' ? '$' : ''}}
+                  <span>{{F(row.WholePace)}}</span></span>
+              </td>
+              <td>
+                <span class="spanalign">{{F(row.WholeTarget) != '-' ? '$' : ''}}
+                  <span>{{F(row.WholeTarget)}}</span></span>
+              </td>
+              <td>
+                <span class="spanalign">{{F(row.WholeDiff) != '-' ? '$' : ''}}
+                  <span>{{F(row.WholeDiff)}}</span></span>
+              </td>
+  
+              <!-- PARTS -->
+              <td>
+                <span class="spanalign">{{F(row.PartsGross) != '-' ? '$' : ''}}
+                  <span>{{F(row.PartsGross)}}</span></span>
+              </td>
+              <td>
+                <span class="spanalign">{{F(row.PartsPace) != '-' ? '$' : ''}}
+                  <span>{{F(row.PartsPace)}}</span></span>
+              </td>
+              <td>
+                <span class="spanalign">{{F(row.PartsTarget) != '-' ? '$' : ''}}
+                  <span>{{F(row.PartsTarget)}}</span></span>
+              </td>
+              <td>
+                <span class="spanalign">{{F(row.PartsDiff) != '-' ? '$' : ''}}
+                  <span>{{F(row.PartsDiff)}}</span></span>
+              </td>
+  
+            </tr>
+            }
+  
+            <!-- ===================== CHILD ROW ===================== -->
+            @if (row.isLayer2) {
+            <tr class="member-row">
+  
+              <td class="sticky-col dealer-col clickable" style="padding-left:26px;" (click)="openDetailsPopup(row)"
+                clickable>
+                {{ mapSaleType(row.AdvisorName) }}
+              </td>
+  
+              <!-- TOTAL PARTS (child) -->
+              <td>
+                <span class="spanalign">{{F(row.Total_PartsSale) != '-' ? '$' : ''}}
+                  <span>{{F(row.Total_PartsSale)}}</span></span>
+              </td>
+              <td>
+                <span class="spanalign">{{F(row.Total_PartsGross) != '-' ? '$' : ''}}
+                  <span>{{F(row.Total_PartsGross)}}</span></span>
+              </td>
+              <td>
+                <span class="spanalign">{{F(row.Total_PartsGross_Pace) != '-' ? '$' : ''}}
+                  <span>{{F(row.Total_PartsGross_Pace)}}</span></span>
+              </td>
+              <td>
+                <span class="spanalign">{{F(row.Total_PartsGrossTarget) != '-' ? '$' : ''}}
+                  <span>{{F(row.Total_PartsGrossTarget)}}</span></span>
+              </td>
+              <td>
+                <span class="spanalign">{{F(row.Total_PartsGross_Diff) != '-' ? '$' : ''}}
+                  <span>{{F(row.Total_PartsGross_Diff)}}</span></span>
+              </td>
+  
+              <!-- RETAIL -->
+              <td>
+                <span class="spanalign">{{F(row.Retailgross) != '-' ? '$' : ''}}
+                  <span>{{F(row.Retailgross)}}</span></span>
+              </td>
+              <td>
+                <span class="spanalign">{{F(row.Retailgross_Pace) != '-' ? '$' : ''}}
+                  <span>{{F(row.Retailgross_Pace)}}</span></span>
+              </td>
+              <td>
+                <span class="spanalign">{{F(row.Retailgross_Target) != '-' ? '$' : ''}}
+                  <span>{{F(row.Retailgross_Target)}}</span></span>
+              </td>
+              <td>
+                <span class="spanalign">{{F(row.Retailgross_Diff) != '-' ? '$' : ''}}
+                  <span>{{F(row.Retailgross_Diff)}}</span></span>
+              </td>
+  
+              <!-- WHOLESALE -->
+              <td>
+                <span class="spanalign">{{F(row.Wholesalegross) != '-' ? '$' : ''}}
+                  <span>{{F(row.Wholesalegross)}}</span></span>
+              </td>
+              <td>
+                <span class="spanalign">{{F(row.Wholesalegross_Pace) != '-' ? '$' : ''}}
+                  <span>{{F(row.Wholesalegross_Pace)}}</span></span>
+              </td>
+              <td>
+                <span class="spanalign">{{F(row.Wholesalegross_Target) != '-' ? '$' : ''}}
+                  <span>{{F(row.Wholesalegross_Target)}}</span></span>
+              </td>
+              <td>
+                <span class="spanalign">{{F(row.Wholesalegross_Diff) != '-' ? '$' : ''}}
+                  <span>{{F(row.Wholesalegross_Diff)}}</span></span>
+              </td>
+  
+              <!-- PARTS -->
+              <td>
+                <span class="spanalign">{{F(row.PartsGross) != '-' ? '$' : ''}}
+                  <span>{{F(row.PartsGross)}}</span></span>
+              </td>
+              <td>
+                <span class="spanalign">{{F(row.PartsGross_Pace) != '-' ? '$' : ''}}
+                  <span>{{F(row.PartsGross_Pace)}}</span></span>
+              </td>
+              <td>
+                <span class="spanalign">{{F(row.PartsGross_Target) != '-' ? '$' : ''}}
+                  <span>{{F(row.PartsGross_Target)}}</span></span>
+              </td>
+              <td>
+                <span class="spanalign">{{F(row.PartsGross_Diff) != '-' ? '$' : ''}}
+                  <span>{{F(row.PartsGross_Diff)}}</span></span>
+              </td>
+  
+            </tr>
+            }
+  
+            }
+  
+          </tbody>
+  
+  
+          <!-- FOOTER -->
+          @if (selectedTotalPosition === 'B') {
+          @let foot = PartsTotals();
+          @if(foot) {
+          <tfoot>
+            <tr class="total-row bottom-total" [class.expanded-total]="PartsAnyRowExpanded()"
+              [class.collapsed-total]="!PartsAnyRowExpanded()">
+  
+              <td class="sticky-col dealer-col">REPORT TOTALS</td>
+  
+              <td>
+                <span class="spanalign">{{FR(foot.TotSales) != '-' ? '$' : ''}}
+                  <span>{{FR(foot.TotSales)}}</span></span>
+              </td>
+              <td>
+                <span class="spanalign">{{FR(foot.TotGross) != '-' ? '$' : ''}}
+                  <span>{{FR(foot.TotGross)}}</span></span>
+              </td>
+              <td>
+                <span class="spanalign">{{FR(foot.TotPace) != '-' ? '$' : ''}}
+                  <span>{{FR(foot.TotPace)}}</span></span>
+              </td>
+              <td>
+                <span class="spanalign">{{FR(foot.TotTarget) != '-' ? '$' : ''}}
+                  <span>{{FR(foot.TotTarget)}}</span></span>
+              </td>
+              <td>
+                <span class="spanalign">{{FR(foot.TotDiff) != '-' ? '$' : ''}}
+                  <span>{{FR(foot.TotDiff)}}</span></span>
+              </td>
+  
+              <!-- RETAIL -->
+  
+              <td>
+                <span class="spanalign">{{FR(foot.RetailGross) != '-' ? '$' : ''}}
+                  <span>{{FR(foot.RetailGross)}}</span></span>
+              </td>
+              <td>
+                <span class="spanalign">{{FR(foot.RetailPace) != '-' ? '$' : ''}}
+                  <span>{{FR(foot.RetailPace)}}</span></span>
+              </td>
+              <td>
+                <span class="spanalign">{{FR(foot.RetailTarget) != '-' ? '$' : ''}}
+                  <span>{{FR(foot.RetailTarget)}}</span></span>
+              </td>
+              <td>
+                <span class="spanalign">{{FR(foot.RetailDiff) != '-' ? '$' : ''}}
+                  <span>{{FR(foot.RetailDiff)}}</span></span>
+              </td>
+              <!-- WHOLESALE -->
+              <td>
+                <span class="spanalign">{{FR(foot.WholeGross) != '-' ? '$' : ''}}
+                  <span>{{FR(foot.WholeGross)}}</span></span>
+              </td>
+              <td>
+                <span class="spanalign">{{FR(foot.WholePace) != '-' ? '$' : ''}}
+                  <span>{{FR(foot.WholePace)}}</span></span>
+              </td>
+              <td>
+                <span class="spanalign">{{FR(foot.WholeTarget) != '-' ? '$' : ''}}
+                  <span>{{FR(foot.WholeTarget)}}</span></span>
+              </td>
+              <td>
+                <span class="spanalign">{{FR(foot.WholeDiff) != '-' ? '$' : ''}}
+                  <span>{{FR(foot.WholeDiff)}}</span></span>
+              </td>
+  
+  
+              <!-- PARTS -->
+              <td>
+                <span class="spanalign">{{FR(foot.PartsGross) != '-' ? '$' : ''}}
+                  <span>{{FR(foot.PartsGross)}}</span></span>
+              </td>
+              <td>
+                <span class="spanalign">{{FR(foot.PartsPace) != '-' ? '$' : ''}}
+                  <span>{{FR(foot.PartsPace)}}</span></span>
+              </td>
+              <td>
+                <span class="spanalign">{{FR(foot.PartsTarget) != '-' ? '$' : ''}}
+                  <span>{{FR(foot.PartsTarget)}}</span></span>
+              </td>
+              <td>
+                <span class="spanalign">{{FR(foot.PartsDiff) != '-' ? '$' : ''}}
+                  <span>{{FR(foot.PartsDiff)}}</span></span>
+              </td>
+  
+            </tr>
+          </tfoot>
+  
+          }
+          }
+          }
+  
+          @if (noRecords()) {
+          <tbody>
+            <tr>
+              <td colspan="18" class="no-data text-center">
+                <span>No Records Found</span>
+              </td>
+            </tr>
+          </tbody>
+          }
+        </table>
+      </div>
+      }
+  
+  
+    </div>
+  
+  </div>

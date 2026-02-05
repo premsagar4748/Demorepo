@@ -1,0 +1,10 @@
+<!-- Header emits ready event -->
+<app-header (ready)="onHeaderReady()"></app-header>
+
+<app-externalmenu (menuEvent)="onExternalMenuAction($event)" (collapseChanged)="onCollapseChanged($event)">
+</app-externalmenu>
+
+<div class="content-wrapper pt-3" [ngClass]="{ 'transparent-bg': isDashboardRoute }"
+    [ngStyle]="{ 'margin-left': isCollapsed ? '70px' : '10.3rem' }">
+    <router-outlet />
+</div>

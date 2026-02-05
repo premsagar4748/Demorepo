@@ -1,0 +1,263 @@
+<div class="container-fluid" *ngIf="userInfo?.group == 'WESTERN'">
+  <div class="sidebar" #sidebar [class.collapsed]="isSidebarCollapsed">
+
+    <ul class="nav flex-column">
+
+      <!-- Static Ask Axel item -->
+      <li class="nav-item">
+        <a class="nav-link askAicustome"
+          (click)="handleClick([{ prod_title: 'Ask Axel' }, { mod_url: 'https://ask.axel.com' }])">
+          <img src="images/New_Menu_Icons/1.svg" alt="Ask Axel">
+          <span class="nav-text">Ask Xpert</span>
+        </a>
+      </li>
+
+      <ng-container *ngIf="menuLoading">
+        <li class="skeleton-item" *ngFor="let s of [1,2,3,4,5,6,7,8,9]">
+          <div class="skeleton-link">
+            <div class="skeleton-icon m-auto"></div>
+            <div class="skeleton-text" *ngIf="!isSidebarCollapsed"></div>
+          </div>
+        </li>
+      </ng-container>
+
+
+      <ng-container *ngIf="!menuLoading">
+        <li *ngFor="let item of modules; let i = index" class="nav-item">
+          <a *ngIf="item[0]?.mod_prod_id != null" class="nav-link" (click)="handleClick(item)"
+            [ngClass]="{'static-link': item[0].mod_prod_id == 1}">
+
+            <img *ngIf="subid != item[0].mod_prod_id" src="images/New_Menu_Icons/{{item[0].prod_title}}.svg" alt="">
+            <img *ngIf="subid == item[0].mod_prod_id" src="images/New_Menu_Icons/{{item[0].prod_title}}.svg" alt="">
+
+            <span class="nav-text">
+              {{ item[0].mod_prod_id === 22 ? 'favourite' : item[0].prod_title }}
+            </span>
+          </a>
+        </li>
+      </ng-container>
+    </ul>
+
+    <ng-container *ngIf="!playbookmainmenu">
+      <div class="playbook">
+        <h4 class="skeleton-title"></h4>
+        <div class="playbook-inner">
+          <div class="playbook-item" *ngFor="let s of [1,2,3]">
+            <div class="skeleton-img"></div>
+            <div class="skeleton-text"></div>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+
+    <div class="playbook" *ngIf="playbookmainmenu">
+      <h4>Playbook</h4>
+
+      <div class="playbook-inner">
+        <div class="playbook-item" *ngFor="let item of playbookmainmenu" (click)="toggleMainMenu(item)">
+          <img [src]="'/images/'+item.label+'.svg'" alt="">
+          <span>{{item.label}}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="submenu" *ngIf="subid > 0" (mouseleave)="closesub()" #menu>
+      <ng-container *ngFor="let item of modules">
+        <ul class="submenu-list" *ngIf="subid === item[0].mod_prod_id">
+
+          <div class="submenu-header">
+            <h4>
+              <span>
+                <img src="images/New_Menu_Icons/black/{{item[0].prod_title}}.svg" alt="">
+              </span>
+              {{ item[0].mod_prod_id === 22 ? 'favourite' : item[0].prod_title }}
+            </h4>
+          </div>
+
+          <ng-container *ngIf="item[0].mod_prod_id !== 2">
+            <ng-container *ngFor="let sub of item">
+
+              <ng-container *ngIf="isEqualIgnoreCase(sub.mod_name, item[0].prod_title); else normalSub">
+                <li *ngFor="let child of sub?.xmlData"
+                  (click)="child.mod_filename ? gotoLink(child.mod_filename) : null"
+                  [ngClass]="{ 'disabled-link': !child.mod_filename }">
+                  {{ child.mod_name }}
+                </li>
+              </ng-container>
+
+              <ng-template #normalSub>
+                <li (mouseenter)="togglesubmenu2($event, sub.Mod_ID, sub.mod_prod_id)"
+                  [ngStyle]="{'background': selectedSubmenuId === sub.Mod_ID ? '#e3eaf3' : 'transparent'}">
+                  {{ sub.mod_name }}
+                  <span class="count">{{ sub?.xmlData?.length }}</span>
+                </li>
+              </ng-template>
+            </ng-container>
+          </ng-container>
+        </ul>
+      </ng-container>
+    </div>
+
+    <div class="submenu" *ngIf="isAnyMenuSelected()">
+      <ul class="submenu-list">
+        <div class="submenu-header">
+          <h4>
+            <span>
+              <img [src]="'/images/'+getselectedTitle()+'.svg'" alt="">
+            </span>
+            {{ getselectedTitle() }}
+          </h4>
+        </div>
+        <li (mouseenter)="togglepbSubMenu(sub)" *ngFor="let sub of playbooksmenu" [ngClass]="{'active':sub.isSelected}">
+          {{ sub.name }}
+          <span class="count">{{ sub.count }}</span>
+        </li>
+      </ul>
+    </div>
+
+
+    <div class="submenu2" *ngIf="supersub > 0 && prodid != 22 && hasValidSubmenuForItem(modules, supersub)">
+      <img src="images/menu_icons/back_icon.png" alt="" (click)="close()" style="cursor: pointer;">
+
+      <div *ngFor="let item of modules; let i = index">
+        <ng-container *ngFor="let subitem of item">
+          <ul class="submenu-list" *ngIf="supersub == subitem.Mod_ID 
+                           && prodid != 22 
+                           && !isEqualIgnoreCase(subitem.mod_name, item[0].prod_title)">
+            <li *ngFor="let subitem1 of subitem?.xmlData"
+              (click)="subitem1.mod_filename ? gotoLink(subitem1.mod_filename) : null"
+              [ngClass]="{ 'disabled-link': !subitem1.mod_filename }">
+              {{ subitem1.mod_name }}
+            </li>
+          </ul>
+        </ng-container>
+      </div>
+    </div>
+
+    <div class="submenu2" *ngIf="isAnySubMenuSelected()">
+      <div *ngFor="let item of playbooksmenu">
+        <div *ngIf="item.isSelected">
+          <ul class="submenu-list">
+            <li *ngFor="let module of item.Module_List" (click)="gotoLinkPlaybooks(module.filename)">
+              <a>{{module.name}}</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="closeMenu" (click)="toggleSidebar()">
+      <span style="color: white; ;">v_1.0.0</span>
+
+      <img src="images/New_Menu_Icons/ArrowLeft.svg" alt="">
+    </div>
+
+  </div>
+</div>
+
+
+<div class="container-fluid" *ngIf="userInfo?.group != 'WESTERN'">
+  <div class="sidebar" #sidebar [class.collapsed]="isCollapsed">
+
+    <ul class="nav flex-column">
+
+      <!-- Static Ask Axel item -->
+      <li class="nav-item">
+        <a class="nav-link askAicustome"
+          (click)="handleClick([{ prod_title: 'Ask Axel' }, { mod_url: 'https://ask.axel.com' }])">
+          <img src="images/New_Menu_Icons/1.svg" alt="Ask Axel">
+          <span class="nav-text">Ask AXEL</span>
+        </a>
+      </li>
+
+      <!-- Skeleton menu -->
+      <ng-container *ngIf="menuLoading">
+        <li class="skeleton-item" *ngFor="let s of [1,2,3,4,5,6,7,8,9]">
+          <div class="skeleton-link">
+            <div class="skeleton-icon"></div>
+            <div class="skeleton-text"></div>
+          </div>
+        </li>
+      </ng-container>
+
+
+
+      <ng-container *ngIf="!menuLoading">
+        <li *ngFor="let item of modules; let i = index" class="nav-item disabled-link">
+          <a *ngIf="item[0]?.mod_prod_id != null" class="nav-link" (click)="handleClick(item)"
+            [ngClass]="{'static-link': item[0].mod_prod_id == 1}">
+
+            <img *ngIf="subid != item[0].mod_prod_id" src="images/New_Menu_Icons/{{item[0].prod_title}}.svg" alt="">
+            <img *ngIf="subid == item[0].mod_prod_id" src="images/New_Menu_Icons/{{item[0].prod_title}}.svg" alt="">
+
+            <span class="nav-text">
+              {{ item[0].mod_prod_id === 22 ? 'favourite' : item[0].prod_title }}
+            </span>
+          </a>
+        </li>
+      </ng-container>
+    </ul>
+
+    <!-- Skeleton for Playbooks -->
+    <ng-container *ngIf="menuLoading">
+      <div class="playbook">
+        <h4 class="skeleton-title"></h4>
+
+        <div class="playbook-inner">
+
+          <div class="playbook-item" *ngFor="let s of [1,2,3]" [style.display]="'flex'"
+     [style.flexDirection]="'column'"
+     [style.gap]="!isSidebarCollapsed ? '0rem' : '.75rem'">
+            <div class="skeleton-img"></div>
+            <div class="skeleton-text" *ngIf="!isSidebarCollapsed"></div>
+          </div>
+
+        </div>
+      </div>
+    </ng-container>
+
+
+    <div class="playbook" *ngIf="!menuLoading">
+      <h4>Playbooks</h4>
+      <div class="playbook-inner">
+        <div class="playbook-item disabled-link">
+          <img src="/images/Daily.svg" alt="">
+          <span>Daily</span>
+        </div>
+        <div class="playbook-item disabled-link">
+          <img src="/images/Weekly.svg" alt="">
+          <span>Weekly</span>
+        </div>
+        <div class="playbook-item disabled-link">
+          <img src="/images/Monthly.svg" alt="">
+          <span>Monthly</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="submenu" *ngIf="subid > 0" (mouseleave)="closesub()" #menu>
+      <ng-container *ngFor="let item of modules">
+        <ul class="submenu-list" *ngIf="subid === item[0].mod_prod_id">
+
+          <!-- Header -->
+          <div class="submenu-header">
+            <h4>
+              <span>
+                <img src="images/New_Menu_Icons/black/{{item[0].prod_title}}.svg" alt="">
+              </span>
+              {{ item[0].mod_prod_id === 22 ? 'favourite' : item[0].prod_title }}
+            </h4>
+          </div>
+        </ul>
+      </ng-container>
+    </div>
+    <div class="closeMenu" (click)="toggleSidebar()">
+      <span style="color: white; ;">v_1.0.0</span>
+
+      <img src="images/New_Menu_Icons/ArrowLeft.svg" alt="">
+    </div>
+
+  </div>
+
+</div>

@@ -1,0 +1,224 @@
+<div class="container-fluid d-flex justify-content-center align-items-center"
+    [ngStyle]="{'pointer-events': spinnerLoader() || spinnerLoadersec()  ? 'none': 'visible'}">
+    <div class="gross-popup">
+        <div class="header d-flex align-items-center">
+
+            <h5 class="title m-0 ms-2">
+                <img src="" alt="">
+                <span class="slash">//</span>
+
+                <span>
+                    {{ mapSaleType(
+                    formatPopupValue(
+                    Servicedetails[0].userName,
+                    Servicedetails[0]['var' + Servicedetails[0].layer]
+                    )
+                    ) }}
+                </span>
+            </h5>
+
+            <img src="images/Excel_Export.png" class="img-fluid ms-auto me-2" alt="" style="cursor: pointer;"
+                (click)="downloadDealerExcel()">
+            <a type="button" class="close-btn ms-auto me-2" (click)="close()">
+                <i class="fa-solid fa-xmark" style="width: 15px; font-size: 18px; cursor: pointer;"></i>
+            </a> <!-- Removed (click)="close()" -->
+        </div>
+
+        <!-- Removed *ngIf="spinnerLoader" -->
+
+        <div class="content">
+            <!-- Loader placeholder (hidden by default) -->
+            @if(spinnerLoader()){
+            <div class="loader" style="margin-top: 5%;margin-left: 30%;"></div>
+            }
+            <div class="d-flex" style="width: 100%;">
+                <!-- Left table -->
+                <div class="det_cont first-table ScrollOff" style="min-height: 50vh; max-height: 70vh;"
+                    (mouseenter)="updateCurrentElement('scrollOne')" (scroll)="updateVerticalScroll($event)" #scrollOne>
+                    <!-- Removed (mouseenter) and (scroll) bindings -->
+                    <table class="table w-100 mb-0">
+                        <thead>
+                            <tr>
+                                <th>Invoice #</th>
+                                <th>Date</th>
+                                <th style="width: 20%;">Customer</th>
+                                <th>Part #</th>
+                                <th>Description</th>
+                                <th>Tires</th>
+                            </tr>
+                            <tr>
+                                <th>&nbsp;</th>
+                                <th>&nbsp;</th>
+                                <th style="width: 20%;">&nbsp;</th>
+                                <th>&nbsp;</th>
+                                <th>&nbsp;</th>
+                                <th>&nbsp;</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            @for(det of ServicePersonDetails(); let i = $index; track i){
+                            <tr [id]="'SD_'+i" (mouseover)="hoverclass($event,i)">
+
+                                <!-- INVOICE -->
+                                <!-- <td [id]="'SD_'+i" 
+                            
+                                [ngClass]="[det.ronumber ? 'popuppointer' : 'popupdisable']">
+                                {{ det.ronumber || '-' }}
+                            </td> -->
+
+                                <td [id]="'SD_'+i">
+                                    {{ det.ronumber || '-' }}
+                                </td>
+
+
+                                <!-- DATE -->
+                                <td [id]="'SD_'+i">
+                                    {{ det.closedate ? (det.closedate | date:'MM-dd-yyyy') : '-' }}
+                                </td>
+
+                                <!-- CUSTOMER -->
+                                <td title="{{det.CName}}" style="cursor: default; text-align:left!important;"
+                                    [id]="'SD_'+i">
+                                    {{det.CName}}
+                                </td>
+
+                                <!-- PART # -->
+                                <td [id]="'SD_'+i" title="{{det.part}}">
+                                    {{
+                                    det.part
+                                    ? (det.part | slice:0:20) + (det.part.length > 20 ? '...' : '')
+                                    : '-'
+                                    }}
+                                </td>
+
+                                <!-- DESCRIPTION -->
+                                <td [id]="'SD_'+i" title="{{det.description}}">
+                                    {{
+                                    det.description
+                                    ? (det.description | slice:0:20) + (det.description.length > 20 ? '...' : '')
+                                    : '-'
+                                    }}
+                                </td>
+
+                                <!-- TIRES -->
+                                <td [id]="'SD_'+i">
+                                    {{det.tires}}
+                                </td>
+
+                            </tr>
+                            }
+
+                            @if(NoData()){
+                            <tr>
+                                <td colspan="6" class="text-center">No Data Found!!!</td>
+                            </tr>
+                            }
+                        </tbody>
+                    </table>
+
+                </div>
+
+                <!-- Right table -->
+                <div class="det_cont" style="min-height: 50vh; max-height: 71vh;"
+                    (mouseenter)="updateCurrentElement('scrollTwo')" (scroll)="updateVerticalScroll($event)" #scrollTwo>
+                    <!-- Removed (mouseenter) and (scroll) -->
+                    <div class="table-wrapper">
+                        <table class="table table-borderless mb-0">
+                            <thead>
+
+                                <!-- GROUP HEADER ROW -->
+                                <tr class="group-header-row">
+                                    <th colspan="3" class="text-center">Total</th>
+                                    <th colspan="3" class="text-center">Cutomer Pay</th>
+                                    <th colspan="3" class="text-center">Warranty</th>
+                                    <th colspan="3" class="text-center">Internal</th>
+                                    <th colspan="3" class="text-center">Counter Retail</th>
+                                    <th colspan="3" class="text-center">Wholesale</th>
+                                </tr>
+
+                                <!-- SUB-HEADER ROW -->
+                                <tr class="sub-header-row">
+                                    <th>Sales</th>
+                                    <th>Gross</th>
+                                    <th>GP%</th>
+                                    <th>Sales</th>
+                                    <th>Gross</th>
+                                    <th>GP%</th>
+                                    <th>Sales</th>
+                                    <th>Gross</th>
+                                    <th>GP%</th>
+                                    <th>Sales</th>
+                                    <th>Gross</th>
+                                    <th>GP%</th>
+                                    <th>Sales</th>
+                                    <th>Gross</th>
+                                    <th>GP%</th>
+                                    <th>Sales</th>
+                                    <th>Gross</th>
+                                    <th>GP%</th>
+                                </tr>
+
+                            </thead>
+
+
+                            <tbody>
+                                <!-- Static example row -->
+                                @for(det of ServicePersonDetails(); let i = $index; track i){
+                                <tr [id]="'SP_'+i" (mouseover)="hoverclass($event,i)">
+                                    <td style="min-width: 50px !important;" [id]="'SP_'+i">{{det.TotalSale}}</td>
+                                    <!-- [ngStyle]="{'border-bottom': ServicePersonDetails.length-1 == i ? '1px solid grey' : 'none'  }" -->
+                                    <td style="min-width: 50px !important ;" [id]="'SP_'+i"> {{det.Totalgross}}</td>
+                                    <td style="min-width: 50px !important;" [id]="'SP_'+i">{{det.Retention}}</td>
+
+                                    <td style="min-width: 50px !important;" [id]="'SP_'+i"> {{det.Cust_Sale}}</td>
+                                    <td style="min-width: 50px !important;" [id]="'SP_'+i">{{det.Cust_Gross}}</td>
+
+
+                                    <td style="min-width: 50px !important;" [id]="'SP_'+i"> {{det.Cust_Retention}}
+                                    </td>
+                                    <td style="min-width: 50px !important;" [id]="'SP_'+i"> {{det.Warranty_Sale}}</td>
+                                    <td [id]="'SP_'+i"
+                                        style="min-width: 50px !important;white-space: nowrap !important; text-align: right !important;">
+                                        {{det.Warranty_Gros}}</td>
+                                    <td style="min-width: 50px !important;" [id]="'SP_'+i">
+                                        {{det.Warranty_Retention}}</td>
+
+                                    <td style="min-width: 50px !important;" [id]="'SP_'+i"> {{det.Internal_Sale}}</td>
+                                    <td style="min-width: 50px !important;" [id]="'SP_'+i"> {{det.Internal_Gross}}</td>
+                                    <td style="min-width: 50px !important;" [id]="'SP_'+i"> {{det.Internal_Retention}}
+                                    </td>
+
+                                    <td [id]="'SP_'+i"
+                                        style="min-width: 50px !important;white-space: nowrap !important; text-align: right !important;">
+                                        {{det.Counter_sale}}</td>
+                                    <td [id]="'SP_'+i"> {{det.Counter_Gross}}</td>
+                                    <td [id]="'SP_'+i"> {{det.Counter_Retention}}</td>
+
+                                    <td [id]="'SP_'+i"> {{det.Wholesale_Sale}}</td>
+                                    <td [id]="'SP_'+i">{{det.Wholesale_Gross}}</td>
+                                    <td [id]="'SP_'+i"
+                                        style="min-width: 50px !important;white-space: nowrap !important; text-align: right !important;">
+                                        {{det.Wholesale_Retention }} </td>
+
+
+                                    @if(spinnerLoadersec()){
+                                    <div class="loader" style="margin-top: 30%;margin-left: 30%;"></div>
+                                    }
+                                </tr>
+                                }
+                                <!-- No data message row -->
+                                @if(NoData()){
+                                <tr>
+                                    <td colspan="26" class="text-center">No Data Found!!!</td>
+                                </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>

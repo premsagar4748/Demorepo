@@ -1,0 +1,373 @@
+/* ===================== PAGE LAYOUT ===================== */
+
+// .wrapper {
+//   position: relative;
+//   padding-top: 20px;
+//   padding-bottom: 24px;
+//   min-height: 100vh;
+//   transition: margin-left 0.3s ease;
+//   background: transparent;
+// }
+
+// /* Sidebar COLLAPSED */
+// .wrapper {
+//   margin-left: 60px;
+// }
+
+// /* Sidebar EXPANDED */
+// .wrapper.expanded {
+//   margin-left: 150px;
+// }
+
+// @media (max-width: 768px) {
+//   .wrapper,
+//   .wrapper.expanded {
+//     margin-left: 0;
+//   }
+// }
+
+
+.report-bar {
+    margin-top: 50px;
+  }
+  
+  .filter-dropdowns {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    // margin-top: 40px;
+    padding-left: 0px;
+    position: relative;
+    z-index: 1000;
+  }
+  
+  /* ===================== DROPDOWNS ===================== */
+  
+  .popover-card,
+  .reportstores-card,
+  .timeframe {
+    position: absolute;
+    z-index: 200;
+  }
+  
+  /* ===================== BUTTONS ===================== */
+  
+  .details-btn {
+    background-color: #e8f0fe;
+    color: #0554ef;
+    border: none;
+    padding: 6px 14px;
+    border-radius: 12px;
+    font-family: "Roboto";
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+    margin-right: 2rem;
+  
+    &:hover {
+      background-color: #d2e3fc;
+      border-radius: 50px;
+    }
+  }
+  
+  /* ===================== PERFORMANCE SCORECARD ===================== */
+  
+  .performance-scorecard {
+    display: flex;
+    flex-direction: column;
+    border-radius: 10px;
+    max-height: calc(100vh - 155px);
+    overflow-x: auto;
+    // margin: 16px 16px 16px 8px;
+  }
+  
+  /* ===================== TABLE WRAPPER ===================== */
+  
+  .parts-table-container {
+    margin-top: 12px;
+    background: #fff;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+  }
+  
+  /* ===================== TABLE BASE ===================== */
+  
+  .parts-table {
+    width: 100%;
+    // min-width: 1500px;
+    border-collapse: collapse;
+    font-family: "Roboto";
+    text-transform: capitalize;
+    font-size: 1rem;
+    /* 🔒 GLOBAL FONT LOCK */
+  
+  
+    .member-row {
+      td {
+        background-color: #ffffff !important;
+        font-family: "Roboto";
+        padding-left: 1rem;
+        // text-align: left;
+        z-index: 9;
+      }
+  
+      td {
+        padding: 4px 8px;
+        font-family: "Roboto";
+      }
+  
+      td:not(:first-child) {
+        background-color: #ffffff !important;
+      }
+  
+      td:nth-child(1) {
+        padding-left: 1rem;
+        text-align: left;
+        cursor: pointer;
+      }
+    }
+  }
+  
+  /* ===================== CELLS ===================== */
+  
+  .parts-table th {
+    white-space: nowrap;
+    vertical-align: middle;
+    padding: 8px;
+    box-shadow: inset 0 0 0 0.4px #e0edff;
+    border-bottom: none;
+    font-size: 0.875rem !important;
+    /* 🔒 FONT CONSISTENCY */
+    line-height: 1.4;
+  }
+  
+  .parts-table td {
+    white-space: nowrap;
+    vertical-align: middle;
+    padding: 8px;
+    box-shadow: inset 0 0 0 0.4px #e0edff;
+    border-bottom: none;
+    font-size: 1rem;
+    /* 🔒 FONT CONSISTENCY */
+    line-height: 1.4;
+  }
+  
+  /* ===================== STICKY FIRST COLUMN ===================== */
+  
+  .parts-table th:first-child,
+  .parts-table td:first-child,
+  .parts-table tfoot td:first-child {
+    position: sticky;
+    left: 0;
+    z-index: 103;
+    background: #fff;
+    text-align: left;
+    padding-left: 12px;
+    width: 340px;
+    min-width: 240px;
+    max-width: 340px;
+  }
+  
+  /* ===================== HEADERS ===================== */
+  
+  .parts-table thead {
+    position: sticky;
+    top: 0;
+    z-index: 200;
+    font-size: 0.875rem !important;
+    font-weight: 700;
+  }
+  
+  .parts-table thead th:first-child {
+    position: sticky;
+    left: 0;
+    z-index: 300;
+    background-color: #dbe7ff;
+  }
+  
+  .parts-table thead tr:nth-child(1) {
+    background-color: #0554ef;
+    color: #fff;
+  }
+  
+  .parts-table thead tr:nth-child(1) th:first-child {
+    background-color: #0554ef;
+    z-index: 104;
+  }
+  
+  .parts-table thead tr:nth-child(2) {
+    background-color: #dbe7ff;
+    color: #000;
+  }
+  
+  .parts-table thead tr:nth-child(2) th {
+    text-align: right;
+    padding: 4px 8px;
+  }
+  
+  /* ===================== BODY ROW STYLES ===================== */
+  
+  // .parts-table tbody tr:nth-child(even) {
+  //   // background-color: #f9fbff;
+  // }
+  
+  .parts-table tbody tr:nth-child(odd) {
+    background-color: #ffffff;
+  }
+  
+  .parts-table tbody {
+    background-color: #fff;
+  }
+  
+  /* ===================== GLOBAL ALIGNMENT FIX ===================== */
+  /* Applies to tbody + tfoot + top totals */
+  
+  .parts-table td:not(:first-child),
+  .parts-table th:not(:first-child) {
+    text-align: right;
+  }
+  
+  /* ===================== BLUE GROUP DIVIDERS ===================== */
+  
+  .parts-table td:nth-child(1),
+  .parts-table td:nth-child(6),
+  .parts-table td:nth-child(10),
+  .parts-table td:nth-child(14),
+  .parts-table td:nth-child(18) {
+    // box-shadow: inset -1px 0 0 #0554ef;
+    border-right: 1px solid #0554ef;
+  }
+  
+  // .parts-table th:nth-child(1),
+  // .parts-table th:nth-child(6),
+  // .parts-table th:nth-child(10),
+  // .parts-table th:nth-child(14),
+  // .parts-table th:nth-child(18) {
+  //   box-shadow: inset -1px 0 0 #ffffff;
+  // }
+  
+  /* ===================== TOTAL ROWS (TOP & BOTTOM) ===================== */
+  
+  .total-row td {
+    font-weight: 700;
+    font-size: 1rem;
+    vertical-align: middle;
+    // background: #e8f0fb;
+    border-top: 2px solid #93c5fd;
+    background: #fff;
+  }
+  
+  /* ===================== TOP TOTALS FIX ===================== */
+  
+  .top-totals td {
+    font-size: 1rem;
+    text-align: right;
+  }
+  
+  /* ===================== KPI STATES ===================== */
+  
+  .positive-bg {
+    background-color: #c2f1c8 !important;
+    color: #000 !important;
+  }
+  
+  .negative-bg {
+    background-color: #f1c2c2 !important;
+    color: #000 !important;
+  }
+  
+  /* ===================== ICONS ===================== */
+  
+  .expand-icon,
+  .table-arrow-icon {
+    color: #0554ef;
+    cursor: pointer;
+  }
+  
+  .expand-img {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    margin-left: 8px;
+  }
+  
+  /* ===================== EXPAND ICON WRAPPER ===================== */
+  
+  .expand-wrapper {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+  }
+  
+  /* ===================== LOADERS ===================== */
+  
+  .layer-overlay,
+  .page-loading-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.55);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+  }
+  
+  .layer-spinner {
+    width: 60px;
+    height: 60px;
+    border: 6px solid rgba(255, 255, 255, 0.3);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+  
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  
+  /* ===================== UTILITIES ===================== */
+  
+  .clickable {
+    cursor: pointer;
+  }
+  
+  .divBold {
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+  
+  .spanalign {
+    display: flex !important;
+    justify-content: space-between !important;
+  }
+  
+  .sg-header-flex {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 0 6px;
+  
+  }
+  
+  // .top-totals tr:last-child td {
+  //   border-bottom: 1px solid #0554ef;
+  // }
+  
+  /* Ensure divider spans under sticky first column as well */
+  // .top-totals tr:last-child td:first-child {
+  //   border-bottom: 1px solid #0554ef;
+  // }
+  
+  .main-head {
+    font-weight: 700 !important;
+    text-transform: capitalize !important;
+  }

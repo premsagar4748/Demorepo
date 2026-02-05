@@ -1,0 +1,299 @@
+<div class="report-bar mx-0 d-flex">
+<div class="filter-dropdowns" #filterRoot (scroll)="getScrollPosition($event)" >
+
+    <!-- ================= STORE ================= -->
+   <div class="dropdown filter-item" >
+            <button class="dropdown-toggle" id="stores" (click)="togglePopover(0 , $event)">Stores ( {{storecount}}
+                {{storedisplayname}} )
+                <span class="arrow"></span></button>
+            <app-stores
+            
+                [ngStyle]="{'display' : activePopover == 0 ? 'block' : 'none','position' : activePopover == 0 ? 'fixed' : null,'z-index': activePopover == 0 ? '1050' : null}"
+                [storesFilterData]="storesFilterData" (StoresData)="StoresData($event)"></app-stores>
+        </div>
+
+
+    <!-- ================= GROUPINGS ================= -->
+    <div class="dropdown filter-item">
+        <button class="dropdown-toggle" (click)="togglePopover(1, $event)">
+            Groupings
+            <span *ngIf="selectedDataGrouping.length > 0">
+                ({{
+                    selectedDataGrouping.length === 0
+                      ? 'Selected'
+                      : selectedDataGrouping.length === 1
+                        ? selectedDataGrouping[0].ARG_LABEL
+                        : 'Selected ' + selectedDataGrouping.length 
+                  }})
+            </span>
+            <!-- <span class="arrow">▼</span> -->
+        </button>
+        
+
+        <div class="reportstores-card my-2 popover-card" *ngIf="activePopover === 1" [style.margin-left.px]="scrollPosition*-1">
+            <div class="stores-b d-flex flex-column ps-0">
+                <div class="stores-wrapper flex-grow-1 d-flex flex-column">
+                    <div class="allstores text-start">
+                        <p>Choose up to 2 Groupings</p>
+                    </div>
+
+                    <div class="store-columns flex-grow-1">
+                        <button class="btn btn-outline-primary store-button"
+                            *ngFor="let grp of GroupingData"
+                            (click)="SelectGroping(grp)"
+                            [class.active]="isGroupingSelected(grp)">
+                            {{ grp.ARG_LABEL }}
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+   <!-- ================= TIME FRAME ================= -->
+ <div class="dropdown filter-item">
+
+     <button class="dropdown-toggle" (click)="togglePopover(2, $event)">
+                <span> {{displaytime}}</span>
+                <span class="arrow"></span></button>
+            <div class="timeframe" *ngIf="activePopover === 2" [style.margin-left.px]="scrollPosition*-1">
+                <app-date-range-picker [Dates]="Dates" (updatedDates)="updatedDates($event)"></app-date-range-picker>
+            </div>
+
+<!--  <button class="dropdown-toggle" (click)="togglePopover(2, $event)">
+    Time Frame ({{ DateType }})
+  </button>
+
+  <div class="timeframe popover-card" *ngIf="activePopover === 2">
+    <div class="date-filter-card mt-2">
+
+      <button class="outline-button"
+              (click)="SetDates('MTD')"
+              [class.active]="DateType === 'MTD'">
+        MTD
+      </button>
+
+      <button class="outline-button"
+              (click)="SetDates('YTD')"
+              [class.active]="DateType === 'YTD'">
+        YTD
+      </button>
+
+      <button class="outline-button"
+              (click)="SetDates('PYTD')"
+              [class.active]="DateType === 'PYTD'">
+        PYTD
+      </button>
+
+      <button class="outline-button"
+              (click)="SetDates('LM')"
+              [class.active]="DateType === 'LM'">
+        Last Month
+      </button>
+
+      <button class="outline-button"
+              (click)="SetDates('SMPY')"
+              [class.active]="DateType === 'SMPY'">
+        Same Month PY
+      </button>
+
+      <button
+  class="outline-button custom-btn"
+  (click)="openCustomCalendar(customPicker); SetDates('C')"[class.active]="DateType === 'C'">
+
+  <ng-container *ngIf="DateType === 'C' && FromDate && ToDate; else showCustom">
+    {{ dateTypeLabel }}
+  </ng-container>
+
+  <ng-template #showCustom>
+    Custom Date
+    <i class="fa solid fa-calendar-days calendar-icon"></i>
+  </ng-template>
+
+</button>
+
+    </div>
+
+                <input
+                type="text"
+                bsDaterangepicker
+                #customPicker="bsDaterangepicker"
+                class="hidden-calendar-input"
+                [maxDate]="maxDate"
+                (bsValueChange)="dateRangeCreated($event)"
+                />
+  </div> -->
+</div>
+
+
+
+    <!-- ================= DEPARTMENT ================= -->
+    <div class="dropdown filter-item">
+        <button class="dropdown-toggle" (click)="togglePopover(3, $event)">
+            Department
+            <span *ngIf="department.length > 0">( Selected {{ department.length }} )</span>
+            <!-- <span class="arrow">▼</span> -->
+        </button>
+
+        <div class="reportstores-card my-2 popover-card" *ngIf="activePopover === 3" [style.margin-left.px]="scrollPosition*-1">
+            <div class="stores-b d-flex flex-column ps-0">
+                <div class="stores-wrapper flex-grow-1 d-flex flex-column">
+
+                    <div class="store-columns flex-grow-1">
+                        <button class="btn btn-outline-primary store-button"
+                                (click)="multipleorsingle('Dept','Service')"
+                                [class.active]="department.includes('Service')">
+                            Service
+                        </button>
+
+                        <button class="btn btn-outline-primary store-button"
+                                (click)="multipleorsingle('Dept','Parts')"
+                                [class.active]="department.includes('Parts')">
+                            Parts
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+        <!-- ================= SALE TYPE ================= -->
+        <div class="dropdown filter-item">
+        <button class="dropdown-toggle" (click)="togglePopover(4, $event)">
+            Sale Type
+            <span *ngIf="saleTypeCount > 0">( Selected {{ saleTypeCount }})</span>
+        </button>
+
+        <div class="reportstores-card my-2 popover-card" *ngIf="activePopover === 4" [style.margin-left.px]="scrollPosition*-1">
+            <div class="stores-b d-flex flex-column ps-0">
+            <div class="stores-wrapper flex-grow-1 d-flex flex-column">
+                <div class="store-columns flex-grow-1">
+
+                <button class="btn btn-outline-primary store-button"
+                        (click)="multipleorsingle('PT','R')"
+                        [class.active]="isPartSaleActive('R')"
+                        [disabled]="!department.includes('Parts')">
+                    Retail
+                </button>
+
+                <button class="btn btn-outline-primary store-button"
+                        (click)="multipleorsingle('PT','W')"
+                        [class.active]="isPartSaleActive('W')"
+                        [disabled]="!department.includes('Parts')">
+                    Wholesale
+                </button>
+
+                <button class="btn btn-outline-primary store-button"
+                        (click)="multipleorsingle('LT','C')"
+                        [class.active]="isServiceSaleActive('C')"
+                        [disabled]="!department.includes('Service')">
+                    Customer Pay
+                </button>
+
+                <button class="btn btn-outline-primary store-button"
+                        (click)="multipleorsingle('LT','T')"
+                        [class.active]="isServiceSaleActive('T')"
+                        [disabled]="!department.includes('Service')">
+                    Warranty
+                </button>
+
+                <button class="btn btn-outline-primary store-button"
+                        (click)="multipleorsingle('LT','I')"
+                        [class.active]="isServiceSaleActive('I')"
+                        [disabled]="!department.includes('Service')">
+                    Internal
+                </button>
+
+                </div>
+            </div>
+            </div>
+        </div>
+        </div>
+
+
+    <!-- ================= PARTS SOURCE ================= -->
+<div class="dropdown filter-item">
+    <button class="dropdown-toggle" (click)="togglePopover(5, $event)">
+        Parts Source
+        <span *ngIf="visualPartsSelected.length > 0">( Selected {{ visualPartsSelected.length }})</span>
+    </button>
+
+    <div class="reportstores-card my-2 popover-card" *ngIf="activePopover === 5" [style.margin-left.px]="scrollPosition*-1">
+        <div class="stores-b d-flex flex-column ps-0">
+            <div class="stores-wrapper flex-grow-1 d-flex flex-column">
+                <div class="store-columns flex-grow-1">
+
+                    <button class="btn btn-outline-primary store-button"
+                            (click)="handlePartsSourceClick('All')"
+                            [class.active]="isVisualSelected('All')">
+                        All
+                    </button>
+
+                    <button class="btn btn-outline-primary store-button"
+                            (click)="handlePartsSourceClick('N')"
+                            [class.active]="isVisualSelected('N')">
+                        Without Bulk & Tire
+                    </button>
+
+                    <button class="btn btn-outline-primary store-button"
+                            (click)="handlePartsSourceClick('B')"
+                            [class.active]="isVisualSelected('B')">
+                        Bulk
+                    </button>
+
+                    <button class="btn btn-outline-primary store-button"
+                            (click)="handlePartsSourceClick('T')"
+                            [class.active]="isVisualSelected('T')">
+                        Tire
+                    </button>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+    <!-- ================= REPORT TOTALS ================= -->
+    <div class="dropdown filter-item">
+        <button class="dropdown-toggle" (click)="togglePopover(6, $event)">
+            Report Totals ({{ toporbottom=='T' ? 'Top' : 'Bottom' }})
+            <!-- <span class="arrow">▼</span> -->
+        </button>
+
+        <div class="reportstores-card my-2 popover-card" *ngIf="activePopover === 6" [style.margin-left.px]="scrollPosition*-1">
+            <div class="stores-b d-flex flex-column ps-0">
+                <div class="stores-wrapper flex-grow-1 d-flex flex-column">
+
+                    <div class="store-columns flex-grow-1">
+
+                        <button class="btn btn-outline-primary store-button"
+                                (click)="toporbottom='T'"
+                                [class.active]="toporbottom=='T'">Top</button>
+
+                        <button class="btn btn-outline-primary store-button"
+                                (click)="toporbottom='B'"
+                                [class.active]="toporbottom=='B'">Bottom</button>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- ================= APPLY BUTTON ================= -->
+   
+
+</div>
+&nbsp;&nbsp;&nbsp;
+ <div class="dropdown ">
+        <button class="apply-button" (click)="viewreport()">
+            <span>Apply</span>
+        </button>
+    </div>
+</div>

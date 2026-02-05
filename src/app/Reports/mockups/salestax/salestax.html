@@ -1,0 +1,109 @@
+<main>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="d-flex align-items-center justify-content-between pb-2" style="pointer-events: none;">
+                    <div class="filter-dropdowns d-flex align-items-center">
+                        <div class="dropdown">
+                            <button class="dropdown-toggle" (click)="togglePopover(0)">Stores ( 5
+                                Western Acura )
+                                <span class="arrow"></span></button>
+                            <app-stores [ngStyle]="{'display' : activePopover === 0 ? 'block' : 'none'}"
+                                [storesFilterData]="storesFilterData" (StoresData)="StoresData($event)"></app-stores>
+                        </div>
+                        <div class="date-filter-card d-flex align-items-center justify-content-start ">
+                            <div class="open-calendar position-relative">
+                                <input type="text" placeholder="Select Year" value="January/2026"
+                                    class="form-control year-input" />
+                            </div>
+                        </div>
+                        <button class="apply-button">
+                            Apply
+                        </button>
+                    </div>
+                </div>
+
+
+                <div class="performance-scorecard table-responsive srtbl">
+                    <table class="table mb-0" style="background-color: #c6dbff;">
+                        <thead>
+                            <tr>
+                                <th  colspan="2" class="text-center"></th>
+                                <th class="text-start" style="border-right: 1px solid #e0e1e2;">Store Name</th>
+                                <th class="text-start" style="border-right: 1px solid #e0e1e2;">Status</th>
+                                <th class="text-start" style="border-right: 1px solid #e0e1e2;">Deal Type</th>
+                                <th class="text-start" style="border-right: 1px solid #e0e1e2;">Stock Type</th>
+                                <th class="text-start" style="border-right: 1px solid #e0e1e2;">Contract Date</th>
+                                <th class="text-start" style="border-right: 1px solid #e0e1e2;">Final Accounting Date</th>
+                                <th class="text-start" style="border-right: 1px solid #e0e1e2;">Deal #</th>
+                                <th class="text-start" style="border-right: 1px solid #e0e1e2;">Stock #</th>
+                                <th class="text-start" style="border-right: 1px solid #e0e1e2;">Customer</th>
+                                <th class="text-start" style="border-right: 1px solid #e0e1e2;">Buyer Street Address</th>
+                                <th class="text-start" style="border-right: 1px solid #e0e1e2;">Buyer City</th>
+                                <th class="text-start" style="border-right: 1px solid #e0e1e2;">Buyer State</th>
+                                <th class="text-end" style="border-right: 1px solid #e0e1e2;">Buyer Zip Code</th>
+                                <th class="text-start" style="border-right: 1px solid #e0e1e2;">Payment Type</th>
+                                <th class="text-start" style="border-right: 1px solid #e0e1e2;">Taxable CCR</th>
+                                <th class="text-start" style="border-right: 1px solid #e0e1e2;">Journal</th>
+                                <th class="text-end" style="border-right: 1px solid #e0e1e2;">Sale Amt</th>
+                                <th class="text-end" style="border-right: 1px solid #e0e1e2;">Doc Fees</th>
+                                <th class="text-end" style="border-right: 1px solid #e0e1e2;">Total Taxable</th>
+                                <th class="text-end" style="border-right: 1px solid #e0e1e2;">Rate</th>
+                                <th  class="text-end" style="border-right: 1px solid #e0e1e2;">Tax From 324</th>
+                                <th class="text-end" style="border-right: 1px solid #e0e1e2;">7.25%</th>
+                                <th  class="text-end" class="text-end" style="border-right: 1px solid #e0e1e2;">District Tax</th>
+                                <th class="text-end" style="border-right: 1px solid #e0e1e2;">Diff</th>
+                                <th class="text-end" style="border-right: 1px solid #e0e1e2;">Diff 9.750%</th>
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let row of salestaxdata">
+                                <td colspan="2"></td>
+                                <td class="text-start" style="border-right:1px solid #e0e1e2;">{{ row.Store }}</td>
+                                <td class="text-start" style="border-right:1px solid #e0e1e2;">{{ row.Status }}</td>
+                                <td class="text-start" style="border-right:1px solid #e0e1e2;">{{ row['Deal Type'] }}</td>
+                                <td class="text-start" style="border-right:1px solid #e0e1e2;">{{ row['Stock Type']}}</td>
+                                <td class="text-start" style="border-right:1px solid #e0e1e2;">{{ row['Contract Date'] | date:'MM.dd.yyyy'
+                                    }}</td>
+                                <td class="text-start" style="border-right:1px solid #e0e1e2;">{{ row['Final accounting date'] |
+                                    date:'MM.dd.yyyy' }}</td>
+                                <td class="text-start" style="border-right:1px solid #e0e1e2;">{{ row['Deal Number']}}</td>
+                                <td class="text-start" style="border-right:1px solid #e0e1e2;">{{ row['Stock#'] }}</td>
+                                <td class="text-start" style="border-right:1px solid #e0e1e2;">{{ row.Customer }}</td>
+                                <td class="text-start" style="border-right:1px solid #e0e1e2;">{{ row['Buyer Street Address']}}</td>
+                                <td class="text-start" style="border-right:1px solid #e0e1e2;">{{ row['Buyer City']}}</td>
+                                <td class="text-start" style="border-right:1px solid #e0e1e2;">{{ row['Buyer State']}}</td>
+                                <td class="text-end" style="border-right:1px solid #e0e1e2;">{{ row['Buyer Zip Code']}}</td>
+                                <td class="text-start" style="border-right:1px solid #e0e1e2;">{{ row['Payment Type']}}</td>
+                                <td class="text-end" style="border-right:1px solid #e0e1e2;">{{ row['Taxable
+                                    CCR']|currency:'USD':'symbol':'1.2-2'}}</td>
+                                <td class="text-start" style="border-right:1px solid #e0e1e2;">{{ row['Jrn.'] }}</td>
+                                <td class="text-end" style="border-right:1px solid #e0e1e2;">{{ row['SALE
+                                    AMT']|currency:'USD':'symbol':'1.2-2'}}</td>
+                                <td class="text-end"style="border-right:1px solid #e0e1e2;">{{ row['DOC FEES']}}</td>
+                                <td class="text-end" style="border-right:1px solid #e0e1e2;">{{ row['TOTAL TAXABLE']|
+                                    currency:'USD':'symbol':'1.2-2'}}</td>
+                                <td class="text-end" style="border-right:1px solid #e0e1e2;">{{ row['RATE'] |
+                                    number:'1.3-3'}}%</td>
+                                <td class="text-end" style="border-right:1px solid #e0e1e2;">{{ row['TAX FROM 324']|
+                                    currency:'USD':'symbol':'1.2-2'}}</td>
+                                <td style="border-right:1px solid #e0e1e2;">{{ row['7.25%']}}</td>
+                                <td class="text-end" style="border-right:1px solid #e0e1e2;">{{ row['DISTRICT TAX'] |
+                                    currency:'USD':'symbol':'1.2-2'}}</td>
+                                <td class="text-end" style="border-right:1px solid #e0e1e2;">{{ row['DIFF'] |
+                                    currency:'USD':'symbol':'1.2-2'}}</td>
+                                <td class="text-end" style="border-right:1px solid #e0e1e2;">{{ row['DIFF 9.750%'] |
+                                    currency:'USD':'symbol':'1.2-2'}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                </div>
+
+
+
+            </div>
+        </div>
+    </div>
+</main>

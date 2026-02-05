@@ -1,0 +1,554 @@
+<ngx-spinner bdColor="rgba(0, 0, 0, 0.8)" size="medium" color="#fff" type="ball-clip-rotate" [fullScreen]="true">
+    <p style="color: white"> Loading.. </p>
+</ngx-spinner>
+
+<!-- ================== FILTER BAR ================== -->
+<main>
+  <div class="container-fluid">
+
+    <div class="report-bar">
+      <div class="filter-dropdowns">
+  <div class="dropdown">
+                    <button class="dropdown-toggle" (click)="togglePopover(0)">Stores ( {{storecount}}
+                        {{storedisplayname}} )
+                        <span class="arrow"></span></button>
+                    <app-stores [ngStyle]="{'display' : activePopover === 0 ? 'block' : 'none'}" [storesFilterData]="storesFilterData"
+                        (StoresData)="StoresData($event)"></app-stores>
+                </div>
+
+        <!-- ========== People Dropdown  ========== -->
+        <div class="dropdown d-none" >
+          <button
+            class="dropdown-toggle"
+            (click)="togglePopover(4)"
+            title="{{ selectedFiManagersname }}"
+          >
+            People:
+            <span>
+              {{
+                selectedFiManagersvalues.length === 1
+                  ? selectedFiManagersname
+                  : (selectedFiManagersvalues.length === 0
+                      ? 'Select'
+                      : 'Selected')
+              }}
+              <span *ngIf="selectedFiManagersvalues.length > 1">
+                ({{ selectedFiManagersvalues.length }})
+              </span>
+            </span>
+            <span class="arrow"></span>
+          </button>
+
+          
+          <div class="reportstores-card my-2" *ngIf="activePopover === 4">
+            <div class="stores d-flex flex-column ps-0">
+              <div class="stores-wrapper flex-grow-1 d-flex flex-column">
+
+                <!-- Select / Clear all -->
+                <div class="allstores text-start">
+                  <a
+                    class="text-primary text-decoration-none cursor-pointer me-2"
+                    (click)="employees('AllFM', 0)"
+                  >
+                    Select All
+                  </a>
+                  |
+                  <a
+                    class="text-primary text-decoration-none cursor-pointer ms-2"
+                    (click)="employees('AllFM', 1)"
+                  >
+                    Clear All
+                  </a>
+                </div>
+
+                <!-- Manager pills -->
+                <div class="store-columns flex-grow-1">
+                  <ng-container *ngIf="activePopover === 4">
+                    <ng-container *ngFor="let fm of financeManager; let i = index">
+                      <button
+                        class="btn btn-outline-primary store-button"
+                        (click)="employees('FM', fm.FiId, fm.FiName)"
+                        [ngClass]="{
+                          active: selectedFiManagersvalues.indexOf(fm.FiId) >= 0,
+                          inactive: selectedFiManagersvalues.indexOf(fm.FiId) < 0
+                        }"
+                       
+                      >
+                        <span ngbTooltip="{{fm.FiName}}"> {{fm.FiName == 'unknown' ? fm.FiId : fm.FiName}}</span>
+                      </button>
+                    </ng-container>
+                  </ng-container>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ========== Age Dropdown  ========== -->
+        <div class="dropdown">
+          <button class="dropdown-toggle" (click)="togglePopover(3)">
+            Age:
+            <span *ngIf="AgeFrom != 0 || AgeTo != 0; else enterAgeTpl">
+              {{ AgeFrom || 0 }} - {{ AgeTo || 0 }}
+            </span>
+            <ng-template #enterAgeTpl>
+              Enter Age
+            </ng-template>
+            <span class="arrow"></span>
+          </button>
+
+          <div class="timeframe" *ngIf="activePopover === 3">
+            <div class="date-filter-card d-flex">
+
+              <div class="me-3">
+                <label class="mb-1" style="color: #000 !important;">From Age:</label>
+                <input
+                  type="text"
+                  [(ngModel)]="AgeFrom"
+                  class="target-txt-cav"
+                  (keypress)="keyPressNumbers($event)"
+                />
+              </div>
+
+              <div>
+                <label class="mb-1" style="color: #000 !important;">To Age:</label>
+                <input
+                  type="text"
+                  [(ngModel)]="AgeTo"
+                  class="target-txt-cav"
+                  (keypress)="keyPressNumbers($event)"
+                />
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+        <!-- ========== Apply Button ========== -->
+        <div class="dropdown">
+          <button class="apply-button" (click)="viewreport()">
+            <span>Apply</span>
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+
+    <!-- Store Summary Tabs – C Style -->
+<div class="container-fluid py-0" id="StoreSummary">
+  <div class="tabs-wrapper">
+
+    <ul class="c-tabs">
+
+      <li *ngFor="let ESTtype of ReceivablesData; let i = index"
+          class="c-tab-item"
+          [ngClass]="{
+            'c-active': selectedreceviabe.url === ESTtype.url,
+            'c-inactive': selectedreceviabe.url !== ESTtype.url,
+            'no-pointer': i >= 13
+          }"
+          (click)="i < 13 ? Getfloorplansdata(ESTtype) : null">
+
+        {{ ESTtype.Liabilities }}
+
+      </li>
+
+    </ul>
+
+  </div>
+</div>
+
+
+
+
+<div class="d-flex justify-content-between" *ngIf="FloorPlanData?.length > 0">
+  
+ 
+  <div class="Benchmark-tbl mt-4">
+    <table class="table mb-0">
+      <thead style="text-transform: uppercase;">
+        <tr>
+          <th colspan="5">&nbsp;</th>
+          <th>Total</th>
+          <th>0-5</th>
+          <th>6-10</th>
+          <th>11-15</th>
+          <th>15+</th>
+        </tr>
+      </thead>
+
+      <tbody *ngIf="FloorPlanData?.length > 0">
+        <tr>
+          <td colspan="5">{{ selectedreceviabe.title }} Aging</td>
+
+          <!-- TOTAL -->
+          <td [ngClass]="{ negative: !inTheGreen(FloorPlanData[0]?.AgeData?.[0]?.TOTAL) }">
+
+              {{ formatBalancetozero(FloorPlanData[0]?.AgeData?.[0]?.TOTAL) }}
+            <!-- <span class="d-flex justify-content-between">
+              {{ FloorPlanData[0]?.AgeData?.[0]?.TOTAL ? '$' : '' }}
+              <span>
+                {{
+                  FloorPlanData[0]?.AgeData?.[0]?.TOTAL != null
+                    ? (FloorPlanData[0].AgeData[0].TOTAL | number:'1.0-0')
+                    : '-'
+                }}
+              </span>
+            </span> -->
+          </td>
+
+          <!-- 0–5 -->
+          <td [ngClass]="{ negative: !inTheGreen(FloorPlanData[0]?.AgeData?.[0]?.D1) }">
+               {{ formatBalancetozero(FloorPlanData[0]?.AgeData?.[0]?.D1) }}
+            <!-- <span class="d-flex justify-content-between">
+              {{ FloorPlanData[0]?.AgeData?.[0]?.D1 ? '$' : '' }}
+              <span>
+                {{
+                  FloorPlanData[0]?.AgeData?.[0]?.D1 != null
+                    ? (FloorPlanData[0].AgeData[0].D1 | number:'1.0-0')
+                    : '-'
+                }}
+              </span>
+            </span> -->
+          </td>
+
+          <!-- 6–10 -->
+          <td [ngClass]="{ negative: !inTheGreen(FloorPlanData[0]?.AgeData?.[0]?.D2) }">
+            {{ formatBalancetozero(FloorPlanData[0]?.AgeData?.[0]?.D2) }}
+            <!-- <span class="d-flex justify-content-between">
+              {{ FloorPlanData[0]?.AgeData?.[0]?.D2 ? '$' : '' }}
+              <span>
+                {{
+                  FloorPlanData[0]?.AgeData?.[0]?.D2 != null
+                    ? (FloorPlanData[0].AgeData[0].D2 | number:'1.0-0')
+                    : '-'
+                }}
+              </span>
+            </span> -->
+          </td>
+
+          <!-- 11–15 -->
+          <td [ngClass]="{ negative: !inTheGreen(FloorPlanData[0]?.AgeData?.[0]?.D3) }">
+            {{ formatBalancetozero(FloorPlanData[0]?.AgeData?.[0]?.D3) }}
+            <!-- <span class="d-flex justify-content-between">
+              {{ FloorPlanData[0]?.AgeData?.[0]?.D3 ? '$' : '' }}
+              <span>
+                {{
+                  FloorPlanData[0]?.AgeData?.[0]?.D3 != null
+                    ? (FloorPlanData[0].AgeData[0].D3 | number:'1.0-0')
+                    : '-'
+                }}
+              </span>
+            </span> -->
+          </td>
+
+          <!-- 15+ -->
+          <td [ngClass]="{ negative: !inTheGreen(FloorPlanData[0]?.AgeData?.[0]?.D4) }">
+            {{ formatBalancetozero(FloorPlanData[0]?.AgeData?.[0]?.D4) }}
+            <!-- <span class="d-flex justify-content-between">
+              {{ FloorPlanData[0]?.AgeData?.[0]?.D4 ? '$' : '' }}
+              <span>
+                {{
+                  FloorPlanData[0]?.AgeData?.[0]?.D4 != null
+                    ? (FloorPlanData[0].AgeData[0].D4 | number:'1.0-0')
+                    : '-'
+                }}
+              </span>
+            </span> -->
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Right-side Info -->
+  <div class="fw-bold mt-4" style="color:white;">
+    <div>As of {{ FloorPlanData[0]?.AgeData?.[0]?.D5 | timeconversion }}</div>
+    <div>Count: {{ FloorPlanData[0]?.AgeData?.[0]?.D6 || '-' }}</div>
+  </div>
+
+</div>
+
+ 
+<div class="det_cont mt-4">
+  <table class="table mb-0">
+
+    <!-- Header -->
+    <thead style="text-transform: uppercase;">
+      <tr>
+        <!-- <th *ngIf="Role=='Super Admin' || userid=='8'">
+          <input type="checkbox"
+                 [checked]="check"
+                 id="symbol"
+                 (change)="collectHidevalues($event,'',confirm,'multi','')">
+          Hide
+        </th>
+
+        <th (click)="openComments()" style="cursor:pointer;">
+          Notes
+          <i class="fa fa-eye" *ngIf="!commentsVisibility"></i>
+          <i class="fa-solid fa-eye-slash" *ngIf="commentsVisibility"></i>
+        </th> -->
+
+        <th (click)="sort('AGE')" class="cursor">Age</th>
+        <th (click)="sort('FundedDate')" class="cursor">Date</th>
+        <th (click)="sort('AccountDesc2')" class="cursor">Account</th>
+        <th (click)="sort('Control')" class="cursor">Control</th>
+        <th (click)="sort('control2')" class="cursor">Control 2</th>
+
+        <th (click)="sort('Balance')" class="cursor">Balance</th>
+
+        <th (click)="sort('CustomerName')" class="cursor">Customer</th>
+
+        <th (click)="sort('CustomerNumber')" class="cursor">Number</th>
+        <th (click)="sort('SaleDate')" style="cursor: pointer;">Sale Date</th>
+         <th (click)="sort('SaleAge')" style="cursor: pointer;">Sale Age</th>
+
+
+
+        <th *ngIf="StoreVal.toString().indexOf(',') > 0"
+            (click)="sort('store')"
+            class="cursor">
+          Store
+        </th>
+
+        <th (click)="sort('StockNo')" class="cursor">Stock #</th>
+        <th (click)="sort('DealNo')" class="cursor">Deal #</th>
+        <th (click)="sort('Stage')" class="cursor">Stage</th>
+
+        <th (click)="sort('FIManager')" class="cursor">F&I Mgr</th>
+        <th (click)="sort('SaleType')" class="cursor">New/Used</th>
+        <th (click)="sort('DealType')" class="cursor">Type</th>
+
+        <th (click)="sort('DealStatus')" class="cursor">Status</th>
+        <th (click)="sort('BankName')" class="cursor">Bank Name</th>
+
+        <th (click)="sort('VehicleYear')" class="cursor">Year</th>
+        <th (click)="sort('VehicleMake')" class="cursor">Make</th>
+        <th (click)="sort('VehicleModel')" class="cursor">Model</th>
+      </tr>
+    </thead>
+
+    <!-- Rows -->
+    <tbody *ngFor="let fp of FloorPlanData | filter:QISearchName; let i=index">
+      <tr [ngClass]="{ even: i % 2 === 0, odd: i % 2 !== 0 }">
+
+        <!-- <td *ngIf="Role=='Super Admin' || userid=='8'">
+          <input type="checkbox"
+                 id="symbols"
+                 [checked]="fp.check"
+                 (change)="collectHidevalues($event,fp,confirm,'single',fp.StockNo)">
+        </td>
+
+        <td>
+          <img *ngIf="fp.NotesStatus === 'N'"
+               src="/images/Actionblack.png"
+               (click)="addNotes(fp)"
+               style="cursor:pointer;"
+               data-bs-toggle="modal"
+               data-bs-target="#payplan">
+
+          <img *ngIf="fp.NotesStatus === 'Y'"
+               src="/images/notes_unread.png"
+               (click)="addNotes(fp)"
+               style="cursor:pointer;"
+               data-bs-toggle="modal"
+               data-bs-target="#payplan">
+        </td> -->
+
+        <td class="aligncenter">{{ fp.AGE || '-' }}</td>
+        <td class="aligncenter">
+          {{ fp.FundedDate ? (fp.FundedDate | date:'MM.dd.yyyy') : '-' }}
+        </td>
+        <td class="aligncenter">{{ fp.AccountDesc2 || '-' }}</td>
+        <td class="aligncenter">{{ fp.Control || '-' }}</td>
+        <td class="aligncenter">{{ fp.control2 || '-' }}</td>
+
+        <td style="text-align: right;"
+            [ngClass]="{ negative: !inTheGreen(fp.Balance) }">
+          <!-- {{ fp.Balance ? ('$' + (fp.Balance | number:'1.2-2')) : '-' }} -->
+          {{ formatBalance(fp.Balance) }}
+        </td>
+
+        <td class="text-start">{{ fp.CustomerName || '-' }}</td>
+         
+        <td class="aligncenter">{{ fp.CustomerNumber || '-' }}</td>
+        <td class="aligncenter">
+                            {{ fp.SaleDate ? (fp.SaleDate | date:'MM.dd.yyyy') : '-' }}
+                        </td>
+
+                        <td class="aligncenter">
+                            {{ fp.SaleAge || '-' }}
+                        </td>
+
+        <td *ngIf="StoreVal.toString().indexOf(',') > 0"
+            class="text-start">
+          {{ fp.store || '-' }}
+        </td>
+
+        <td class="text-start">{{ fp.StockNo || '-' }}</td>
+
+        <td class="aligncenter popuppointer"
+            (click)="viewDeal(fp)">
+          {{ fp.DealNo || '-' }}
+        </td>
+
+        <td class="text-start">{{ fp.Stage || '-' }}</td>
+        <td class="text-start">{{ fp.FIManager || '-' }}</td>
+
+        <td class="aligncenter">{{ fp.DealType || '-' }}</td>
+        <td class="aligncenter">{{ fp.SaleType || '-' }}</td>
+        <td class="aligncenter">{{ fp.DealStatus || '-' }}</td>
+        <td class="text-start">{{ fp.BankName || '-' }}</td>
+
+        <td class="aligncenter">{{ fp.VehicleYear || '-' }}</td>
+        <td class="text-start">{{ fp.VehicleMake || '-' }}</td>
+        <td class="text-start">{{ fp.VehicleModel || '-' }}</td>
+
+      </tr>
+
+      <!-- Notes Row -->
+      <tr *ngIf="fp.duplicateNotes && commentsVisibility">
+        <td colspan="30" class="ps-5">
+          <h6 class="fw-bold small">Notes</h6>
+
+          <div *ngFor="let notes of fp.duplicateNotes" class="ps-4">
+            {{ notes.NOTES || '-' }}
+          </div>
+
+          <div *ngIf="fp.duplicateNotes.length > 3" class="ps-4">
+            <a style="color:#337ab7; cursor:pointer;"
+               (click)="viewmoreAction(fp)">
+              {{ fp.Notesstate === '+' ? 'View More' : 'View Less' }}
+            </a>
+          </div>
+        </td>
+      </tr>
+
+    </tbody>
+
+    <!-- Sticky Total Row -->
+    <tbody style="position:sticky; bottom:0; background:#fff;">
+      <tr class="even fw-bold" *ngIf="FloorPlanTotalData?.length > 0">
+        <td colspan="5" class="text-end">Totals</td>
+        <td class="alignright"  [ngClass]="{ negative: !inTheGreen(FloorPlanTotalData[0].Balance)}">
+          {{ FloorPlanTotalData[0].Balance | currency:'USD':'symbol':'1.2-2' }}
+        </td>
+        <td colspan="20"></td>
+      </tr>
+    </tbody>
+
+    <!-- No Data -->
+    <tbody *ngIf="NoData">
+      <tr>
+        <td colspan="32" class="text-center">No Records Found</td>
+      </tr>
+    </tbody>
+
+  </table>
+</div>
+
+
+
+  </div>
+</main>
+
+
+ <ng-template #confirm let-modal>
+ <div class="recap position-relative">
+  <div class="modal-dialog-centered">
+    <div class="modal-content p-3" style="border-radius: 12px; border: 1px solid #2b91f0;">
+      
+      <!-- Header -->
+      <div class="d-flex justify-content-between align-items-center border-bottom pb-2 mb-2">
+        <h5 class="fw-bold m-0">Confirmation</h5>
+        <!-- <button type="button" class="btn-close" (click)="modal.dismiss(); oncloseone()"></button> -->
+      </div>
+
+      <!-- Body -->
+      <div class="text-center px-3">
+        <p class="mb-3 fs-6 text-secondary">
+        Do you want to hide the selected item(s)?
+        </p>
+      </div>
+
+      <!-- Footer -->
+      <div class="d-flex justify-content-end gap-2 pt-2 border-top mt-3 pt-3">
+        <button class="btn btn-primary px-4" (click)="hideAdd()">Save</button>
+        <button class="btn btn-outline-secondary px-4" (click)="modal.dismiss(); oncloseone()"  id="closeone">Cancel</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+</ng-template>
+
+<div class="modal fade" id="payplan" tabindex="-1" aria-labelledby="logoutLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" style="max-width: 700px;">
+    <div class="modal-content shadow-sm border-0" style="border-radius: 12px;">
+
+      <!-- Header -->
+      <div class="modal-header border-0 pb-0">
+        <h5 class="modal-title fw-semibold">
+          Notes
+          <span class="text-primary fw-normal fs-6 ms-2">
+            {{ selecteddata.StockNumner ? '#' + selecteddata.StockNumner : selecteddata.StockNumner }}
+          </span>
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" (click)="oncloseone()"></button>
+      </div>
+
+      <!-- Body -->
+      <div class="modal-body bg-light rounded-3 p-4" style="max-height: 70vh; overflow-y: auto;">
+
+        <!-- Notes Input -->
+        <div class="mb-3">
+          <label class="form-label fw-semibold">Add Note</label>
+          <textarea
+            class="form-control"
+            rows="3"
+            [(ngModel)]="notesStageText"
+            placeholder="Enter your notes here"
+            style="border-radius: 8px;"
+          ></textarea>
+        </div>
+
+        <!-- Stage Selector -->
+        <div class="mb-3">
+          <label class="form-label fw-semibold">Stage</label>
+          <select class="form-select" [(ngModel)]="notesStageValue" style="border-radius: 8px;">
+            <option selected disabled value="">Select Stage</option>
+            <option *ngFor="let s of notesstage" [value]="s.NS_ID">{{ s.NS_Text }}</option>
+          </select>
+        </div>
+
+        <!-- Extra Info -->
+        <div class="text-secondary small">
+          <div>Control: <span class="fw-medium text-dark">{{ selecteddata.Control }}</span></div>
+          <div>Post Date: <span class="fw-medium text-dark">{{ selecteddata.FundingDate | date: 'MM.dd.yyyy' }}</span></div>
+        </div>
+
+        <!-- Existing Notes -->
+        <div class="mt-3" *ngIf="selecteddata.Notes?.length > 0">
+          <h6 class="fw-semibold border-bottom pb-2">Previous Notes</h6>
+          <div class="p-2 bg-white rounded shadow-sm" style="max-height: 20vh; overflow-y: auto;">
+            <div *ngFor="let notes of selecteddata.Notes" class="py-1 border-bottom small text-dark">
+              {{ notes.NOTES || '-' }}
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Footer -->
+      <div class="modal-footer border-0 d-flex justify-content-center pt-0 pb-4">
+        <button class="btn btn-primary px-4" (click)="save()">Save</button>
+        <button class="btn btn-outline-secondary px-4" data-bs-dismiss="modal" (click)="oncloseone()"  id="close">Cancel</button>
+      </div>
+
+    </div>
+  </div>
+</div>

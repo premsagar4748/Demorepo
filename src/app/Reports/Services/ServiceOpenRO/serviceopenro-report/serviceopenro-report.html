@@ -1,0 +1,192 @@
+<div class="report-bar mx-0 d-flex">
+<div class="filter-dropdowns" (scroll)="getScrollPosition($event)">
+    <div class="dropdown filter-item">
+      <button class="dropdown-toggle" id="stores" (click)="togglePopover(0)">Stores ( {{storecount}}
+        {{storedisplayname}} )
+        <span class="arrow"></span></button>
+      <app-stores
+        [ngStyle]="{'display' : activePopover == 0 ? 'block' : 'none','position' : activePopover == 0 ? 'fixed' : null,'z-index': activePopover == 0 ? '1050' : null}"
+        [storesFilterData]="storesFilterData" (StoresData)="StoresData($event)"></app-stores>
+    </div>
+
+    <div class="dropdown">
+        <button class="dropdown-toggle" (click)="togglePopover(1)">Groupings ( Selected {{selectedGroups.length}}) <span
+                class="arrow"></span></button>
+        <div class="reportstores-card my-2" *ngIf="activePopover === 1" [style.margin-left.px]="scrollPosition*-1">
+
+            <div class="stores-b d-flex flex-column ps-0">
+                <div class="stores-wrapper flex-grow-1 d-flex flex-column">
+                    <div class="allstores text-start">
+                        <p> Choose up to 2 filters to group your data.</p>
+                    </div>
+                    <div class="store-columns flex-grow-1">
+                        @for(list of groupSettingList; track list;){
+                        <ng-container>
+                            <button class="btn btn-outline-primary store-button" (click)="clickGroups(list)"
+                                [class.active]="isSelectedGroups(list.ARG_ID)">{{ list.ARG_LABEL }}</button>
+                        </ng-container>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="dropdown">
+        <button class="dropdown-toggle" (click)="togglePopover(2)">Time Frame ({{DateType()}}) <span
+                class="arrow"></span></button>
+        <div class="timeframe" *ngIf="activePopover === 2" [style.margin-left.px]="scrollPosition*-1">
+            <div class="date-filter-card mt-2">
+                <div class="d-flex ">
+                    <button class="outline-button me-2" (click)="SetDates('ALL')" [class.active]="DateType() == 'ALL'"
+                        style="white-space: nowrap;padding: 0.5rem 1.5rem">All Open RO's</button>
+                    <button class="outline-button me-2" (click)="SetDates('3')" [class.active]="DateType() == '3'"
+                        style="white-space: nowrap; padding: 0.5rem 1.5rem;">< 3 Days</button>
+                    <button class="outline-button" (click)="SetDates('10')" [class.active]="DateType() == '10'"
+                        style="white-space: nowrap; padding: 0.5rem 1.5rem;">< 10 Days</button>
+                </div>
+                @if(DateType() == 'ALL'){
+                <!-- <hr> -->
+                <div class="dropdown cavender-dd">
+                    <!-- <h3 class="m-0 mt-1 p-0 pop">Age</h3> -->
+                    <ngx-slider [(value)]="AgeFrom" [(highValue)]="AgeTo" [options]="optionProx"></ngx-slider>
+                    <h2 style="text-align: center;font-size: .9rem; font-family: 'Roboto';">Age range between minimum to
+                        maximum</h2>
+
+                </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="dropdown d-none">
+        <button class="dropdown-toggle" (click)="togglePopover(3)">Department ( Selected {{selectedDep.length}}) <span
+                class="arrow"></span></button>
+        <div class="reportstores-card my-2" *ngIf="activePopover === 3" [style.margin-left.px]="scrollPosition*-1">
+            <div class="stores-b d-flex flex-column ps-0">
+                <div class="stores-wrapper flex-grow-1 d-flex flex-column">
+                    <div class="allstores text-start">
+                        <p> Select all that apply</p>
+                    </div>
+                    <div class="store-columns flex-grow-1">
+                        <ng-container>
+                            <button class="btn btn-outline-primary store-button" (click)="departmentClick('S')"
+                                [class.active]="selectedDep.includes('S')">Service</button>
+                            <button class="btn btn-outline-primary store-button" (click)="departmentClick('P')"
+                                [class.active]="selectedDep.includes('P')">Parts</button>
+                            <button class="btn btn-outline-primary store-button" (click)="departmentClick('D')"
+                                [class.active]="selectedDep.includes('D')" disabled>Details</button>
+                            <button class="btn btn-outline-primary store-button" (click)="departmentClick('Q')"
+                                [class.active]="selectedDep.includes('Q')" disabled>Quick Lube</button>
+                            <button class="btn btn-outline-primary store-button" (click)="departmentClick('B')"
+                                [class.active]="selectedDep.includes('B')" disabled>Body Shop</button>
+                        </ng-container>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="dropdown">
+        <button class="dropdown-toggle" (click)="togglePopover(4)">Pay Type ( Selected {{selectedPaytypes.length}}) <span
+                class="arrow"></span></button>
+        <div class="reportstores-card my-2" *ngIf="activePopover === 4" [style.margin-left.px]="scrollPosition*-1">
+            <div class="stores-b d-flex flex-column ps-0">
+                <div class="stores-wrapper flex-grow-1 d-flex flex-column">
+                    <div class="allstores text-start">
+                        <p> Select all that apply</p>
+                    </div>
+                    <div class="store-columns flex-grow-1">
+                        <ng-container>
+                            <button class="btn btn-outline-primary store-button" (click)="payTypeClick('C')"
+                                [class.active]="selectedPaytypes.includes('C')">Customer Pay</button>
+                            <button class="btn btn-outline-primary store-button" (click)="payTypeClick('W')"
+                                [class.active]="selectedPaytypes.includes('W')">Warranty</button>
+                            <button class="btn btn-outline-primary store-button" (click)="payTypeClick('I')"
+                                [class.active]="selectedPaytypes.includes('I')">Internal</button>
+                        </ng-container>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="dropdown">
+        <button class="dropdown-toggle" (click)="togglePopover(5)">RO Status ( Selected {{selectedRostatusList.length}}) <span
+                class="arrow"></span></button>
+        <div class="reportstores-card my-2" *ngIf="activePopover === 5" [style.margin-left.px]="scrollPosition*-1">
+            <div class="stores-b d-flex flex-column ps-0">
+                <div class="stores-wrapper flex-grow-1 d-flex flex-column">
+                    <div class="allstores text-start">
+                        <p> Select all that apply</p>
+                    </div>
+                    <div class="store-columns flex-grow-1">
+                        <ng-container>
+                            <button class="btn btn-outline-primary store-button" (click)="roStatusClick('ALL')"
+                                [class.active]="selectedRostatusList.includes('ALL')">All</button>
+                            <button class="btn btn-outline-primary store-button" (click)="roStatusClick('R')"
+                                [class.active]="selectedRostatusList.includes('R')">Ready To Post</button>
+                            <button class="btn btn-outline-primary store-button" (click)="roStatusClick('P')"
+                                [class.active]="selectedRostatusList.includes('P')">Pre - Invoiced</button>
+                        </ng-container>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="dropdown">
+        <button class="dropdown-toggle" (click)="togglePopover(6)">Inventory RO's ( Selected {{inventoryRoslist.length}}) <span
+                class="arrow"></span></button>
+        <div class="reportstores-card my-2" *ngIf="activePopover === 6" [style.margin-left.px]="scrollPosition*-1">
+            <div class="stores-b d-flex flex-column ps-0">
+                <div class="stores-wrapper flex-grow-1 d-flex flex-column">
+                    <div class="allstores text-start">
+                        <p> Select all that apply</p>
+                    </div>
+                    <div class="store-columns flex-grow-1">
+                        <ng-container>
+                            <button class="btn btn-outline-primary store-button" (click)="invRoClick('ALL')"
+                                [class.active]="inventoryRoslist.includes('ALL')">All</button>
+                            <button class="btn btn-outline-primary store-button" (click)="invRoClick('I')"
+                                [class.active]="inventoryRoslist.includes('I')">Inventory</button>
+                        </ng-container>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="dropdown">
+        <button class="dropdown-toggle" (click)="togglePopover(8)">Report Total ({{reportPosition == 'T'?
+            'Top':'Bottom'}}) <span class="arrow"></span></button>
+        <div class="reportstores-card my-2" *ngIf="activePopover === 8" [style.margin-left.px]="scrollPosition*-1">
+            <div class="stores-b d-flex flex-column ps-0">
+                <div class="stores-wrapper flex-grow-1 d-flex flex-column">
+                    <div class="allstores text-start">
+                        <p> Select One</p>
+                    </div>
+                    <div class="store-columns flex-grow-1">
+                        <ng-container>
+                            <button class="btn btn-outline-primary store-button" (click)="reportTotal('T')"
+                                [class.active]="reportPosition == 'T'">Top</button>
+                            <button class="btn btn-outline-primary store-button" (click)="reportTotal('B')"
+                                [class.active]="reportPosition == 'B'">Bottom</button>
+                        </ng-container>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="text-white d-flex align-items-center" style="white-space: nowrap;">
+        <label for="check">Top 5 RO's: </label>
+        <input type="checkbox" [checked]="top5()" (change)="onCheckbox($event)">
+    </div>
+
+   
+</div>&nbsp;&nbsp;&nbsp;
+ <div class="dropdown">
+        <button class="apply-button" (click)="applyClick()"><span>Apply</span></button>
+    </div>
+</div>

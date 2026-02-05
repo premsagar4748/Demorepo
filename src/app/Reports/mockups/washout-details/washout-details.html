@@ -1,0 +1,144 @@
+<div class="container-fluid d-flex justify-content-center align-items-center recap"
+    [ngStyle]="{'opacity': Opacity == 'Y' ? '.8' : '1' }" style="padding-top: 2vh;">
+    <div class=" gross-popup">
+        <div class="header d-flex align-items-center justify-content-between rounded">
+            <h5 class="title m-0 ms-2">
+                <img src="" alt=""> <span class="slash">// Washout Detail</span>
+            </h5>
+            <div class="search ms-auto pe-3">
+                <input type="text" class="form-control" placeholder="Search" 
+                    (ngModelChange)="filterData()">
+
+                <img src="images/Magnifer.svg" alt="">
+            </div>
+            <img src="images/Download.svg" (click)="Details_ExportAsXLSX()" class="img-fluid pe-3" alt=""
+                style="cursor: pointer;">
+            <a type="button" class="close-btn" (click)="close()"><i class="fa-solid fa-xmark"></i> </a>
+        </div>
+        <div class="content pt-2">
+            <div class="loading" *ngIf="spinnerLoader">
+                <div class="loader"></div>
+            </div>
+            <div class="d-block" id="FsDetails" #TABLE #table style="width: 100%;">
+                <div class="performance-scorecard" style="height: 70vh;">
+                    <table class="table table-borderless mb-0">
+                        <thead>
+                            <tr>
+                                <th class="text-start" style="border-radius: 10px 0 0 0;">Year</th>
+                                <th class="text-center">Make,Model</th>
+                                <th class="alignleft"><span>Last 6 of VIN</span></th>
+                                <th class="text-start" style="border-radius: 10px 0 0 0;">Washout Cycles</th>
+                                <th class="text-center">Front Gross</th>
+                                <th class="alignleft"><span>Back Gross:</span></th> 
+                                <th class="text-start" style="border-radius: 10px 0 0 0;">Total Gross</th>
+                                <th class="text-center">Trades</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                                <tr>
+                                    <td style="text-align: left !important;">
+                                        <span style="white-space: nowrap;">2025</span>
+                                    </td>
+                                    <td style="text-align: center !important; cursor: pointer; text-decoration: underline; color: #0554ef;">
+                                        <span style="white-space: nowrap;">GMC Chevrolet</span>
+                                    </td>
+                                    <td style="text-align: left !important;">
+                                        <span style="white-space: normal; display: block;">230302</span>
+                                    </td>
+                                    <td style="text-align: left !important;">
+                                        <span style="white-space: normal; display: block;">4</span>
+                                    </td>
+                                    <td style="text-align: end !important;width: 15%;">
+                                        <span class="d-flex justify-content-between">
+                                            $<span> $7,900 </span>
+                                        </span>
+                                    </td>
+                                      <td style="text-align: end !important;width: 15%;">
+                                        <span class="d-flex justify-content-between">
+                                            $<span> $7,900 </span>
+                                        </span>
+                                    </td>
+                                      <td style="text-align: end !important;width: 15%;">
+                                        <span class="d-flex justify-content-between">
+                                            $<span> $15,800 </span>
+                                        </span>
+                                    </td>
+                                     <td style="text-align: left !important;">
+                                        <span style="white-space: normal; display: block;">3</span>
+                                    </td>
+                                </tr>
+
+                                 <tr>
+                                    <td style="text-align: left !important;">
+                                        <span style="white-space: nowrap;">2025</span>
+                                    </td>
+                                    <td style="text-align: center !important; cursor: pointer; text-decoration: underline; color: #0554ef;">
+                                        <span style="white-space: nowrap;">GMC Cadillac</span>
+                                    </td>
+                                    <td style="text-align: left !important;">
+                                        <span style="white-space: normal; display: block;">109334</span>
+                                    </td>
+                                    <td style="text-align: left !important;">
+                                        <span style="white-space: normal; display: block;">5</span>
+                                    </td>
+                                    <td style="text-align: end !important;width: 15%;">
+                                        <span class="d-flex justify-content-between">
+                                            $<span> $9,950 </span>
+                                        </span>
+                                    </td>
+                                      <td style="text-align: end !important;width: 15%;">
+                                        <span class="d-flex justify-content-between">
+                                            $<span> $9,950 </span>
+                                        </span>
+                                    </td>
+                                      <td style="text-align: end !important;width: 15%;">
+                                        <span class="d-flex justify-content-between">
+                                            $<span> $19,900 </span>
+                                        </span>
+                                    </td>
+                                     <td style="text-align: left !important;">
+                                        <span style="white-space: normal; display: block;">5</span>
+                                    </td>
+                                </tr>
+
+                                 <tr>
+                                    <td style="text-align: left !important;">
+                                        <span style="white-space: nowrap;">2025</span>
+                                    </td>
+                                    <td style="text-align: center !important; cursor: pointer; text-decoration: underline; color: #0554ef;">
+                                        <span style="white-space: nowrap;">GMC Sierra</span>
+                                    </td>
+                                    <td style="text-align: left !important;">
+                                        <span style="white-space: normal; display: block;">203126</span>
+                                    </td>
+                                    <td style="text-align: left !important;">
+                                        <span style="white-space: normal; display: block;">7</span>
+                                    </td>
+                                    <td style="text-align: end !important;width: 15%;">
+                                        <span class="d-flex justify-content-between">
+                                            $<span> $12,350 </span>
+                                        </span>
+                                    </td>
+                                      <td style="text-align: end !important;width: 15%;">
+                                        <span class="d-flex justify-content-between">
+                                            $<span> $12,350 </span>
+                                        </span>
+                                    </td>
+                                      <td style="text-align: end !important;width: 15%;">
+                                        <span class="d-flex justify-content-between">
+                                            $<span> $24,700 </span>
+                                        </span>
+                                    </td>
+                                     <td style="text-align: left !important;">
+                                        <span style="white-space: normal; display: block;">4</span>
+                                    </td>
+                                </tr>
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

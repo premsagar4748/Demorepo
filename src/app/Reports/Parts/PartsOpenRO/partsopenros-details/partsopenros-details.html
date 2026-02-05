@@ -1,0 +1,142 @@
+
+<div class="gross-tbl-scroll" style="overflow-y: auto; max-height: 70vh;">
+    <table class="table table-borderless gross-tbl">
+        <thead class="sticky-top bg-white">
+            <!-- Top row -->
+            <tr>
+                <th colspan="7">
+                    <div class="d-flex align-items-center pagination">
+                        <img src="images/Excel_Export.png" class="img-fluid me-2" alt="" style="cursor:pointer;"
+                            (click)="downloadExcel()">
+                        <input class="form-control NR_search ms-auto" name="SearchName" [(ngModel)]="searchText"
+                            placeholder="Search" type="text" (ngModelChange)="onSearchChild()">
+                    </div>
+                </th>
+                <th colspan="5">Total</th>
+                <th colspan="5">Customer Pay</th>
+                <th colspan="5">Warranty</th>
+                <th colspan="5">Internal</th>
+                <th colspan="5">Counter Retail</th>
+                <th colspan="5">Wholesale</th>
+            </tr>
+
+            <!-- Column headers with sorting -->
+            <tr style="text-align: center;">
+                <th (click)="sortData('OpenDate')" style="cursor:pointer">Open Date</th>
+                <th (click)="sortData('Customer')" style="cursor:pointer">Customer</th>
+                <th (click)="sortData('InvoiceNumber')" style="cursor:pointer">Invoice #</th>
+                <th (click)="sortData('Age')" style="cursor:pointer">Age</th>
+                <th (click)="sortData('PartNumber')" style="cursor:pointer">Part #</th>
+                <th (click)="sortData('RoNumber')" style="cursor:pointer">Ro #</th>
+                <th (click)="sortData('Description')" style="cursor:pointer">Description</th>
+
+                <!-- Inline repeating section headers -->
+                <th (click)="sortData('Total_Gross')" style="cursor:pointer"> Gross</th>
+                <th (click)="sortData('Total_Gp')" style="cursor:pointer"> Gp%</th>
+                <th (click)="sortData('Total_Elr')" style="cursor:pointer"> Elr</th>
+                <th (click)="sortData('Total_Hours')" style="cursor:pointer"> Hours</th>
+                <th (click)="sortData('Total_Discount')" style="cursor:pointer"> Discount</th>
+
+                <th (click)="sortData('CustomerPay_Gross')" style="cursor:pointer"> Gross</th>
+                <th (click)="sortData('CustomerPay_Gp')" style="cursor:pointer"> Gp%</th>
+                <th (click)="sortData('CustomerPay_Elr')" style="cursor:pointer"> Elr</th>
+                <th (click)="sortData('CustomerPay_Hours')" style="cursor:pointer"> Hours</th>
+                <th (click)="sortData('CustomerPay_Discount')" style="cursor:pointer"> Discount</th>
+
+                <th (click)="sortData('Warranty_Gross')" style="cursor:pointer"> Gross</th>
+                <th (click)="sortData('Warranty_Gp')" style="cursor:pointer"> Gp%</th>
+                <th (click)="sortData('Warranty_Elr')" style="cursor:pointer"> Elr</th>
+                <th (click)="sortData('Warranty_Hours')" style="cursor:pointer"> Hours</th>
+                <th (click)="sortData('Warranty_Discount')" style="cursor:pointer"> Discount</th>
+
+                <th (click)="sortData('Internal_Gross')" style="cursor:pointer"> Gross</th>
+                <th (click)="sortData('Internal_Gp')" style="cursor:pointer"> Gp%</th>
+                <th (click)="sortData('Internal_Elr')" style="cursor:pointer"> Elr</th>
+                <th (click)="sortData('Internal_Hours')" style="cursor:pointer"> Hours</th>
+                <th (click)="sortData('Internal_Discount')" style="cursor:pointer"> Discount</th>
+
+                <th (click)="sortData('CounterRetail_Gross')" style="cursor:pointer"> Gross</th>
+                <th (click)="sortData('CounterRetail_Gp')" style="cursor:pointer"> Gp%</th>
+                <th (click)="sortData('CounterRetail_Elr')" style="cursor:pointer"> Elr</th>
+                <th (click)="sortData('CounterRetail_Hours')" style="cursor:pointer"> Hours</th>
+                <th (click)="sortData('CounterRetail_Discount')" style="cursor:pointer"> Discount</th>
+
+                <th (click)="sortData('Wholesale_Gross')" style="cursor:pointer"> Gross</th>
+                <th (click)="sortData('Wholesale_Gp')" style="cursor:pointer"> Gp%</th>
+                <th (click)="sortData('Wholesale_Elr')" style="cursor:pointer"> Elr</th>
+                <th (click)="sortData('Wholesale_Hours')" style="cursor:pointer"> Hours</th>
+                <th (click)="sortData('Wholesale_Discount')" style="cursor:pointer"> Discount</th>
+            </tr>
+             @if(spinnerLoader()){
+                <div class="loader" style="margin-top: 0%;margin-left: 30%;"></div>
+                }
+
+        </thead>
+
+
+        <tbody>
+            @if (filteredChildData.length === 0) {
+            <tr>
+                <td colspan="35" class="text-center py-3">
+                    No Data Found
+                </td>
+            </tr>
+            }
+            @for(c of filteredChildData; track c)
+            {
+            <tr class="text-center">
+                <td>{{ c.ODate | date:'MM-dd-yyyy' }}</td>
+                <td style="text-align: left;">{{ c.Customername || '-' }}</td>
+                <td>{{ c.InvoiceNumber || '-'}}</td>
+                <td>{{ c.Age || '-'}}</td>
+                <td>{{ c.Partnumber || '-'}}</td>
+
+                <td class="text-primary" style="cursor: pointer; text-decoration: underline;" (click)="viewRO(c)">
+                    {{ c.RONumber || '-' }}
+                </td>
+
+
+
+                <td>{{ c.Description || '-'}}</td>
+
+                <td>{{ c.Total_Gross ? (c.Total_Gross | currency:'USD':'symbol':'1.0-0') : '-' }}</td>
+                <td>{{ c.Total_Sale || '-'}}</td>
+                <td>{{ c.Total_ELR ? (c.Total_ELR | currency:'USD':'symbol':'1.0-0') : '-' }}</td>
+                <td>{{ c.Total_Hours || '-'}}</td>
+                <td>{{ c.Total_Discount || '-'}}</td>
+
+                <td>{{ c.Cust_Gross ? (c.Cust_Gross | currency:'USD':'symbol':'1.0-0') : '-' }}</td>
+                <td>{{ c.Cust_Sale || '-'}}</td>
+                <td>{{ c.Cust_ELR ? (c.Cust_ELR | currency:'USD':'symbol':'1.0-0') : '-' }}</td>
+                <td>{{ c.Cust_Hours || '-'}}</td>
+                <td>{{ c.Cust_Discount || '-'}}</td>
+
+                <td>{{ c.Warranty_Gross ? (c.Warranty_Gross | currency:'USD':'symbol':'1.0-0') : '-' }}</td>
+                <td>{{ c.Warranty_Sale || '-'}}</td>
+                <td>{{ c.Warranty_Retention ? (c.Warranty_Retention | currency:'USD':'symbol':'1.0-0') : '-' }}</td>
+                <td>{{ c.Warranty_Hours || '-'}}</td>
+                <td>{{ c.Warranty_Discount || '-'}}</td>
+
+                <td>{{ c.Internal_Gross ? (c.Internal_Gross | currency:'USD':'symbol':'1.0-0') : '-' }}</td>
+                <td>{{ c.Internal_Sale || '-' }}</td>
+                <td>{{ c.Internal_Retention ? (c.Internal_Retention | currency:'USD':'symbol':'1.0-0') : '-' }}</td>
+                <td>{{ c.Internal_Hours || '-' }}</td>
+                <td>{{ c.Internal_Discount || '-' }}</td>
+
+                <td>{{ c.Counter_Gross ? (c.Counter_Gross | currency:'USD':'symbol':'1.0-0') : '-' }}</td>
+                <td>{{ c.Counter_sale || '-' }}</td>
+                <td>{{ c.Counter_Retention ? (c.Counter_Retention | currency:'USD':'symbol':'1.0-0') : '-' }}</td>
+                <td>{{ c.Counter_Hours || '-' }}</td>
+                <td>{{ c.Counter_Discount || '-' }}</td>
+
+                <td>{{ c.Wholesale_Gross ? (c.Wholesale_Gross | currency:'USD':'symbol':'1.0-0') : '-' }}</td>
+                <td>{{ c.Wholesale_Sale || '-'}}</td>
+                <td>{{ c.Wholesale_Retention ? (c.Wholesale_Retention | currency:'USD':'symbol':'1.0-0') : '-' }}</td>
+                <td>{{ c.Wholesale_Hours || '-'}}</td>
+                <td>{{ c.Wholesale_Discount || '-'}}</td>
+            </tr>
+            }
+
+        </tbody>
+    </table>
+</div>

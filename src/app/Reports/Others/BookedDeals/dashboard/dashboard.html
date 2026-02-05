@@ -1,0 +1,383 @@
+<ngx-spinner bdColor="rgba(0, 0, 0, 0.8)" size="medium" color="#fff" type="ball-clip-rotate" [fullScreen]="true">
+    <p style="color: white"> Loading.. </p>
+</ngx-spinner>
+<main>
+    <div class="container-fluid">
+
+        <div class="report-bar">
+            <div class="filter-dropdowns">
+
+                <div class="dropdown">
+                    <button class="dropdown-toggle" (click)="togglePopover(0)">Stores ( {{storecount}}
+                        {{storedisplayname}} )
+                        <span class="arrow"></span></button>
+                    <app-stores [ngStyle]="{'display' : activePopover === 0 ? 'block' : 'none'}"
+                        [storesFilterData]="storesFilterData" (StoresData)="StoresData($event)"></app-stores>
+                </div>
+
+                <!-- ========== Deal Status Dropdown ========== -->
+                <div class="dropdown ">
+                    <button class="dropdown-toggle " (click)="togglePopover(3)">
+                        Deal Status:
+                        ({{ dealStatus.length == 1 ? dealStatus : 'Selected' }}
+                        <span *ngIf="dealStatus.length > 1"> {{dealStatus.length}} </span>)
+                        <span class="arrow"></span>
+                    </button>
+
+                    <div class="timeframe reportstores-card my-2" *ngIf="activePopover === 3">
+                        <div class="date-filter-card">
+                            <button class="outline-button" (click)="multipleorsingle('DS','Booked')"
+                                [ngClass]="{'active':dealStatus.indexOf('Booked')>=0}">
+                                Booked
+                            </button>
+                            <button class="outline-button" (click)="multipleorsingle('DS','Finalized')"
+                                [ngClass]="{'active':dealStatus.indexOf('Finalized')>=0}">
+                                Finalized
+                            </button>
+                            <button class="outline-button" (click)="multipleorsingle('DS','Delivered')"
+                                [ngClass]="{'active':dealStatus.indexOf('Delivered')>=0}">
+                                Delivered
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+
+                <!-- ========== People Dropdown ========== -->
+
+
+                <div class="dropdown d-none">
+                    <button class="dropdown-toggle" (click)="togglePopover(4)">
+                        People:
+                        (
+                        <span *ngIf="selectedFiManagersvalues.length === 0">
+                            selected
+                        </span>
+
+                        <span *ngIf="selectedFiManagersvalues.length === 1">
+                            {{ selectedFiManagersname }}
+                        </span>
+                        <span *ngIf="selectedFiManagersvalues.length > 1">
+                            Selected {{ selectedFiManagersvalues.length }}
+                        </span>
+
+                        )
+                        <span class="arrow"></span>
+                    </button>
+
+                    <div class="reportstores-card my-2" *ngIf="activePopover ===4">
+
+                        <div class="stores d-flex flex-column ps-0 border-0">
+                            <div class="stores-wrapper flex-grow-1 d-flex flex-column">
+
+                                <div class="allstores text-start">
+                                    <a class="text-primary text-decoration-none cursor-pointer me-2"
+                                        (click)="employees('SelectAllFM')">Select
+                                        All</a> |
+                                    <a class="text-primary text-decoration-none cursor-pointer ms-2"
+                                        (click)="employees('ClearAllFM')">Clear
+                                        All</a>
+                                </div>
+                                <div class="store-columns flex-grow-1">
+
+                                    <!-- <ng-container *ngIf="storeIds.length > 0">                               
+                                    <div class="allstores text-start" *ngIf="salesPersons.length == 0">
+                                        <a class="text-primary text-decoration-none cursor-pointer me-2"
+                                            style="pointer-events: none;">No Sales Persons
+                                        </a>
+                                    </div>
+                                </ng-container> -->
+
+
+                                    <ng-container *ngIf="activePopover==4">
+                                        <ng-container *ngFor="let fm of financeManager;let i=index">
+                                            <button class="btn btn-outline-primary store-button"
+                                                (click)="employees('FM', fm.FiId, fm.FiName)"
+                                                [ngClass]="{'active':selectedFiManagersvalues.indexOf(fm.FiId)>=0,'inactive':selectedFiManagersvalues.indexOf(fm.FiId)<0}">
+                                                <span ngbTooltip="{{fm.FiName}}"> {{fm.FiName}}</span>
+                                            </button>
+                                        </ng-container>
+                                    </ng-container>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ========== Deal type ========== -->
+
+                <div class="dropdown">
+                    <button class="dropdown-toggle" (click)="togglePopover(5)">
+                        Deal Type:
+                        ({{ dealType.length == 1 ? dealType : 'Selected' }}
+                        <span *ngIf="dealType.length > 1"> {{ dealType.length }} </span>)
+                        <span class="arrow"></span>
+                    </button>
+
+                    <div class="timeframe reportstores-card my-2" *ngIf="activePopover === 5">
+                        <div class="date-filter-card">
+
+                            <button class="outline-button" (click)="multipleorsingle('DT','Retail')"
+                                [ngClass]="{'active':dealType.indexOf('Retail')>=0}">
+                                Retail
+                            </button>
+
+                            <button class="outline-button" (click)="multipleorsingle('DT','Fleet')"
+                                [ngClass]="{'active':dealType.indexOf('Fleet')>=0}">
+                                Fleet
+                            </button>
+
+                            <button class="outline-button" (click)="multipleorsingle('DT','Wholesale')"
+                                [ngClass]="{'active':dealType.indexOf('Wholesale')>=0}">
+                                Wholesale
+                            </button>
+
+                            <button class="outline-button" (click)="multipleorsingle('DT','Lease')"
+                                [ngClass]="{'active':dealType.indexOf('Lease')>=0}">
+                                Lease
+                            </button>
+
+                        </div>
+                    </div>
+                </div>
+
+
+                <!-- ========== Apply Button ========== -->
+                <div class="dropdown">
+                    <button class="apply-button" (click)="viewreport()"><span>Apply</span></button>
+                </div>
+
+            </div>
+        </div>
+        <!------------------------ table ----------------------------------->
+        <div class=" ">
+            <div class="d-flex justify-content-between">
+                <div class="Benchmark-tbl">
+                    <div>
+                        <table class="table mb-0">
+
+                            <thead style="text-transform: uppercase;">
+                                <tr>
+                                    <th colspan="2">&nbsp;</th>
+                                    <th>Total</th>
+                                    <th>0-5</th>
+                                    <th>6-10</th>
+                                    <th>11-15</th>
+                                    <th>15+</th>
+                                </tr>
+                            </thead>
+
+                            <tbody *ngIf="FloorPlanData?.length > 0">
+                                <tr *ngIf="FloorPlanData[0]?.AgeData?.length > 0">
+                                    <td colspan="2">Booked Aging</td>
+                                    <!-- TOTAL -->
+                                    <td>
+                                        <span class="d-flex justify-content-between">
+                                            <span>{{ FloorPlanData[0]?.AgeData?.[0]?.TOTAL != null ? '$' : '' }}</span>
+                                            <span [ngClass]="{
+            'text-danger': FloorPlanData[0]?.AgeData?.[0]?.TOTAL < 0
+          }">
+
+                                                {{ FloorPlanData[0]?.AgeData?.[0]?.TOTAL != null
+                                                ? (FloorPlanData[0].AgeData[0].TOTAL | number:'1.0-0')
+                                                : '-' }}
+
+                                            </span>
+                                        </span>
+                                    </td>
+                                    <!-- 0-5 -->
+                                    <td>
+                                        <span class="d-flex justify-content-between">
+                                            <span>{{ FloorPlanData[0]?.AgeData?.[0]?.D1 != null ? '$' : '' }}</span>
+                                            <span [ngClass]="{
+            'text-danger': FloorPlanData[0]?.AgeData?.[0]?.D1 < 0
+          }">
+
+                                                {{ FloorPlanData[0]?.AgeData?.[0]?.D1 != null
+                                                ? (FloorPlanData[0].AgeData[0].D1 | number:'1.0-0')
+                                                : '-' }}
+                                            </span>
+                                        </span>
+                                    </td>
+                                    <!-- 6-10 -->
+
+                                    <td>
+                                        <span class="d-flex justify-content-between">
+                                            <span>{{ FloorPlanData[0]?.AgeData?.[0]?.D2 != null ? '$' : '' }}</span>
+                                            <span [ngClass]="{
+            'text-danger': FloorPlanData[0]?.AgeData?.[0]?.D2 < 0
+          }">
+
+                                                {{ FloorPlanData[0]?.AgeData?.[0]?.D2 != null
+                                                ? (FloorPlanData[0].AgeData[0].D2 | number:'1.0-0')
+                                                : '-' }}
+                                            </span>
+                                        </span>
+                                    </td>
+
+                                    <!-- 11-15 -->
+                                    <td>
+                                        <span class="d-flex justify-content-between">
+                                            <span>{{ FloorPlanData[0]?.AgeData?.[0]?.D3 != null ? '$' : '' }}</span>
+                                            <span [ngClass]="{
+            'text-danger': FloorPlanData[0]?.AgeData?.[0]?.D3 < 0
+          }">
+
+                                                {{ FloorPlanData[0]?.AgeData?.[0]?.D3 != null
+                                                ? (FloorPlanData[0].AgeData[0].D3 | number:'1.0-0')
+                                                : '-' }}
+                                            </span>
+                                        </span>
+                                    </td>
+                                    <!-- 15+ -->
+                                    <td>
+                                        <span class="d-flex justify-content-between">
+                                            <span>{{ FloorPlanData[0]?.AgeData?.[0]?.D4 != null ? '$' : '' }}</span>
+                                            <span [ngClass]="{
+            'text-danger': FloorPlanData[0]?.AgeData?.[0]?.D4 < 0
+          }">
+
+                                                {{ FloorPlanData[0]?.AgeData?.[0]?.D4 != null
+                                                ? (FloorPlanData[0].AgeData[0].D4 | number:'1.0-0')
+                                                : '-' }}
+                                            </span>
+                                        </span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div style="color: #000;font-family: 'Roboto';">
+                    <div class="fw-bold">
+                        As of {{ FloorPlanData[0]?.AgeData?.[0]?.D5 | timeconversion}}
+                    </div>
+                    <div class="fw-bold">
+                        Count: {{ FloorPlanData[0]?.AgeData?.[0]?.D6 != null ? FloorPlanData[0].AgeData[0].D6 : '-'
+                        }}
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===== Main Data Table ===== -->
+            <div class="det_cont mt-4">
+                <table class=" table mb-0">
+
+                    <thead style="text-transform: uppercase !important;">
+
+                        <!-- ===== Group Header ===== -->
+
+                        <!-- <tr>
+    <th colspan="3"></th>
+    <th colspan="1">Balances</th>
+    <th colspan="2">Customer</th>
+    <th colspan="14">Dealtype Info</th>
+  </tr> -->
+
+                        <tr >
+
+                            <!-- <th>Hide</th>
+                        <th (click)="openComments()" style="cursor: pointer;">Notes
+                            <i alt="" class="fa fa-eye" *ngIf="!commentsVisibility" aria-hidden="true"></i>
+                  <i alt="" class="fa-solid fa-eye-slash" *ngIf="commentsVisibility"></i>
+                        </th> -->
+                            <th (click)="sort('CTAge')" style="cursor:pointer;border-radius: 10px 0 0 0;text-transform: uppercase">Age</th>
+                            <th (click)="sort('CTDate')" style="cursor:pointer;text-transform: uppercase">Date</th>
+                            <th (click)="sort('Dealno')" style="cursor:pointer;text-transform: uppercase">Deal #</th>
+
+                            <th (click)="sort('Balance')" style="cursor:pointer;text-transform: uppercase">Balance</th>
+
+                            <th (click)="sort('CustName')" style="cursor:pointer;text-transform: uppercase">Name</th>
+                            <th (click)="sort('CustId')" style="cursor:pointer;text-transform: uppercase">Number</th>
+
+                            <th (click)="sort('store')" style="cursor:pointer;text-transform: uppercase">Store</th>
+                            <th (click)="sort('Stockno')" style="cursor:pointer;text-transform: uppercase">Stock #</th>
+                            <th (click)="sort('DealType2')" style="cursor:pointer;text-transform: uppercase">Dealtype #</th>
+                            <th (click)="sort('Stage')" style="cursor:pointer;text-transform: uppercase">Stage</th>
+                            <th (click)="sort('FIMgr_Name')" style="cursor:pointer;text-transform: uppercase">F&I Mgr</th>
+                            <th (click)="sort('SalesMgr_Name')" style="cursor:pointer;text-transform: uppercase">Sales Mgr</th>
+                            <th (click)="sort('SP1_Name')" style="cursor:pointer;text-transform: uppercase">Sales Person</th>
+
+                            <th (click)="sort('SaleType')" style="cursor:pointer;text-transform: uppercase">Type</th>
+                            <th (click)="sort('DealType')" style="cursor:pointer;text-transform: uppercase">New/Used</th>
+                            <th (click)="sort('DealStatus')" style="cursor:pointer;text-transform: uppercase">Status</th>
+                            <th (click)="sort('Lender')" style="cursor:pointer;text-transform: uppercase">Bank Name</th>
+                            <th style="border-radius: 0 10px 0 0;text-transform: uppercase">Trade</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <!-- DATA ROWS -->
+                        <tr *ngFor="let fp of FloorPlanData | filter: QISearchName; let i = index"
+                            [ngClass]="{ even: i % 2 == 0, odd: i % 2 != 0 }">
+
+                            <td>{{ fp.CTAge }}</td>
+                            <td>{{ fp.CTDate | date:'MM.dd.yyyy' }}</td>
+                            <td>{{ fp.Dealno }}</td>
+
+                            <td>
+                                <span class="d-flex justify-content-between">
+
+                                    <span>{{ fp.Balance && fp.Balance != 0 ? '$' : '' }}</span>
+                                    <span [ngClass]="{
+        'text-danger': fp.Balance < 0
+      }">
+
+                                        {{ fp.Balance && fp.Balance != 0
+                                        ? (fp.Balance | number:'1.2-2')
+                                        : '-' }}
+
+                                    </span>
+                                </span>
+                            </td>
+                            <td>{{ fp.CustName }}</td>
+                            <td>{{ fp.CustId }}</td>
+                            <td>{{ fp.store }}</td>
+                            <td>{{ fp.Stockno }}</td>
+                            <td>{{ fp.DealType2 }}</td>
+                            <td>{{ fp.Stage || '-' }}</td>
+                            <td>{{ fp.FIMgr_Name }}</td>
+                            <td>{{ fp.SalesMgr_Name }}</td>
+                            <td>{{ fp.SP1_Name }}</td>
+                            <td>{{ fp.SaleType }}</td>
+                            <td>{{ fp.DealType }}</td>
+                            <td>{{ fp.DealStatus }}</td>
+                            <td>{{ fp.Lender }}</td>
+                            <td>{{ fp.trade1vin ? fp.trade1vin : '-' }}</td>
+
+                        </tr>
+
+                        <!-- NO DATA -->
+                        <tr *ngIf="NoData">
+                            <td colspan="18" class="text-center fw-bold">
+                                No Records Available
+                            </td>
+                        </tr>
+                        <!--  TOTAL HIGHLIGHT ROW (LIKE DEMO IMAGE) -->
+                        <tr *ngIf="FloorPlanData.length > 0" class="balance-total-row sticky-total-row">
+                            <td colspan="3" class="text-end fw-bold">Totals</td>
+                            <td class="balance-total-cell fw-bold">
+                                <span class="d-flex justify-content-between">
+                                    <span>$</span>
+                                    <span [ngClass]="{
+          'text-danger': FloorPlanData[0]?.AgeData?.[0]?.TOTAL < 0
+        }">
+
+                                        {{ FloorPlanData[0]?.AgeData?.[0]?.TOTAL != null
+                                        ? (FloorPlanData[0].AgeData[0].TOTAL | number:'1.2-2')
+                                        : '-' }}
+                                    </span>
+                                </span>
+                            </td>
+                            <td colspan="14"></td>
+                        </tr>
+
+                    </tbody>
+                </table>
+
+            </div>
+        </div>
+    </div>
+
+
+</main>

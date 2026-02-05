@@ -1,0 +1,397 @@
+<ngx-spinner bdColor="rgba(0, 0, 0, 0.8)" size="medium" color="#fff" type="ball-clip-rotate" [fullScreen]="true">
+    <p style="color: white"> Loading.. </p>
+</ngx-spinner>
+
+<div class="wrapper" [ngClass]="{'expanded': isSidebarCollapsed()}" style="margin-top: 52px">
+    <div class="container-fluid p-3">
+        <!-- <div style="overflow-x: auto;"> -->
+        <app-serviceopenro-report [filterData]="filterData" (appliedFilterData)="applyClickEvent($event)"></app-serviceopenro-report>
+        <!-- </div> -->
+
+        <div class="divBold pe-3 d-flex mt-1" style="font-size: .7rem !important;">
+            <div class="ms-auto">
+                <span class="mt-1 text-white">As of {{asofnow()}}&nbsp; </span>
+                @if(loadbtnFlag() =='1'){
+                <button class="btn btn-pill Selected" (click)="Load('A')">Load Data</button>
+                }
+            </div>
+        </div>
+
+        <div class="performance-scorecard mt-2" id="scrollcent" #scrollcent (scroll)="updateVerticalScroll($event)">
+            <table class="table mb-0 w-100">
+                <thead>
+                    <tr>
+                        <th class="bdr-rt">
+                           {{showDate()}}
+                        </th>
+                        <!-- <th colspan="3" class="text-center bdr-rt">OPEN RO</th> -->
+                        <th colspan="2" class="text-center bdr-rt">Open RO</th>
+                        <th colspan="4" class="text-center bdr-rt">Labor</th>
+                        <th colspan="4" class="text-center bdr-rt">Parts</th>
+                        <!-- <th colspan="4" class="text-center bdr-rt"></th> -->
+                        <th colspan="2" class="text-center bdr-rt"></th>
+                    </tr>
+
+                    <tr class="bdr-btm">
+                        <th>
+
+                        </th>
+                        <th (click)="sort('Repair_Orders',ServiceData)" style="cursor: pointer;">Qty</th>
+                        <!-- <th (click)="sort('Guide',ServiceData)" style="cursor: pointer;">Guide</th> -->
+                        <th (click)="sort('Total_Hours',ServiceData)" style="cursor: pointer;">Hours</th>
+                        <th (click)="sort('laborsale',ServiceData)" style="cursor: pointer;">Labor Sales</th>
+                        <th (click)="sort('laborcost',ServiceData)" style="cursor: pointer;">Labor Cost</th>
+                        <th (click)="sort('ServiceDiscount',ServiceData)" style="cursor: pointer;">Discount</th>
+                        <th (click)="sort('laborgross',ServiceData)" style="cursor: pointer;">Labor Gross
+                        </th>
+                        <th (click)="sort('PartsSale',ServiceData)" style="cursor: pointer;">Parts Sales</th>
+                        <th (click)="sort('PartsCost',ServiceData)" style="cursor: pointer;">Parts Cost</th>
+                        <th (click)="sort('partsDiscount',ServiceData)" style="cursor: pointer;">Discount</th>
+                        <th (click)="sort('partsgross',ServiceData)" style="cursor: pointer;">Parts Gross
+                        </th>
+                        <th (click)="sort('TotalSale',ServiceData)" style="cursor: pointer;">Total Sales</th>
+                        <th (click)="sort('Total_Gross',ServiceData)" style="cursor: pointer;">Total Gross</th>
+                        <!-- <th (click)="sort('Total_Gross_PR',ServiceData)" style="cursor: pointer;">Total Gross PR</th>
+                        <th (click)="sort('PR_GP',ServiceData)" style="cursor: pointer;" class="bdr-rt">PR GP</th> -->
+                    </tr>
+                </thead>
+                @if(NoData() == false){
+                <tbody>
+                    @for(ServiceInfo of ServiceData(); let i = $index; track ServiceInfo){
+                    <ng-container>
+                        <tr [ngClass]="{'title' : i % 2 == 0 , 'titleOdd' : i % 2 != 0 , 'Selectedrow': (ServiceInfo.Dealer === '-' && filterData?.var2 != '') || i.toString() == index , 'divBold': ServiceInfo.data1 === 'REPORT TOTALS',
+                                        'bdr-tp': ServiceInfo.Dealer === '-' && ServiceInfo.data1 != 'REPORT TOTALS'}"
+                            [id]="'DV_'+i">
+                            <td class="main-head bdr-rt d-flex justify-content-between" title="{{ServiceInfo.data1}}"
+                                [ngStyle]="{'pointer-events': ServiceInfo.data1 == undefined ? 'none':'visible'}">
+                                <span title="{{(ServiceInfo.data1 == undefined ? 'REPORT TOTALS': ServiceInfo.data1)}}"
+                                    (click)="expandorcollapse(i,$event,ServiceInfo.Dealer,ServiceInfo,'')">
+                                    {{(ServiceInfo.data1 == undefined || ServiceInfo.data1 == '' ? '-' : (
+                                    (ServiceInfo.data1.toString() |
+                                    slice:0:22) +
+                                    (ServiceInfo.data1.toString().length > 22 ? '...' : '') ))}}
+                                </span>
+                                <span class="px-2">
+                                    @if(ServiceInfo.Data2 != undefined){
+                                    @if(ServiceInfo?.Data2.length > 0){
+                                    <!-- @if(!expandedRows.has(index)){ -->
+                                    @if(ServiceInfo.Dealer == '+'){
+                                    <img src="images/Add_Circle2.png" class="pointer" [id]="'D_'+i"
+                                        (click)="expandorcollapse(i,$event,ServiceInfo.Dealer,ServiceInfo,'')">
+                                    }@else{
+                                    <img src="images/Minus_CircleIcon.svg" class="pointer" [id]="'D_'+i"
+                                        (click)="expandorcollapse(i,$event,ServiceInfo.Dealer,ServiceInfo,'')">
+                                    }
+                                    }
+                                    }
+                                </span>
+                            </td>
+                            <td id="DataBody2" [id]="'D_'+i"
+                                [ngStyle]="{'pointer-events': ServiceInfo.data1 == undefined ? 'none':'visible'}"
+                                [ngClass]="{ negative: !inTheGreen(ServiceInfo.Repair_Orders), pointer : filterData?.var2 == '' && ServiceInfo.data1 != 'REPORT TOTALS'}"
+                                (click)="expandorcollapse(i,$event,ServiceInfo.Dealer,ServiceInfo,'')">{{
+                                ServiceInfo.Repair_Orders == 0 || ServiceInfo.Repair_Orders == null ? '-' :
+                                ServiceInfo.Repair_Orders | number:'1.0-0' }}</td>
+                            <!-- <td id="DataBody2" [ngClass]="{ negative: !inTheGreen(ServiceInfo.Guide)}">{{
+                                ServiceInfo.Guide == 0 || ServiceInfo.Guide == null ? '-' :
+                                ServiceInfo.Guide | number:'1.0-0' }}</td> -->
+                            <td id="DataBody3" [ngClass]="{ negative: !inTheGreen(ServiceInfo.Total_Hours)}"
+                                class="bdr-rt" >{{
+                                ServiceInfo.Total_Hours == 0 || ServiceInfo.Total_Hours == null ? '-' :
+                                ServiceInfo.Total_Hours |number:'1.2-2' }}</td>
+                            <td id="DataBody2" [ngClass]="{ negative: !inTheGreen(ServiceInfo.laborsale)}">
+                                <span class="d-flex justify-content-between"> {{
+                                    (ServiceInfo.laborsale == 0 || ServiceInfo.laborsale == null ? '' :
+                                    '$') }} <span> {{
+                                        (ServiceInfo.laborsale == 0 || ServiceInfo.laborsale == null ? '-' :
+                                        ServiceInfo.laborsale |number:'1.0-0') }}</span></span>
+                            </td>
+                            <td id="DataBody3" [ngClass]="{ negative: !inTheGreen(ServiceInfo.laborcost)}">
+                                <span class="d-flex justify-content-between">
+                                    {{
+                                    ServiceInfo.laborcost == 0 || ServiceInfo.laborcost == null ? '' :
+                                    '$'}}
+                                    <span>
+                                        {{(ServiceInfo.laborcost == 0 || ServiceInfo.laborcost == null ? '-'
+                                        :ServiceInfo.laborcost |
+                                        number:'1.0-0' )}}
+                                    </span>
+                                </span>
+                            </td>
+                            <td id="DataBody4" [ngClass]="{ negative: !inTheGreen(ServiceInfo.ServiceDiscount)}">
+                                <span class="d-flex justify-content-between">
+                                    {{
+                                    ServiceInfo.ServiceDiscount == 0 || ServiceInfo.ServiceDiscount == null ? '' :
+                                    '$'}}
+                                    <span>
+                                        {{(ServiceInfo.ServiceDiscount == 0 ||
+                                        ServiceInfo.ServiceDiscount == null ? '-' :ServiceInfo.ServiceDiscount |
+                                        number:'1.0-0' )}}
+                                    </span>
+                                </span>
+                            </td>
+                            <td id="DataBody5" [ngClass]="{ negative: !inTheGreen(ServiceInfo.laborgross)}"
+                                class="bdr-rt">
+                                <span class="d-flex justify-content-between">
+                                    {{
+                                    ServiceInfo.laborgross == 0 || ServiceInfo.laborgross == null ? '' :
+                                    '$'}}
+                                    <span>
+                                        {{(ServiceInfo.laborgross == 0 ||
+                                        ServiceInfo.laborgross == null ? '-' :ServiceInfo.laborgross |
+                                        number:'1.0-0' )}}
+                                    </span>
+                                </span>
+                            </td>
+                            <td id="DataBody6" [ngClass]="{ negative: !inTheGreen(ServiceInfo.PartsSale)}"><span
+                                    class="d-flex justify-content-between">
+                                    {{
+                                    ServiceInfo.PartsSale == 0 || ServiceInfo.PartsSale == null ? '' :
+                                    '$'}}
+                                    <span>
+                                        {{(ServiceInfo.PartsSale == 0 ||
+                                        ServiceInfo.PartsSale == null ? '-' :ServiceInfo.PartsSale |
+                                        number:'1.0-0' )}}
+                                    </span>
+                                </span></td>
+                            <td id="DataBody16" [ngClass]="{ negative: !inTheGreen(ServiceInfo.PartsCost)}">
+                                <span class="d-flex justify-content-between"> {{
+                                    (ServiceInfo.PartsCost == 0 || ServiceInfo.PartsCost == null ? '' :
+                                    '$') }} <span> {{
+                                        (ServiceInfo.PartsCost == 0 || ServiceInfo.PartsCost == null ? '-' :
+                                        ServiceInfo.PartsCost |number:'1.0-0') }}</span></span>
+                            </td>
+                            <td id="DataBody18" [ngClass]="{ negative: !inTheGreen(ServiceInfo.partsDiscount)}">
+                                <span class="d-flex justify-content-between"> {{
+                                    (ServiceInfo.partsDiscount == 0 || ServiceInfo.partsDiscount == null ? '' :
+                                    '$') }} <span> {{
+                                        (ServiceInfo.partsDiscount == 0 || ServiceInfo.partsDiscount == null ? '-' :
+                                        ServiceInfo.partsDiscount |number:'1.0-0') }}</span></span>
+                            </td>
+                            <td id="DataBody19" [ngClass]="{ negative: !inTheGreen(ServiceInfo.partsgross)}"
+                                class="bdr-rt">
+                                <span class="d-flex justify-content-between"> {{
+                                    (ServiceInfo.partsgross == 0 || ServiceInfo.partsgross == null ? '' :
+                                    '$') }} <span> {{
+                                        (ServiceInfo.partsgross == 0 || ServiceInfo.partsgross == null ? '-' :
+                                        ServiceInfo.partsgross |number:'1.0-0') }}</span></span>
+                            </td>
+                            <td id="DataBody19" [ngClass]="{ negative: !inTheGreen(ServiceInfo.TotalSale)}">
+                                <span class="d-flex justify-content-between"> {{
+                                    (ServiceInfo.TotalSale == 0 || ServiceInfo.TotalSale == null ? '' :
+                                    '$') }} <span> {{
+                                        (ServiceInfo.TotalSale == 0 || ServiceInfo.TotalSale == null ? '-' :
+                                        ServiceInfo.TotalSale |number:'1.0-0') }}</span></span>
+                            </td>
+                            <td id="DataBody19" [ngClass]="{ negative: !inTheGreen(ServiceInfo.Total_Gross)}">
+                                <span class="d-flex justify-content-between"> {{
+                                    (ServiceInfo.Total_Gross == 0 || ServiceInfo.Total_Gross == null ? '' :
+                                    '$') }} <span> {{
+                                        (ServiceInfo.Total_Gross == 0 || ServiceInfo.Total_Gross == null ? '-' :
+                                        ServiceInfo.Total_Gross |number:'1.0-0') }}</span></span>
+                            </td>
+
+                            <!-- <td id="DataBody19" [ngClass]="{ negative: !inTheGreen(ServiceInfo.Total_Gross_PR)}">
+                                <span class="d-flex justify-content-between"> {{
+                                    (ServiceInfo.Total_Gross_PR == 0 || ServiceInfo.Total_Gross_PR == null ? '' :
+                                    '$') }} <span> {{
+                                        (ServiceInfo.Total_Gross_PR == 0 || ServiceInfo.Total_Gross_PR == null ? '-' :
+                                        ServiceInfo.Total_Gross_PR |number:'1.0-0') }}</span></span>
+                            </td>
+                            <td id="DataBody19" [ngClass]="{ negative: !inTheGreen(ServiceInfo.PR_GP)}">
+                                {{
+                                (ServiceInfo.PR_GP == 0 || ServiceInfo.PR_GP == null ? '' :
+                                ServiceInfo.PR_GP |number:'1.0-0') }} {{
+                                (ServiceInfo.PR_GP == 0 || ServiceInfo.PR_GP == null ? '' :
+                                '%' ) }}
+                            </td> -->
+                        </tr>
+                        @if(((ServiceInfo.Dealer === '-' && filterData?.var2== '' && filterData?.Oldro != 'Y' && ServiceInfo.data1 != 'REPORT TOTALS' ) ||
+                        (ServiceInfo.Dealer === '-' && filterData?.var2== '' && filterData?.Oldro == 'Y' &&
+                        ServiceInfo.RoInfo != undefined && ServiceInfo.data1 != 'REPORT TOTALS' )) ){
+                        <ng-container>
+                            @if(((ServiceInfo.Dealer === '-' && filterData?.var2== '' && filterData?.Oldro != 'Y' ) ||
+                            (ServiceInfo.Dealer === '-' && filterData?.var2 == '' && filterData?.Oldro == 'Y' &&
+                            ServiceInfo.RoInfo.length >0 )) ){
+                            <tr>
+                                <!-- class="sub-title" -->
+                                <td class="bdr-rt">
+                                    &nbsp;
+                                </td>
+                                <td colspan="15"
+                                    style="padding: 2px 1px !important;border: 2px solid #e0edff  !important;">
+                                    <!-- <app-details [RODetailsObjectMain]="RODetailsObjectMain"></app-details> -->
+                                    <app-serviceopenro-details [RODetailsObjectMain]="RODetailsObjectMain"></app-serviceopenro-details>
+                                </td>
+                            </tr>
+                            }
+                        </ng-container>
+                        }
+                        @for(dt2 of ServiceInfo.Data2; let k = $index; track dt2){
+                        <ng-container>
+                            <tr [id]="'DVN_'+i" class="member-row sub-title"
+                                [ngClass]="{'hidden': ServiceInfo.Dealer === '+', 'title-l3' : k % 2 == 0 , 'titleOdd-l3' : k % 2 != 0, 'bdr-bt': ServiceInfo.Data2.length == (k + 1)}">
+                                <td (click)="expandorcollapse(k,$event,dt2.data2sign,dt2,ServiceInfo)" class="bdr-rt"
+                                    title="{{dt2.data2}}">
+                                    <!-- <span style="margin-right: 1.5rem;"></span> -->
+                                    <span title="{{dt2.data2}}" [id]="'DN_'+k" class="layer2"> {{(dt2.data2
+                                        ==
+                                        undefined || dt2.data2
+                                        ==
+                                        '' ? '--' : ( (dt2.data2.toString() | slice:0:15) +
+                                        (dt2.data2.toString().length > 15 ? '...' : '') ))}} </span>
+                                </td>
+                                <td id="DataBody2" [ngClass]="{ negative: !inTheGreen(dt2.Repair_Orders)}"
+                                    class="pointer" [id]="'DN_'+k"
+                                    (click)="expandorcollapse(k,$event,dt2.data2sign,dt2,ServiceInfo)">{{
+                                    dt2.Repair_Orders == 0 || dt2.Repair_Orders == null ? '-' :
+                                    dt2.Repair_Orders }}</td>
+                                <!-- <td id="DataBody2" [ngClass]="{ negative: !inTheGreen(dt2.Guide)}">{{
+                                    dt2.Guide == 0 || dt2.Guide == null ? '-' :
+                                    dt2.Guide }}</td> -->
+                                <td id="DataBody3" [ngClass]="{ negative: !inTheGreen(dt2.Total_Hours)}" class="bdr-rt">
+                                    {{
+                                    dt2.Total_Hours == 0 || dt2.Total_Hours == null ? '-' :
+                                    dt2.Total_Hours }}</td>
+                                <td [ngClass]="{ negative: !inTheGreen(dt2.laborsale)}"><span
+                                        class="d-flex justify-content-between"> {{
+                                        (dt2.laborsale == 0 || dt2.laborsale == null ? '' :
+                                        '$') }} <span> {{
+                                            (dt2.laborsale == 0 || dt2.laborsale == null ? '-' :
+                                            dt2.laborsale |number:'1.0-0') }}</span></span>
+                                </td>
+                                <td id="DataBody3" [ngClass]="{ negative: !inTheGreen(dt2.laborcost)}">
+                                    <span class="d-flex justify-content-between">
+                                        {{
+                                        dt2.laborcost == 0 || dt2.laborcost == null ? '' :
+                                        '$'}}
+                                        <span>
+                                            {{(dt2.laborcost == 0 || dt2.laborcost == null ? '-'
+                                            :dt2.laborcost |
+                                            number:'1.0-0' )}}
+                                        </span>
+                                    </span>
+                                </td>
+                                <td id="DataBody4" [ngClass]="{ negative: !inTheGreen(dt2.ServiceDiscount)}">
+                                    <span class="d-flex justify-content-between">
+                                        {{
+                                        dt2.ServiceDiscount == 0 || dt2.ServiceDiscount == null ? '' :
+                                        '$'}}
+                                        <span>
+                                            {{(dt2.ServiceDiscount == 0 ||
+                                            dt2.ServiceDiscount == null ? '-' :dt2.ServiceDiscount |
+                                            number:'1.0-0' )}}
+                                        </span>
+                                    </span>
+                                </td>
+                                <td id="DataBody5" [ngClass]="{ negative: !inTheGreen(dt2.laborgross)}" class="bdr-rt">
+                                    <span class="d-flex justify-content-between">
+                                        {{
+                                        dt2.laborgross == 0 || dt2.laborgross == null ? '' :
+                                        '$'}}
+                                        <span>
+                                            {{(dt2.laborgross == 0 ||
+                                            dt2.laborgross == null ? '-' :dt2.laborgross |
+                                            number:'1.0-0' )}}
+                                        </span>
+                                    </span>
+                                </td>
+                                <td id="DataBody6" [ngClass]="{ negative: !inTheGreen(dt2.PartsSale)}"><span
+                                        class="d-flex justify-content-between">
+                                        {{
+                                        dt2.PartsSale == 0 || dt2.PartsSale == null ? '' :
+                                        '$'}}
+                                        <span>
+                                            {{(dt2.PartsSale == 0 ||
+                                            dt2.PartsSale == null ? '-' :dt2.PartsSale |
+                                            number:'1.0-0' )}}
+                                        </span>
+                                    </span></td>
+                                <td id="DataBody16" [ngClass]="{ negative: !inTheGreen(dt2.PartsCost)}">
+                                    <span class="d-flex justify-content-between"> {{
+                                        (dt2.PartsCost == 0 || dt2.PartsCost == null ? '' :
+                                        '$') }} <span> {{
+                                            (dt2.PartsCost == 0 || dt2.PartsCost == null ? '-' :
+                                            dt2.PartsCost |number:'1.0-0') }}</span></span>
+                                </td>
+                                <td id="DataBody18" [ngClass]="{ negative: !inTheGreen(dt2.partsDiscount)}">
+                                    <span class="d-flex justify-content-between"> {{
+                                        (dt2.partsDiscount == 0 || dt2.partsDiscount == null ? '' :
+                                        '$') }} <span> {{
+                                            (dt2.partsDiscount == 0 || dt2.partsDiscount == null ? '-' :
+                                            dt2.partsDiscount |number:'1.0-0') }}</span></span>
+                                </td>
+                                <td id="DataBody19" [ngClass]="{ negative: !inTheGreen(dt2.partsgross)}" class="bdr-rt">
+                                    <span class="d-flex justify-content-between"> {{
+                                        (dt2.partsgross == 0 || dt2.partsgross == null ? '' :
+                                        '$') }} <span> {{
+                                            (dt2.partsgross == 0 || dt2.partsgross == null ? '-' :
+                                            dt2.partsgross |number:'1.0-0') }}</span></span>
+                                </td>
+                                <td id="DataBody19" [ngClass]="{ negative: !inTheGreen(dt2.TotalSale)}">
+                                    <span class="d-flex justify-content-between"> {{
+                                        (dt2.TotalSale == 0 || dt2.TotalSale == null ? '' :
+                                        '$') }} <span> {{
+                                            (dt2.TotalSale == 0 || dt2.TotalSale == null ? '-' :
+                                            dt2.TotalSale |number:'1.0-0') }}</span></span>
+                                </td>
+                                <td id="DataBody19" [ngClass]="{ negative: !inTheGreen(dt2.Total_Gross)}">
+                                    <span class="d-flex justify-content-between"> {{
+                                        (dt2.Total_Gross == 0 || dt2.Total_Gross == null ? '' :
+                                        '$') }} <span> {{
+                                            (dt2.Total_Gross == 0 || dt2.Total_Gross == null ? '-' :
+                                            dt2.Total_Gross |number:'1.0-0') }}</span></span>
+                                </td>
+
+                                <!-- <td id="DataBody19" [ngClass]="{ negative: !inTheGreen(dt2.Total_Gross_PR)}">
+                                    <span class="d-flex justify-content-between"> {{
+                                        (dt2.Total_Gross_PR == 0 || dt2.Total_Gross_PR == null ? '' :
+                                        '$') }} <span> {{
+                                            (dt2.Total_Gross_PR == 0 || dt2.Total_Gross_PR == null ? '-' :
+                                            dt2.Total_Gross_PR |number:'1.0-0') }}</span></span>
+                                </td>
+                                <td id="DataBody19" [ngClass]="{ negative: !inTheGreen(dt2.PR_GP)}">
+                                    {{
+                                    (dt2.PR_GP == 0 || dt2.PR_GP == null ? '' :
+                                    dt2.PR_GP |number:'1.0-0') }} {{
+                                    (dt2.PR_GP == 0 || dt2.PR_GP == null ? '' :
+                                    '%' ) }}
+                                </td> -->
+                            </tr>
+                            @if(((ServiceInfo.Dealer != '+' && dt2.data2sign != '+' && filterData?.Oldro !='Y' ) ||
+                            (ServiceInfo.Dealer != '+' && dt2.data2sign != '+' && filterData?.Oldro == 'Y' && dt2.RoInfo
+                            != undefined )) ){
+                            <ng-container>
+                                @if(((ServiceInfo.Dealer != '+' && dt2.data2sign != '+' && filterData?.Oldro != 'Y' ) ||
+                                (ServiceInfo.Dealer != '+' && dt2.data2sign != '+' && filterData?.Oldro == 'Y' &&
+                                dt2.RoInfo.length > 0 )) ){
+                                <tr>
+                                    <td class="bdr-rt">
+                                        &nbsp;
+                                    </td>
+                                    <td colspan="15"
+                                        style="padding: 2px 1px !important;border: 2px solid #e0edff  !important;">
+                                        <!-- <app-details [RODetailsObjectMain]="RODetailsObjectMain"></app-details> -->
+                                        <app-serviceopenro-details [RODetailsObjectMain]="RODetailsObjectMain"></app-serviceopenro-details>
+                                    </td>
+                                </tr>
+                                }
+                            </ng-container>
+                            }
+                        </ng-container>
+                        }
+                    </ng-container>
+                    }
+                </tbody>
+                } @else{
+                <tbody>
+                    <tr>
+                        <td></td>
+                        <td colspan="15" style="color: black;text-align: center !important;">No Records Found</td>
+                    </tr>
+                </tbody>
+                }
+            </table>
+        </div>
+    </div>
+</div>

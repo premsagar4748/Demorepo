@@ -1,0 +1,171 @@
+<main>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="d-flex align-items-center justify-content-between pb-2" style="pointer-events: auto;">
+                    <div class="filter-dropdowns d-flex align-items-center">
+                        <div class="dropdown">
+                            <button class="dropdown-toggle" (click)="togglePopover(0)">Stores ( 5
+                                Western Acura )
+                                <span class="arrow"></span></button>
+                            <app-stores [ngStyle]="{'display' : activePopover === 0 ? 'block' : 'none'}"
+                                [storesFilterData]="storesFilterData"></app-stores>
+                        </div>
+
+                        <div class="dropdown">
+                            <button class="dropdown-toggle" (click)="togglePopover(1)">
+                                Timeframe ({{ activeTimeframe }})
+                                <span class="arrow"></span></button>
+                            <div class="timeframe" *ngIf="activePopover === 1">
+                                <div class="date-filter-card mt-2">
+                                    <button class="outline-button"
+                                        [ngClass]="{ 'active-filter': activeTimeframe === 'MTD' }"
+                                        (click)="setTimeframe('MTD', $event)">MTD</button>
+                                    <button class="outline-button"
+                                        [ngClass]="{ 'active-filter': activeTimeframe === 'YTD' }"
+                                        (click)="setTimeframe('YTD', $event)">YTD</button>
+                                    <button class="outline-button"
+                                        [ngClass]="{ 'active-filter': activeTimeframe === 'PYTD' }"
+                                        (click)="setTimeframe('PYTD', $event)">PYTD</button>
+                                    <button class="outline-button"
+                                        [ngClass]="{ 'active-filter': activeTimeframe === 'Last Month' }"
+                                        (click)="setTimeframe('Last Month', $event)">Last Month</button>
+                                    <button class="outline-button"
+                                        [ngClass]="{ 'active-filter': activeTimeframe === 'Same Mon PY' }"
+                                        (click)="setTimeframe('Same Mon PY', $event)">Same Mon PY</button>
+                                    <hr>
+                                    <button class="outline-button custom-btn"
+                                        [ngClass]="{ 'active-filter': activeTimeframe === 'Custom' }"
+                                        (click)="openbardate()">
+                                        Custom
+                                        <i class="fa-solid fa-calendar-days calendar-icon"></i>
+                                    </button>
+                                </div>
+                                <!-- <div class="open-calender cavender-dd d-flex justify-content-flex-start">
+                                                <input class="text-start opacity-0 custon-height" type="text" bsDaterangepicker
+                                                    [(ngModel)]="bsRangeValue" #datepicker="bsDaterangepicker" [bsConfig]="{
+                                                    rangeInputFormat: 'MM.dd.yyyy',
+                                                    dateInputFormat: 'MM.dd.yyyy',
+                                                    showWeekNumbers: false
+                                                  }" [maxDate]="maxDate" />
+                                            </div> -->
+                            </div>
+                        </div>
+                        <!-- <div class="date-filter-card d-flex align-items-center justify-content-start ">
+                            <div class="open-calendar position-relative">
+                                <input type="text" placeholder="Select Year" value="January/2026"
+                                    class="form-control year-input" />
+                            </div>
+                        </div> -->
+                        <button class="apply-button">
+                            Apply
+                        </button>
+                    </div>
+                </div>
+
+
+                <div class="performance-scorecard table-responsive srtbl">
+                    <table class="table mb-0" style="background-color: #c6dbff;">
+                        <thead>
+                            <tr>
+
+                                <th class="text-center">Rank</th>
+
+                                <th style=" border-right: 1px solid #e0e1e2;">Buyer Name</th>
+
+                                <th style=" border-right: 1px solid #e0e1e2;">Store Name</th>
+
+                                <th style=" border-right: 1px solid #e0e1e2;">Units</th>
+
+                                <th style=" border-right: 1px solid #e0e1e2;">Avg Front Gross</th>
+
+                                <th style=" border-right: 1px solid #e0e1e2;">Avg Back Gross</th>
+
+                                <th style=" border-right: 1px solid #e0e1e2;">Avg Total Gross</th>
+
+                                <th style=" border-right: 1px solid #e0e1e2;">% Retailed</th>
+
+                                <th style=" border-right: 1px solid #e0e1e2;">% Wholesaled</th>
+
+                                <th>Average Age</th>
+                            </tr>
+
+
+                        </thead>
+
+                        <tbody>
+
+                            <tr *ngFor="let item of burysData; let i = index">
+                                <td>{{ item.rank ?? 0}}</td>
+                                <td>{{ item.buyer_name }}</td>
+                                <td>{{ item.dealership }}</td>
+                                <td style="text-align: end !important;">{{ item.units }}
+                                </td>
+                                <td>
+                                    <div class="currency-cell">
+                                        <span>$</span>
+                                        <span>{{ item.avg_front_gross | number:'1.0-0' }}</span>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="currency-cell">
+                                        <span>$</span>
+                                        <span>{{ item.avg_back_gross | number:'1.0-0' }}</span>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="currency-cell">
+                                        <span>$</span>
+                                        <span>{{ item.avg_total_gross | number:'1.0-0' }}</span>
+                                    </div>
+                                </td>
+                                <td style="text-align: end !important;"> {{
+                                    item.pct_retailed | number:'1.1-1' }}%</td>
+                                <td style="text-align: end !important;">{{ item.pct_wholesaled | number:'1.1-1' }}%</td>
+                                <td style="text-align: end !important;">{{ item.avg_age | number:'1.1-1' }}</td>
+                            </tr>
+
+                            <tr style="border-top:1px solid #000">
+                                <td style="text-align: left !important;" colspan="3">Report Averages</td>
+                                <td style="font-weight: 600;text-align: end !important;">
+                                    95.3</td>
+
+                                <td class="money-cell">
+                                    <div class="money-wrap">
+                                        <span class="symbol">$</span>
+                                        <span class="value">2,000</span>
+                                    </div>
+                                </td>
+
+                                <td class="money-cell">
+                                    <div class="money-wrap">
+                                        <span class="symbol">$</span>
+                                        <span class="value">1,753</span>
+                                    </div>
+                                </td>
+
+                                <td class="money-cell">
+                                    <div class="money-wrap">
+                                        <span class="symbol">$</span>
+                                        <span class="value">3,753</span>
+                                    </div>
+                                </td>
+
+
+                                <td style="font-weight: 600;text-align: end !important;">
+                                    67.0%</td>
+                                <td style="font-weight: 600;text-align: end !important;">33.0%</td>
+                                <td style="font-weight: 600;text-align: end !important;">49.4</td>
+
+                            </tr>
+                        </tbody>
+
+                    </table>
+                </div>
+
+
+
+            </div>
+        </div>
+    </div>
+</main>

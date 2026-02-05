@@ -1,0 +1,223 @@
+<main>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="d-flex align-items-center justify-content-between pb-2" style="pointer-events: auto;">
+                    <div class="filter-dropdowns d-flex align-items-center">
+                        <div class="dropdown">
+                            <button class="dropdown-toggle" (click)="togglePopover(0)">Stores ( 5
+                                Western Acura )
+                                <span class="arrow"></span></button>
+                            <app-stores [ngStyle]="{'display' : activePopover === 0 ? 'block' : 'none'}"
+                                [storesFilterData]="storesFilterData"></app-stores>
+                        </div>
+                       <div class="dropdown">
+                            <button class="dropdown-toggle" (click)="togglePopover(1)">
+                                Timeframe ({{ activeTimeframe }})
+                                <span class="arrow"></span></button>
+                            <div class="timeframe" *ngIf="activePopover === 1">
+                                <div class="date-filter-card mt-2">
+                                    <button class="outline-button" [ngClass]="{ 'active-filter': activeTimeframe === 'MTD' }"
+                                        (click)="setTimeframe('MTD', $event)">MTD</button>
+                                    <button class="outline-button" [ngClass]="{ 'active-filter': activeTimeframe === 'YTD' }"
+                                        (click)="setTimeframe('YTD', $event)">YTD</button>
+                                    <button class="outline-button" [ngClass]="{ 'active-filter': activeTimeframe === 'PYTD' }"
+                                        (click)="setTimeframe('PYTD', $event)">PYTD</button>
+                                    <button class="outline-button" [ngClass]="{ 'active-filter': activeTimeframe === 'Last Month' }"
+                                        (click)="setTimeframe('Last Month', $event)">Last Month</button>
+                                    <button class="outline-button" [ngClass]="{ 'active-filter': activeTimeframe === 'Same Mon PY' }"
+                                        (click)="setTimeframe('Same Mon PY', $event)">Same Mon PY</button>
+                                    <hr>
+                                    <button class="outline-button custom-btn"  [ngClass]="{ 'active-filter': activeTimeframe === 'Custom' }" (click)="openbardate()">
+                                        Custom
+                                        <i class="fa-solid fa-calendar-days calendar-icon"></i>
+                                    </button>
+                                </div>
+                              
+                            </div>
+                        </div>
+                        <button class="apply-button">
+                            Apply
+                        </button>
+                    </div>
+                </div>
+
+
+                <div class="performance-scorecard table-responsive srtbl">
+                    <table class="table mb-0" style="background-color: #c6dbff;">
+                        <thead>
+                            <tr>
+
+                                <th  class="text-center" style="box-shadow: inset -3px 0 #d9e7ff;"></th>
+                                <th style=" box-shadow: inset -3px 0 #d9e7ff;" colspan="4">Gross Profit</th>
+
+                                <th style=" box-shadow: inset -3px 0 #d9e7ff;" colspan="5">Selling Expenses</th>
+
+                                <th>Fixed</th>
+                            </tr>
+
+                            <tr>
+
+                                <th  style="box-shadow: inset -3px 0 #d9e7ff;">Location</th>
+
+                                <th style=" border-right: 1px solid #e0e1e2;" >Svc Gross</th>
+
+                                <th style=" border-right: 1px solid #e0e1e2;" >Pts Gross</th>
+
+                                <th style=" border-right: 1px solid #e0e1e2;">Body Gross</th>
+
+                                 <th  style=" box-shadow: inset -3px 0 #d9e7ff;">Total Gross</th>
+
+                                <th style=" border-right: 1px solid #e0e1e2;" >Svc Exp</th>
+
+                                <th style=" border-right: 1px solid #e0e1e2;" >Pts Exp</th>
+
+                                <th style=" border-right: 1px solid #e0e1e2;">Body Exp</th>
+
+                                 <th style=" border-right: 1px solid #e0e1e2;">Fixed Exp</th>
+                                <th style=" box-shadow: inset -3px 0 #d9e7ff;" >Total Exp</th>
+
+                                <th >Absorption</th>
+                               
+                            </tr>
+
+                        </thead>
+
+                        <tbody>
+                           
+                            <tr *ngFor="let item of Service_Absorption; let i = index">
+                                <td>{{ item.Location}}</td>
+                                <td>
+                                    <div class="currency-cell">
+                                        <span>$</span>
+                                        <span>{{  item.Svc_Gross | number:'1.0-0':'en-US' }}</span>
+                                    </div>
+                                </td>
+                                <!-- <td>${{ item.Svc_Gross | number:'1.0-0':'en-US'}}</td> -->
+                                 <td>
+                                    <div class="currency-cell">
+                                        <span>$</span>
+                                        <span>{{  item.Pts_Gross | number:'1.0-0':'en-US' }}</span>
+                                    </div>
+                                </td>
+                                <!-- <td>${{ item.Pts_Gross | number:'1.0-0':'en-US' }}</td> -->
+                                 <td>
+                                    <div class="currency-cell">
+                                        <span>$</span>
+                                        <span>{{  item.Body_Gross | number:'1.0-0':'en-US' }}</span>
+                                    </div>
+                                </td>
+                                <!-- <td>${{ item.Body_Gross | number:'1.0-0':'en-US'}}</td> -->
+                                   <td style="font-weight: 600;box-shadow: inset -3px 0 #d9e7ff;">
+                                    <div class="currency-cell">
+                                        <span>$</span>
+                                        <span>{{  item.Total_Gross | number:'1.0-0':'en-US' }}</span>
+                                    </div>
+                                </td>
+                              <!-- <td style="font-weight: 600;">${{ item.Total_Gross | number:'1.0-0':'en-US'}}</td> -->
+                                 <td>
+                                    <div class="currency-cell">
+                                        <span>$</span>
+                                        <span>{{  item.Svc_Exp | number:'1.0-0':'en-US' }}</span>
+                                    </div>
+                                </td>
+                                <!-- <td style="border-left: 1px solid #0554ef">${{ item.Svc_Exp | number:'1.0-0':'en-US'}}</td> -->
+                                  <td>
+                                    <div class="currency-cell">
+                                        <span>$</span>
+                                        <span>{{  item.Pts_Exp | number:'1.0-0':'en-US' }}</span>
+                                    </div>
+                                </td>
+                                <!-- <td>${{ item.Pts_Exp | number:'1.0-0':'en-US'}}</td> -->
+                                   <td>
+                                    <div class="currency-cell">
+                                        <span>$</span>
+                                        <span>{{  item.Body_Exp | number:'1.0-0':'en-US' }}</span>
+                                    </div>
+                                </td>
+                                <!-- <td>${{ item.Body_Exp | number:'1.0-0':'en-US'}}</td> -->
+                                  <td>
+                                    <div class="currency-cell">
+                                        <span>$</span>
+                                        <span>{{  item.Fixed_Exp | number:'1.0-0':'en-US' }}</span>
+                                    </div>
+                                </td>
+                                <!-- <td>${{ item.Fixed_Exp  | number:'1.0-0':'en-US'}}</td> -->
+                                <!-- <td style="font-weight: 600;">${{ item.Total_Exp  | number:'1.0-0':'en-US'}}</td> -->
+                                <td style="font-weight: 600;box-shadow: inset -3px 0 #d9e7ff;">
+                                    <div class="currency-cell">
+                                        <span>$</span>
+                                        <span>{{  item.Total_Exp | number:'1.0-0':'en-US' }}</span>
+                                    </div>
+                                </td>
+                               <td style="font-weight: 600;">{{ (item.Absorption * 100) | number:'1.2-2' }}%</td>
+                            </tr>
+                            <tr style="border-top:1px solid #000" class="divBold">
+                                <td>Report Totals</td>
+                                <td class="money-cell">
+                                        <div class="money-wrap">
+                                            <span class="symbol">$</span>
+                                            <span class="value">65,103,762</span>
+                                        </div>
+                                    </td>
+                                     <td class="money-cell">
+                                        <div class="money-wrap">
+                                            <span class="symbol">$</span>
+                                            <span class="value">35,730,291</span>
+                                        </div>
+                                    </td>
+                                    <td class="money-cell">
+                                        <div class="money-wrap">
+                                            <span class="symbol">$</span>
+                                            <span class="value">4,952,143 </span>
+                                        </div>
+                                    </td>
+                                     <td class="money-cell">
+                                        <div class="money-wrap">
+                                            <span class="symbol">$</span>
+                                            <span class="value">105,786,196</span>
+                                        </div>
+                                    </td>
+                                     <td class="money-cell" style=" border-left: 1px solid #0554ef">
+                                        <div class="money-wrap">
+                                            <span class="symbol">$</span>
+                                            <span class="value">31,982,339</span>
+                                        </div>
+                                    </td>   
+                                     <td class="money-cell">
+                                        <div class="money-wrap">
+                                            <span class="symbol">$</span>
+                                            <span class="value">14,103,535</span>
+                                        </div>
+                                    </td>   
+                                     <td class="money-cell">
+                                        <div class="money-wrap">
+                                            <span class="symbol">$</span>
+                                            <span class="value">1,726,504</span>
+                                        </div>
+                                    </td>   
+                                     <td class="money-cell">
+                                        <div class="money-wrap">
+                                            <span class="symbol">$</span>
+                                            <span class="value">83,176,458</span>
+                                        </div>
+                                    </td> 
+                                     <td class="money-cell">
+                                        <div class="money-wrap">
+                                            <span class="symbol">$</span>
+                                            <span class="value">130,988,836 </span>
+                                        </div>
+                                    </td>                                 
+                                <td style="font-weight: 600;border-left: 1px solid #0554ef;background-color: #c7cacc;">80.76%</td>
+                            </tr>
+                        </tbody>
+
+                    </table>
+                </div>
+
+
+
+            </div>
+        </div>
+    </div>
+</main>

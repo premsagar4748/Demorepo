@@ -1,0 +1,51 @@
+
+
+<div class="reportstores-card my-2">
+    <div class="row h-100">
+        <div class="groups pe-2 d-flex flex-column">
+            <div class="groups-wrapper flex-grow-1">
+                <div class="group-columns">
+                    <ng-container >
+                        <button class="btn group-button w-100 text-start active"
+                           >
+                            <span ngbTooltip="SilverTip">All Stores</span>
+                        </button>
+                    </ng-container>
+                </div>
+            </div>
+        </div>
+        <div class="stores d-flex flex-column ps-0">
+            <div class="stores-wrapper flex-grow-1 d-flex flex-column">
+                <div class="allstores text-start" *ngIf="type=='M'">
+                    <a class="text-primary text-decoration-none cursor-pointer me-2" (click)="allstores('Y')">Select
+                        All</a> |
+                    <a class="text-primary text-decoration-none cursor-pointer ms-2" (click)="allstores('N')">Clear
+                        All</a>
+                </div>
+                <div class="store-columns flex-grow-1">
+                    <ng-container>
+                        <button class="btn btn-outline-primary store-button">
+                            <span ngbTooltip=" Western ACURA"> Western Acura</span>
+                        </button>
+
+                          <button class="btn btn-outline-primary store-button">
+                            <span ngbTooltip="Western Dodge"> Western Dodge</span>
+                        </button>
+
+                          <button class="btn btn-outline-primary store-button">
+                            <span ngbTooltip="Western Ford"> Western Ford</span>
+                        </button>
+
+                          <button class="btn btn-outline-primary store-button">
+                            <span ngbTooltip="Western Kia"> Western Kia</span>
+                        </button>
+
+                         <button class="btn btn-outline-primary store-button">
+                            <span ngbTooltip="Western Toyota"> Western Toyota</span>
+                        </button>
+                    </ng-container>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

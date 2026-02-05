@@ -1,0 +1,222 @@
+<main>
+
+<div class="container-fluid">
+    <div class="d-flex align-items-center justify-content-between pb-2" >
+                    <div class="filter-dropdowns d-flex align-items-center">
+                        <div class="dropdown">
+                            <button class="dropdown-toggle" (click)="togglePopover(0)">Stores ( 5
+                                Western Acura )
+                                <span class="arrow"></span></button>
+                            <app-stores [ngStyle]="{'display' : activePopover === 0 ? 'block' : 'none'}"
+                                [storesFilterData]="storesFilterData" (StoresData)="StoresData($event)"></app-stores>
+                        </div>
+                         <div class="dropdown">
+                        <button class="dropdown-toggle" (click)="togglePopover(1)">
+                            <span> {{activeTimeframe}}</span>
+                                    <span class="arrow"></span></button>
+                                <div class="timeframe" *ngIf="activePopover === 1">
+                                    <!-- <app-date-range-picker [Dates]="Dates"
+                                        (updatedDates)="updatedDates($event)"></app-date-range-picker> -->
+                                        <!-- <div class="date-filter-card mt-2" *ngIf="Dates != undefined && Dates.length > 0">
+                                            <button class="outline-button mt-0" *ngFor="let dates of Dates"
+                                                [ngClass]="{'active':DateType == dates.code}" (click)="updatedDates(dates)">{{dates.name}}</button>
+                                            <hr>
+                                            <button class="outline-button custom-btn mt-0">
+                                                Custom
+                                                <i class="fa-solid fa-calendar-days calendar-icon"></i>
+                                            </button>
+                                        </div> -->
+                                        <div class="date-filter-card mt-2">
+                                    <button class="outline-button" [ngClass]="{ 'active-filter': activeTimeframe === 'MTD' }"
+                                        (click)="setTimeframe('MTD', $event)">MTD</button>
+                                    <button class="outline-button" [ngClass]="{ 'active-filter': activeTimeframe === 'YTD' }"
+                                        (click)="setTimeframe('YTD', $event)">YTD</button>
+                                    <button class="outline-button" [ngClass]="{ 'active-filter': activeTimeframe === 'PYTD' }"
+                                        (click)="setTimeframe('PYTD', $event)">PYTD</button>
+                                    <button class="outline-button" [ngClass]="{ 'active-filter': activeTimeframe === 'Last Month' }"
+                                        (click)="setTimeframe('Last Month', $event)">Last Month</button>
+                                    <button class="outline-button" [ngClass]="{ 'active-filter': activeTimeframe === 'Same Mon PY' }"
+                                        (click)="setTimeframe('Same Mon PY', $event)">Same Mon PY</button>
+                                    <hr>
+                                    <button class="outline-button custom-btn"  [ngClass]="{ 'active-filter': activeTimeframe === 'Custom' }">
+                                        Custom
+                                        <i class="fa-solid fa-calendar-days calendar-icon"></i>
+                                    </button>
+                                </div>
+                                </div>
+                            </div>
+                            
+                        <button class="apply-button">
+                            Apply
+                        </button>
+                    </div>
+                </div>
+    <div class="" id="CITreport">
+        <div class="d-flex justify-content-between">
+            <div class="Benchmark-tbl">
+                <div>
+                    <table class="table mb-0">
+                        <thead>
+                            <tr>
+                                <th colspan="2">&nbsp;</th>
+                                <th>Total</th>
+                                <th>0-5</th>
+                                <th>6-10</th>
+                                <th>11-15</th>
+                                <th>15+</th>
+                                <th>Unfloored Inventory</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td colspan="2">New Flooring Aging</td>
+
+                                <td [ngClass]="{ negative: !inTheGreen(FloorPlanData[0]?.Date?.[0]?.TOTAL) }">
+                                    <!-- <td> -->
+                                    <span class="d-flex justify-content-between">
+                                        <span>
+                                            -$1,173,925
+                                        </span>
+                                    </span>
+                                </td>
+
+                                <td [ngClass]="{ negative: !inTheGreen(FloorPlanData[0]?.Date?.[0]?.D1) }">
+                                    <!-- <td> -->
+                                    <span class="d-flex justify-content-between">
+                                        <span>
+                                            $0.00
+                                        </span>
+                                    </span>
+                                </td>
+
+                                <td [ngClass]="{ negative: !inTheGreen(FloorPlanData[0]?.Date?.[0]?.D2) }">
+                                    <!-- <td> -->
+                                    <span class="d-flex justify-content-between">
+                                        <span>
+                                            $0.00
+                                        </span>
+                                    </span>
+                                </td>
+
+                                <td [ngClass]="{ negative: !inTheGreen(FloorPlanData[0]?.Date?.[0]?.D3) }">
+                                    <!-- <td> -->
+                                    <span class="d-flex justify-content-between">
+                                        <span>
+                                            -$67,699
+                                        </span>
+                                    </span>
+                                </td>
+
+                                <td [ngClass]="{ negative: !inTheGreen(FloorPlanData[0]?.Date?.[0]?.D4) }">
+                                    <!-- <td> -->
+                                    <span class="d-flex justify-content-between">
+                                        <span>
+                                            -$1,106,227
+                                        </span>
+                                    </span>
+                                </td>
+                                <td [ngClass]="{ negative: !inTheGreen(FloorPlanData[0]?.Date?.[0]?.D5) }">
+                                    <!-- <td> -->
+                                    <span class="d-flex justify-content-between">
+                                        <span>
+                                            -$1,173,925.47
+                                        </span>
+                                    </span>
+                                </td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Side Info Section -->
+
+            </div>
+
+        </div>
+
+        <div class="performance-scorecard mt-2">
+            <table class="table mb-0">
+                <thead>
+                    <tr>
+
+                        <th style="cursor: pointer;">Age</th>
+                        <th style="cursor: pointer;">Date</th>
+                        <th style="cursor: pointer;">Account</th>
+                        <th style="cursor: pointer;">Control</th>
+                        <th style="cursor: pointer;">Control 2</th>
+                        <th style="cursor: pointer;">Floorplan Balance</th>
+                        <th style="cursor: pointer;">Inventory Balance</th>
+                        <th style="cursor: pointer;">Customer</th>
+                        <th style="cursor: pointer;">Number</th>
+                        <th style="cursor: pointer;">Sale Date</th>
+                        <th style="cursor: pointer;">Sale Age</th>
+                        <th style="cursor: pointer;">Stock #</th>
+                        <th style="cursor: pointer;">Deal #</th>
+                        <th style="cursor: pointer;">Stage</th>
+                        <th style="cursor: pointer;">F&I Mgr</th>
+                        <th style="cursor: pointer;">New/Used</th>
+                        <th style="cursor: pointer;">Type</th>
+                        <th style="cursor: pointer;">Status</th>
+                        <th style="cursor: pointer;">Bank Name</th>
+                        <th style="cursor: pointer;">Year</th>
+                        <th style="cursor: pointer;">Make</th>
+                        <th style="cursor: pointer;">Model</th>
+
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr *ngFor="let fp of FloorPlanData; let i = index"
+                        [ngClass]="{ even: i % 2 == 0, odd: i % 2 != 0 }">
+
+                        <td class="text-end">{{ fp.Age || '-' }}</td>
+                        <td class="text-center">
+                            {{ fp.Date ? (fp.Date | date:'MM.dd.yyyy') : '-' }}
+                        </td>
+                        <td class="text-center">{{ fp.Account || '-' }}</td>
+                        <td class="text-center">{{ fp.Control || '-' }}</td>
+                        <td class="text-start">
+                            <span class="ellipsis" [class.ellipsis]="fp['Control 2']?.length > 15"
+                                [title]="fp['Control 2']?.length > 15 ? fp['Control 2'] : null">
+                                {{ fp['Control 2'] || '-' }}
+                            </span>
+                        </td>
+                        <td [ngClass]="{ negative: !inTheGreen(fp['Floorplan Balance']) }">
+                            <span *ngIf="fp['Floorplan Balance'] && fp['Floorplan Balance'] != 'Sold Unit' && fp['Floorplan Balance'] != 'Not on Floorplan'">$</span>
+                            {{ fp['Floorplan Balance'] == 'Not on Floorplan' ? 'Not on Floorplan' : fp['Floorplan Balance'] == 'Sold Unit' ? 'Sold Unit' : formatBalance(fp['Floorplan Balance']) ? formatBalance(fp['Floorplan Balance']) : '-' }}</td>
+                        <td [ngClass]="{ negative: !inTheGreen(fp['Inventory Balance']) }">
+                            <span *ngIf="fp['Inventory Balance'] && fp['Inventory Balance'] != 'Sold Unit' && fp['Inventory Balance'] != 'Not on Floorplan'">$</span>
+                           {{ fp['Inventory Balance'] == 'Not on Inventory' ? 'Not on Inventory' : fp['Inventory Balance'] == 'Sold Unit' ? 'Sold Unit' : formatBalance(fp['Inventory Balance']) ? formatBalance(fp['Inventory Balance']) : '-' }}</td>
+                        <td class="text-start">
+                            <span class="ellipsis" [class.ellipsis]="fp.CustomerName?.length > 15"
+                                [title]="fp.CustomerName?.length > 15 ? fp.CustomerName : null">
+                                {{ fp.Customer || '-' }}
+                            </span>
+                        </td>
+                        <td class="text-center">{{ fp.Number || '-' }}</td>
+
+                        <td class="text-center">
+                            {{ fp['Sale Date'] ? (fp['Sale Date'] | date:'MM/dd/yyyy') : '-' }}
+                        </td>
+                        <td class="text-center">
+                            {{fp['Sale Age'] }}
+                        </td>
+                        <td class="text-start">{{ fp['Stock #'] || '-' }}</td>
+                        <td class="text-center popuppointer">{{ fp['Deal #'] || '-' }}</td>
+                        <td class="text-start">{{ fp.Stage || '-' }}</td>
+                        <td class="text-start">{{ fp['F&I Mgr'] || '-' }}</td>
+                        <td class="text-start">{{ fp['New/Used'] || '-' }}</td>
+                        <td class="text-start">{{ fp.Type || '-' }}</td>
+                        <td class="text-center">{{ fp.Status || '-' }}</td>
+                        <td class="text-start">{{ fp['Bank Name'] || '-' }}</td>
+                        <td class="text-center">{{ fp.Year || '-' }}</td>
+                        <td class="text-start">{{ fp.make || '-' }}</td>
+                        <td class="text-start">{{ fp.Model || '-' }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+</main>

@@ -1,0 +1,109 @@
+<main>
+    <div class="container-fluid" >
+        <div class="row">
+            <div class="col-12">
+                <div class="d-flex align-items-center justify-content-between pb-2" >
+                    <div class="filter-dropdowns d-flex align-items-center">
+                        <div class="dropdown">
+                            <button class="dropdown-toggle" (click)="togglePopover(0)">Stores ( 5
+                                Western Acura )
+                                <span class="arrow"></span></button>
+                            <app-stores [ngStyle]="{'display' : activePopover === 0 ? 'block' : 'none'}"
+                                [storesFilterData]="storesFilterData" (StoresData)="StoresData($event)"></app-stores>
+                        </div>
+                         <div class="dropdown">
+                        <button class="dropdown-toggle" (click)="togglePopover(1)">
+                            <span> {{displaytime}}</span>
+                                    <span class="arrow"></span></button>
+                                <div class="timeframe" *ngIf="activePopover === 1">
+                                    <!-- <app-date-range-picker [Dates]="Dates"
+                                        (updatedDates)="updatedDates($event)"></app-date-range-picker> -->
+                                        <!-- <div class="date-filter-card mt-2" *ngIf="Dates != undefined && Dates.length > 0">
+                                            <button class="outline-button mt-0" *ngFor="let dates of Dates"
+                                                [ngClass]="{'active':DateType == dates.code}">{{dates.name}}</button>
+                                            <hr>
+                                            <button class="outline-button custom-btn mt-0">
+                                                Custom
+                                                <i class="fa-solid fa-calendar-days calendar-icon"></i>
+                                            </button>
+                                        </div> -->
+                                         <div class="date-filter-card mt-2">
+                                    <button class="outline-button" [ngClass]="{ 'active-filter': activeTimeframe === 'MTD' }"
+                                        (click)="setTimeframe('MTD', $event)">MTD</button>
+                                    <button class="outline-button" [ngClass]="{ 'active-filter': activeTimeframe === 'YTD' }"
+                                        (click)="setTimeframe('YTD', $event)">YTD</button>
+                                    <button class="outline-button" [ngClass]="{ 'active-filter': activeTimeframe === 'PYTD' }"
+                                        (click)="setTimeframe('PYTD', $event)">PYTD</button>
+                                    <button class="outline-button" [ngClass]="{ 'active-filter': activeTimeframe === 'Last Month' }"
+                                        (click)="setTimeframe('Last Month', $event)">Last Month</button>
+                                    <button class="outline-button" [ngClass]="{ 'active-filter': activeTimeframe === 'Same Mon PY' }"
+                                        (click)="setTimeframe('Same Mon PY', $event)">Same Mon PY</button>
+                                    <hr>
+                                    <button class="outline-button custom-btn"  [ngClass]="{ 'active-filter': activeTimeframe === 'Custom' }">
+                                        Custom
+                                        <i class="fa-solid fa-calendar-days calendar-icon"></i>
+                                    </button>
+                                </div>
+                                </div>
+                            </div>
+                            
+                        <button class="apply-button">
+                            Apply
+                        </button>
+                    </div>
+                </div>
+
+
+                 <div class="performance-scorecard table-responsive srtbl">
+                    <table class="table mb-0" >
+                        <thead>
+                            <tr>
+
+                                <th colspan="1" class="text-center"></th>
+                                <th style=" border-right: 1px solid #e0e1e2;">Avg Washout Cycles</th>
+
+                                <th style=" border-right: 1px solid #e0e1e2;">Avg Front Gross</th>
+
+                                <th style=" border-right: 1px solid #e0e1e2;">Avg Back Gross</th>
+
+                                 <th style=" border-right: 1px solid #e0e1e2;">Avg Total Gross</th>
+
+                                <th cstyle=" border-right: 1px solid #e0e1e2;">Avg Days to Threshold</th>
+
+                                <th >Trade %</th>
+                            </tr>                        
+
+                            <tr *ngFor="let row of avgrecords" style="background-color: #8db4ff !important;
+    color: black;
+    font-size: 1rem;">
+
+                                <th>{{ row.col_1 || row.col_2 }}</th>
+                                <th>{{ row['Avg Washout Cycles'] }}</th>
+                                <th style="cursor: pointer;" (click)="viewdetails()">${{ getNoDecimal(row['Avg Front Gross']) | number:'1.0-0' }}</th>
+                                <th style="cursor: pointer;" (click)="viewdetails()">${{ getNoDecimal(row['Avg Back Gross']) | number:'1.0-0'}}</th>
+                                <th>${{ getNoDecimal(row['Avg Total Gross']) | number:'1.0-0' }}</th>
+                                <th>{{ row['Avg Days to Threshold'] | number:'1.1-1' }}</th>
+                                <th>{{ formatTradePercent(row) }}</th>
+                                                               
+                            </tr></thead>
+                            <tbody>
+                                <tr *ngFor="let row of records" [ngClass]="row.col_1 ? 'lightblue-bg':'sub-title'">
+
+                                    <!-- NAME COLUMN -->
+                                    <td [style.textAlign]="row.col_1 ? 'left' : 'left'" [style.paddingLeft]="row.col_1 ? '5px' : '3rem'"> 
+                                        {{ row.col_1 || removeComma(row.col_2) }}
+                                    </td>
+                                    <td [style.paddingLeft]="row.col_2 ? '5px' : '5px'">{{ row['Avg Washout Cycles'] | number:'1.1-1'}}</td>
+                                    <td [style.paddingLeft]="row.col_2 ? '5px' : '5px'" style="cursor: pointer;" (click)="viewdetails()">${{ getNoDecimal(row['Avg Front Gross']) | number:'1.0-0' }}</td>
+                                    <td [style.paddingLeft]="row.col_2 ? '5px' : '5px'" style="cursor: pointer;" (click)="viewdetails()">${{ getNoDecimal(row['Avg Back Gross']) | number:'1.0-0' }}</td>
+                                    <td [style.paddingLeft]="row.col_2 ? '5px' : '5px'">${{ getNoDecimal(row['Avg Total Gross']) | number:'1.0-0' }}</td>
+                                    <td [style.paddingLeft]="row.col_2 ? '5px' : '5px'">{{ row['Avg Days to Threshold'] | number:'1.1-1' }}</td>
+                                    <td [style.paddingLeft]="row.col_2 ? '5px' : '5px'">{{ formatTradePercent(row) }}</td>
+                                </tr>
+                            </tbody>
+                    </table>
+                 </div>
+            </div>
+        </div>
+    </div>
+</main>

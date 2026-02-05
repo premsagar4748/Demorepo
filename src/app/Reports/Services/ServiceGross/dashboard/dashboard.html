@@ -1,0 +1,1374 @@
+<!-- <div class="content-wrapper pt-3"> -->
+    <ngx-spinner bdColor="rgba(0, 0, 0, 0.8)" size="medium" color="#fff" type="ball-clip-rotate" [fullScreen]="true">
+        <p style="color: white"> Loading.. </p>
+    </ngx-spinner>
+    
+    <div class="wrapper" [ngClass]="{'expanded': isSidebarCollapsed()}" style="margin-top: 52px;">
+        <div class="container-fluid p-3">
+            <!-- <app-filters (appliedFilterData)="applyClickEvent($event)"></app-filters> -->
+            <app-servicegross-report [filterData]="filterData()" (appliedFilterData)="applyClickEvent($event)"></app-servicegross-report>
+            @if(viewTable() == 'Overview'){
+            <div class="performance-scorecard mt-2">
+                <table class="table mb-0 w-100" >
+                    <thead>
+                        <tr class="bdr-btm">
+                            <th>  <span> Date </span>: {{showDate()}}
+                            </th>
+                            <th></th>
+                            <th colspan="5" class="text-center">
+                                <span class="d-flex align-items-center position-relative px-1">
+                                    <div class="head-button" (click)="PayTypeGrid('G')">
+                                        Pay Type Details
+                                        <i class="fa fa-arrow-right" aria-hidden="true"
+                                            style="cursor: pointer; padding-left: 10px;"></i>
+                                    </div><span class="m-auto head-name">Gross</span>
+                                </span>
+                                <!-- Gross -->
+                            </th>
+                            <th colspan="4" class="text-center"><span
+                                    class="d-flex align-items-center position-relative px-1">
+                                    <div class="head-button" (click)="PayTypeGrid('H')">
+                                        Hours Details
+                                        <i class="fa fa-arrow-right" aria-hidden="true"
+                                            style="cursor: pointer; padding-left: 10px;"></i>
+                                    </div><span class="m-auto head-name">Hours</span>
+                                </span></th>
+                            <th colspan="4" class="text-center">
+                                <span class="d-flex align-items-center position-relative px-1">
+                                    <div class="head-button" (click)="PayTypeGrid('R')">
+                                        RO Details
+                                        <i class="fa fa-arrow-right" aria-hidden="true"
+                                            style="cursor: pointer; padding-left: 10px;"></i>
+                                    </div><span class="m-auto head-name">Repair Orders</span>
+                                </span>
+                            </th>
+                            <th colspan="7" class="text-center">Performance</th>
+                        </tr>
+    
+                        <tr>
+                            <th>
+                                <!-- {{filterData()?.startdate | date: 'dd'}}
+                                @if((filterData()?.startdate | date: 'yyyy') != (filterData()?.enddate | date: 'yyyy')){
+                                <span>{{filterData()?.startdate | date: 'yyyy'}}</span>
+                                }- {{filterData()?.enddate | date: 'dd'}}@if((filterData()?.startdate | date: 'yyyy') !=
+                                (filterData()?.enddate | date: 'yyyy')){
+                                <span>{{filterData()?.enddate | date: 'yyyy'}}</span>
+                                }@else{<span>, {{filterData()?.startdate | date: 'yyyy'}}</span>} -->
+                            </th>
+                            <th (click)="sort('TotalSale', serviceData())">Service Sale</th>
+    
+                            <!-- Gross -->
+                            <th (click)="sort('Total_Gross',serviceData())">Total</th>
+                            <th (click)="sort('TotalGross_Pace',serviceData())">Pace</th>
+                            <th (click)="sort('Gross_Target',serviceData())">Target</th>
+                            <th (click)="sort('Diff',serviceData())">Diff</th>
+                            <th (click)="sort('Discount',serviceData())">Discounts</th>
+    
+                            <!-- Hours -->
+                            <th (click)="sort('Total_Hours',serviceData())">Total</th>
+                            <th (click)="sort('TotalHours_PACE',serviceData())">Pace</th>
+                            <th (click)="sort('ROHours_Target',serviceData())">Target</th>
+                            <th (click)="sort('HoursDiff',serviceData())">Diff</th>
+    
+                            <!-- RO -->
+                            <th (click)="sort('Repair_Orders',serviceData())">Total</th>
+                            <th (click)="sort('Total_ROPACE',serviceData())">Pace</th>
+                            <th (click)="sort('RO_Target',serviceData())">Target</th>
+                            <th (click)="sort('ROCountDiff',serviceData())">Diff</th>
+    
+                            <!-- performance -->
+                            <th (click)="sort('Hours_per_RO',serviceData())">Hours/Ro</th>
+                            <th (click)="sort('Sales_Per_RO',serviceData())">Sales/Ro</th>
+                            <th (click)="sort('Parts_Per_RO',serviceData())">Parts/Ro</th>
+                            <th (click)="sort('Average_RO',serviceData())">AVG Ro</th>
+                            <th (click)="sort('ELR',serviceData())">ELR</th>
+                            <th (click)="sort('Retention',serviceData())">GP%</th>
+                            <th (click)="sort('MPI',serviceData())">MPI%</th>
+                        </tr>
+                    </thead>
+                    @if(!NoData()){
+                    <tbody>
+                        @for(item of serviceData(); let index = $index; track index){
+                        <tr
+                            [ngClass]="{'divBold': item.data1 === 'REPORT TOTALS', 'bdr-tp': (item.data1 != 'REPORT TOTALS' && item.open == true)}">
+                            <td class="d-flex justify-content-between align-items-center main-head bdr-rt"
+                                title="{{item.data1}}"
+                                (click)="(item.Data2 == undefined && item.data1 != 'REPORT TOTALS') && openDetails(item, item, '1')"
+                                [ngStyle]="{'cursor':item.Data2 == undefined ? 'pointer':''}">
+                                <!-- <span>
+                                    {{item.data1}}
+                                </span> -->
+                                @if(filterData()?.var1 != 'cdate'){
+                                <!-- <span title="{{(item.data1 == undefined ? 'REPORT TOTALS': item.data1)}}"> -->
+                                {{(item.data1 == undefined || item.data1 == '' || item.data1 == null ? '-' : (
+                                (item.data1.toString() |
+                                slice:0:22) +
+                                (item.data1.toString().length > 22 ? '...' : '') ))}}
+                                <!-- </span> -->
+                                }@else{
+                                <!-- <span title="{{(item.data1 == undefined ? 'REPORT TOTALS': item.data1)}}"> -->
+                                {{( item.data1 == undefined || item.data1 == '' ||
+                                item.data1 == null ? '-' :(item.data1 !='REPORT TOTALS' ?
+                                (item.data1 | date:'MM.dd.yyyy' ): 'REPORT TOTALS' ) )}}
+                                <!-- </span> -->
+                                }
+                                <span class="px-2">
+                                    @if(item.Data2 != undefined){
+                                    @if(item.Data2.length > 0){
+                                    <!-- @if(!expandedRows.has(index)){ -->
+                                    @if(item.open == false){
+                                    <img src="images/Add_Circle2.png" class="pointer"
+                                        (click)="expandOpen(index, item.open, item, serviceData())">
+                                    }@else{
+                                    <img src="images/Minus_CircleIcon.svg" class="pointer"
+                                        (click)="expandOpen(index, item.open, item, serviceData())">
+                                    }
+                                    }
+                                    }
+                                </span>
+                            </td>
+                            <td class="bdr-rt" [ngClass]="{negative: !inTheGreen(item.TotalSale)}">
+                                <span [ngClass]="{spanalign: valueCheck(item.TotalSale).value != '-'}">
+                                    {{valueCheck(item.TotalSale).symbol}}
+                                    <span>{{valueCheck(item.TotalSale).value}}</span>
+                                </span>
+                            </td>
+                            <td [ngClass]="{negative: !inTheGreen(item.Total_Gross)}">
+                                <span [ngClass]="{spanalign: valueCheck(item.Total_Gross).value != '-'}">
+                                    {{valueCheck(item.Total_Gross).symbol}}
+                                    <span>{{valueCheck(item.Total_Gross).value}}</span>
+                                </span>
+                            </td>
+                            <td [ngClass]="{negative: !inTheGreen(item.TotalGross_Pace)}">
+                                <span [ngClass]="{spanalign: dateCheck(valueCheck(item.TotalGross_Pace).value) != '-'}">
+                                    {{(item.TotalGross_Pace == 0 || item.TotalGross_Pace == null ||
+                                    dateCheck(item.TotalGross_Pace) == '-')? '':'$'}}
+                                    <span>{{dateCheck(valueCheck(item.TotalGross_Pace).value)}}</span>
+                                </span>
+                            </td>
+                            <td [ngClass]="{negative: !inTheGreen(item.Gross_Target)}">
+                                <span [ngClass]="{spanalign: dateCheck(valueCheck(item.Gross_Target).value) != '-'}">
+                                    {{(item.Gross_Target == 0 || item.Gross_Target == null || dateCheck(item.Gross_Target)
+                                    == '-')? '':'$'}}
+                                    <span>{{dateCheck(valueCheck(item.Gross_Target).value)}}</span>
+                                </span>
+                            </td>
+                            <td [ngClass]="getColorClass(item.Diff)">
+                                <span [ngClass]="{spanalign: dateCheck(valueCheck(item.Diff).value) != '-'}">
+                                    {{(item.Diff == 0 || item.Diff == null || dateCheck(item.Diff) == '-')? '':'$'}}
+                                    <span>{{dateCheck(valueCheck(item.Diff).value)}}</span>
+                                </span>
+                            </td>
+                            <td class="bdr-rt" [ngClass]="{negative: !inTheGreen(item.Discount)}">
+                                <span [ngClass]="{spanalign: dateCheck(valueCheck(item.Discount).value) != '-'}">
+                                    {{(item.Discount == 0 || item.Discount == null || dateCheck(item.Discount) == '-')?
+                                    '':'$'}}
+                                    <span>{{dateCheck(valueCheck(item.Discount).value)}}</span>
+                                </span>
+                            </td>
+    
+                            <td [ngClass]="{negative: !inTheGreen(item.Total_Hours)}">{{item.Total_Hours | ValueExistence}}</td>
+                            <td [ngClass]="{negative: !inTheGreen(item.TotalHours_PACE)}">{{dateCheck(item.TotalHours_PACE |
+                                ValueExistence)}}</td>
+                            <td [ngClass]="{negative: !inTheGreen(item.ROHours_Target)}">{{dateCheck(item.ROHours_Target |
+                                ValueExistence)}}</td>
+                            <td class="bdr-rt" [ngClass]="getColorClass(item.HoursDiff)">{{dateCheck(item.HoursDiff |
+                                ValueExistence)}}</td>
+    
+                            <td [ngClass]="{negative: !inTheGreen(item.Repair_Orders)}">{{item.Repair_Orders | ValueExistence}}
+                            </td>
+                            <td [ngClass]="{negative: !inTheGreen(item.Total_ROPACE)}">{{dateCheck(item.Total_ROPACE |
+                                ValueExistence)}}</td>
+                            <td [ngClass]="{negative: !inTheGreen(item.RO_Target)}">{{dateCheck(item.RO_Target |
+                                ValueExistence)}}</td>
+                            <td class="bdr-rt" [ngClass]="getColorClass(item.ROCountDiff)">{{dateCheck(item.ROCountDiff |
+                                ValueExistence)}}</td>
+    
+                            <td [ngClass]="{negative: !inTheGreen(item.Hours_per_RO)}">{{item.Hours_per_RO | ValueExistence}}
+                            </td>
+                            <td [ngClass]="{negative: !inTheGreen(item.Sales_Per_RO)}">
+                                <span [ngClass]="{spanalign: valueCheck(item.Sales_Per_RO).value != '-'}">
+                                    {{valueCheck(item.Sales_Per_RO).symbol}}
+                                    <span>{{valueCheck(item.Sales_Per_RO).value}}</span>
+                                </span>
+                            </td>
+                            <td [ngClass]="{negative: !inTheGreen(item.Parts_Per_RO)}">{{item.Parts_Per_RO | ValueExistence}}
+                            </td>
+                            <td [ngClass]="{negative: !inTheGreen(item.Average_RO)}">
+                                <span [ngClass]="{spanalign: valueCheck(item.Average_RO).value != '-'}">
+                                    {{valueCheck(item.Average_RO).symbol}}
+                                    <span>{{valueCheck(item.Average_RO).value}}</span>
+                                </span>
+                            </td>
+                            <td [ngClass]="{negative: !inTheGreen(item.ELR)}">
+                                <span [ngClass]="{spanalign: valueCheck(item.ELR).value != '-'}">
+                                    {{valueCheck(item.ELR).symbol}}
+                                    <span>{{valueCheck(item.ELR).value}}</span>
+                                </span>
+                            </td>
+                            <td [ngClass]="{negative: !inTheGreen(item.Retention)}">
+                                {{item.Retention | ValueExistence}}{{item.Retention == null || item.Retention == 0 ? '':'%'}}
+                            </td>
+                            <td [ngClass]="{negative: !inTheGreen(item.MPI)}">
+                                {{item.MPI | ValueExistence}}{{item.MPI == null || item.MPI == 0 ? '':'%'}}
+                            </td>
+                        </tr>
+                        @if(item.Data2 != undefined && item.Data2.length > 0 && item.open == true ){
+                        @for(sub of item.Data2; let subI = $index; track sub){
+                        <ng-container>
+                            <tr class="member-row"
+                                [ngClass]="{'bdr-bt': (sub.SubData == undefined || sub.SubData.length == 0) && item.Data2.length == (subI + 1)}">
+                                <td (click)="openDetails(sub, item, '2')" class="bdr-rt" title="{{sub.data2}}">
+                                    <!-- {{sub.data2}} -->
+                                    @if(filterData()?.var2 != 'cdate'){
+                                    <!-- <span> -->
+                                    {{(sub.data2 == undefined || sub.data2 == '' || sub.data2 == null ? '--' : (
+                                    (sub.data2.toString() | slice:0:15) +
+                                    (sub.data2.toString().length > 15 ? '...' : '') ))}}
+                                    <!-- </span> -->
+                                    }@else{
+                                    <!-- <span> -->
+                                    {{( sub.data2 == undefined || sub.data2 == '' || sub.data2 ==
+                                    null ? '-' : sub.data2 | date:'MM.dd.yyyy' )}}
+                                    <!-- </span> -->
+                                    }
+                                </td>
+                                <td class="bdr-rt" [ngClass]="{negative: !inTheGreen(sub.TotalSale)}">
+                                    <span [ngClass]="{spanalign: valueCheck(sub.TotalSale).value != '-'}">
+                                        {{valueCheck(sub.TotalSale).symbol}}
+                                        <span>{{valueCheck(sub.TotalSale).value}}</span>
+                                    </span>
+                                </td>
+                                <td [ngClass]="{negative: !inTheGreen(sub.Total_Gross)}">
+                                    <span [ngClass]="{spanalign: valueCheck(sub.Total_Gross).value != '-'}">
+                                        {{valueCheck(sub.Total_Gross).symbol}}
+                                        <span>{{valueCheck(sub.Total_Gross).value}}</span>
+                                    </span>
+                                </td>
+                                <td [ngClass]="{negative: !inTheGreen(sub.TotalGross_Pace)}">
+                                    <span [ngClass]="{spanalign: dateCheck(valueCheck(sub.TotalGross_Pace).value) != '-'}">
+                                        {{(sub.TotalGross_Pace == 0 || sub.TotalGross_Pace == null ||
+                                        dateCheck(sub.TotalGross_Pace) == '-')? '':'$'}}
+                                        <span>{{dateCheck(valueCheck(sub.TotalGross_Pace).value)}}</span>
+                                    </span>
+                                </td>
+                                <td [ngClass]="{negative: !inTheGreen(sub.Gross_Target)}">
+                                    <span [ngClass]="{spanalign: dateCheck(valueCheck(sub.Gross_Target).value) != '-'}">
+                                        {{(sub.Gross_Target == 0 || sub.Gross_Target == null || dateCheck(sub.Gross_Target)
+                                        == '-')? '':'$'}}
+                                        <span>{{dateCheck(valueCheck(sub.Gross_Target).value)}}</span>
+                                    </span>
+                                </td>
+                                <td [ngClass]="getColorClass(sub.Diff)">
+                                    <span [ngClass]="{spanalign: dateCheck(valueCheck(sub.Diff).value) != '-'}">
+                                        {{(sub.Diff == 0 || sub.Diff == null || dateCheck(sub.Diff) == '-')? '':'$'}}
+                                        <span>{{dateCheck(valueCheck(sub.Diff).value)}}</span>
+                                    </span>
+                                </td>
+                                <td class="bdr-rt" [ngClass]="{negative: !inTheGreen(sub.Discount)}">
+                                    <span [ngClass]="{spanalign: dateCheck(valueCheck(sub.Discount).value) != '-'}">
+                                        {{(sub.Discount == 0 || sub.Discount == null || dateCheck(sub.Discount) == '-')?
+                                        '':'$'}}
+                                        <span>{{dateCheck(valueCheck(sub.Discount).value)}}</span>
+                                    </span>
+                                </td>
+    
+                                <td [ngClass]="{negative: !inTheGreen(sub.Total_Hours)}">{{sub.Total_Hours | ValueExistence}}
+                                </td>
+                                <td [ngClass]="{negative: !inTheGreen(sub.TotalHours_PACE)}">{{dateCheck(sub.TotalHours_PACE
+                                    | ValueExistence)}}</td>
+                                <td [ngClass]="{negative: !inTheGreen(sub.ROHours_Target)}">{{dateCheck(sub.ROHours_Target |
+                                    ValueExistence)}}</td>
+                                <td class="bdr-rt" [ngClass]="getColorClass(sub.HoursDiff)">{{dateCheck(sub.HoursDiff |
+                                    ValueExistence)}}</td>
+    
+                                <td [ngClass]="{negative: !inTheGreen(sub.Repair_Orders)}">{{sub.Repair_Orders |
+                                    ValueExistence}}</td>
+                                <td [ngClass]="{negative: !inTheGreen(sub.Total_ROPACE)}">{{dateCheck(sub.Total_ROPACE |
+                                    ValueExistence)}}</td>
+                                <td [ngClass]="{negative: !inTheGreen(sub.RO_Target)}">{{dateCheck(sub.RO_Target |
+                                    ValueExistence)}}</td>
+                                <td class="bdr-rt" [ngClass]="getColorClass(sub.ROCountDiff)">{{dateCheck(sub.ROCountDiff |
+                                    ValueExistence)}}</td>
+    
+                                <td [ngClass]="{negative: !inTheGreen(sub.Hours_per_RO )}">{{sub.Hours_per_RO | ValueExistence}}
+                                </td>
+                                <td [ngClass]="{negative: !inTheGreen(sub.Sales_Per_RO)}">
+                                    <span [ngClass]="{spanalign: valueCheck(sub.Sales_Per_RO).value != '-'}">
+                                        {{valueCheck(sub.Sales_Per_RO).symbol}}
+                                        <span>{{valueCheck(sub.Sales_Per_RO).value}}</span>
+                                    </span>
+                                </td>
+                                <td [ngClass]="{negative: !inTheGreen(sub.Parts_Per_RO)}">{{sub.Parts_Per_RO | ValueExistence}}
+                                </td>
+                                <td [ngClass]="{negative: !inTheGreen(sub.Average_RO)}">
+                                    <span [ngClass]="{spanalign: valueCheck(sub.Average_RO).value != '-'}">
+                                        {{valueCheck(sub.Average_RO).symbol}}
+                                        <span>{{valueCheck(sub.Average_RO).value}}</span>
+                                    </span>
+                                </td>
+                                <td [ngClass]="{negative: !inTheGreen(sub.ELR)}">
+                                    <span [ngClass]="{spanalign: valueCheck(sub.ELR).value != '-'}">
+                                        {{valueCheck(sub.ELR).symbol}}
+                                        <span>{{valueCheck(sub.ELR).value}}</span>
+                                    </span>
+                                </td>
+                                <td [ngClass]="{negative: !inTheGreen(sub.Retention)}">
+                                    {{sub.Retention | ValueExistence}}{{sub.Retention == null || sub.Retention == 0 ? '':'%'}}
+                                </td>
+                                <td [ngClass]="{negative: !inTheGreen(sub.MPI)}">
+                                    {{sub.MPI | ValueExistence}}{{sub.MPI == null || sub.MPI == 0 ? '':'%'}}
+                                </td>
+                            </tr>
+    
+                            @if(sub.SubData != undefined && sub.SubData.length > 0){
+                            @for(dt3 of sub.SubData; let dt3I = $index; track dt3){
+                            <ng-container>
+                                <tr class="member-row"
+                                    [ngClass]="{'bdr-bt': item.Data2.length == (subI + 1) && sub.SubData.length == (dt3I + 1)}">
+                                    <td (click)="openDetails(dt3, item, '3')" class="bdr-rt ps-4" title="{{dt3.data3}}">
+                                        <!-- {{dt3.data3}} -->
+                                        @if(filterData()?.var3 != 'cdate'){
+                                        <!-- <span> -->
+                                        {{(dt3.data3 == undefined || dt3.data3 == '' || dt3.data3 == null ? '--' : (
+                                        (dt3.data3.toString() | slice:0:15) +
+                                        (dt3.data3.toString().length > 15 ? '...' : '') ))}}
+                                        <!-- </span> -->
+                                        }@else{
+                                        <!-- <span> -->
+                                        {{( dt3.data3 == undefined || dt3.data3 == '' || dt3.data3 ==
+                                        null ? '-' : dt3.data3 | date:'MM.dd.yyyy' )}}
+                                        <!-- </span> -->
+                                        }
+                                    </td>
+                                    <td class="bdr-rt" [ngClass]="{negative: !inTheGreen(dt3.TotalSale)}">
+                                        <span [ngClass]="{spanalign: valueCheck(dt3.TotalSale).value != '-'}">
+                                            {{valueCheck(dt3.TotalSale).symbol}}
+                                            <span>{{valueCheck(dt3.TotalSale).value}}</span>
+                                        </span>
+                                    </td>
+                                    <td [ngClass]="{negative: !inTheGreen(dt3.Total_Gross)}">
+                                        <span [ngClass]="{spanalign: valueCheck(dt3.Total_Gross).value != '-'}">
+                                            {{valueCheck(dt3.Total_Gross).symbol}}
+                                            <span>{{valueCheck(dt3.Total_Gross).value}}</span>
+                                        </span>
+                                    </td>
+                                    <td [ngClass]="{negative: !inTheGreen(dt3.TotalGross_Pace)}">
+                                        <span
+                                            [ngClass]="{spanalign: dateCheck(valueCheck(dt3.TotalGross_Pace).value) != '-'}">
+                                            {{(dt3.TotalGross_Pace == 0 || dt3.TotalGross_Pace == null ||
+                                            dateCheck(dt3.TotalGross_Pace) == '-')? '':'$'}}
+                                            <span>{{dateCheck(valueCheck(dt3.TotalGross_Pace).value)}}</span>
+                                        </span>
+                                    </td>
+                                    <td [ngClass]="{negative: !inTheGreen(dt3.Gross_Target)}">
+                                        <span [ngClass]="{spanalign: dateCheck(valueCheck(dt3.Gross_Target).value) != '-'}">
+                                            {{(dt3.Gross_Target == 0 || dt3.Gross_Target == null ||
+                                            dateCheck(dt3.Gross_Target) == '-')? '':'$'}}
+                                            <span>{{dateCheck(valueCheck(dt3.Gross_Target).value)}}</span>
+                                        </span>
+                                    </td>
+                                    <td [ngClass]="getColorClass(dt3.Diff)">
+                                        <span [ngClass]="{spanalign: dateCheck(valueCheck(dt3.Diff).value) != '-'}">
+                                            {{(dt3.Diff == 0 || dt3.Diff == null || dateCheck(dt3.Diff) == '-')? '':'$'}}
+                                            <span>{{dateCheck(valueCheck(dt3.Diff).value)}}</span>
+                                        </span>
+                                    </td>
+                                    <td class="bdr-rt" [ngClass]="{negative: !inTheGreen(dt3.Discount)}">
+                                        <span [ngClass]="{spanalign: dateCheck(valueCheck(dt3.Discount).value) != '-'}">
+                                            {{(dt3.Discount == 0 || dt3.Discount == null || dateCheck(dt3.Discount) == '-')?
+                                            '':'$'}}
+                                            <span>{{dateCheck(valueCheck(dt3.Discount).value)}}</span>
+                                        </span>
+                                    </td>
+    
+                                    <td [ngClass]="{negative: !inTheGreen(dt3.Total_Hours)}">{{dt3.Total_Hours |
+                                        ValueExistence}}</td>
+                                    <td [ngClass]="{negative: !inTheGreen(dt3.TotalHours_PACE)}">
+                                        {{dateCheck(dt3.TotalHours_PACE | ValueExistence)}}</td>
+                                    <td [ngClass]="{negative: !inTheGreen(dt3.ROHours_Target)}">
+                                        {{dateCheck(dt3.ROHours_Target | ValueExistence)}}</td>
+                                    <td class="bdr-rt" [ngClass]="getColorClass(dt3.HoursDiff)">{{dateCheck(dt3.HoursDiff |
+                                        ValueExistence)}}</td>
+    
+                                    <td [ngClass]="{negative: !inTheGreen(dt3.Repair_Orders)}">{{dt3.Repair_Orders |
+                                        ValueExistence}}</td>
+                                    <td [ngClass]="{negative: !inTheGreen(dt3.Total_ROPACE)}">{{dateCheck(dt3.Total_ROPACE |
+                                        ValueExistence)}}</td>
+                                    <td [ngClass]="{negative: !inTheGreen(dt3.RO_Target)}">{{dateCheck(dt3.RO_Target |
+                                        ValueExistence)}}</td>
+                                    <td class="bdr-rt" [ngClass]="getColorClass(dt3.ROCountDiff)">
+                                        {{dateCheck(dt3.ROCountDiff | ValueExistence)}}</td>
+    
+                                    <td [ngClass]="{negative: !inTheGreen(dt3.Hours_per_RO)}">{{dt3.Hours_per_RO |
+                                        ValueExistence}}</td>
+                                    <td [ngClass]="{negative: !inTheGreen(dt3.Sales_Per_RO)}">
+                                        <span [ngClass]="{spanalign: valueCheck(dt3.Sales_Per_RO).value != '-'}">
+                                            {{valueCheck(dt3.Sales_Per_RO).symbol}}
+                                            <span>{{valueCheck(dt3.Sales_Per_RO).value}}</span>
+                                        </span>
+                                    </td>
+                                    <td [ngClass]="{negative: !inTheGreen(dt3.Parts_Per_RO)}">{{dt3.Parts_Per_RO |
+                                        ValueExistence}}</td>
+                                    <td [ngClass]="{negative: !inTheGreen(dt3.Average_RO)}">
+                                        <span [ngClass]="{spanalign: valueCheck(dt3.Average_RO).value != '-'}">
+                                            {{valueCheck(dt3.Average_RO).symbol}}
+                                            <span>{{valueCheck(dt3.Average_RO).value}}</span>
+                                        </span>
+                                    </td>
+                                    <td [ngClass]="{negative: !inTheGreen(dt3.ELR)}">
+                                        <span [ngClass]="{spanalign: valueCheck(dt3.ELR).value != '-'}">
+                                            {{valueCheck(dt3.ELR).symbol}}
+                                            <span>{{valueCheck(dt3.ELR).value}}</span>
+                                        </span>
+                                    </td>
+                                    <td [ngClass]="{negative: !inTheGreen(dt3.Retention)}">
+                                        {{dt3.Retention | ValueExistence}}{{dt3.Retention == null || dt3.Retention == 0 ?
+                                        '':'%'}}
+                                    </td>
+                                    <td [ngClass]="{negative: !inTheGreen(dt3.MPI)}">
+                                        {{dt3.MPI | ValueExistence}}{{dt3.MPI == null || dt3.MPI == 0 ? '':'%'}}
+                                    </td>
+                                </tr>
+                            </ng-container>
+                            }
+                            }
+                        </ng-container>
+                        }
+                        }
+                        }
+                    </tbody>
+                    }
+                    @else{
+                    <tbody style="pointer-events:none">
+                        <tr>
+                            <td></td>
+                            <td colspan="25" style="color: black;text-align: center !important;">No Records Found</td>
+                        </tr>
+                    </tbody>
+                    }
+                </table>
+            </div>
+            }
+    
+            @if(viewTable() == 'Gross'){
+            <div class="performance-scorecard mt-2">
+                <table class="table mb-0 w-100" >
+                    <thead>
+                        <tr class="bdr-btm">
+                            <th>{{showDate()}}
+                            </th>
+                            <th colspan="4" class="text-center">
+                                <span class="d-flex align-items-center position-relative px-1">
+                                    <div class="head-button" (click)="backToOverview()">
+                                        <i class="fa fa-arrow-left" aria-hidden="true"
+                                            style="cursor: pointer; padding-right: 10px;"></i>
+                                        Back to Overview
+                                    </div><span class="m-auto head-name">Gross</span>
+                                </span>
+                            </th>
+                            <th colspan="4" class="text-center">Customer Pay</th>
+                            <th colspan="4" class="text-center">Warranty</th>
+                            <th colspan="4" class="text-center">Internal</th>
+                        </tr>
+    
+                        <tr>
+                            <th>
+                                <!-- {{ filterData()?.startdate | date: 'dd' }}
+                                @if ((filterData()?.startdate | date: 'yyyy') != (filterData()?.enddate | date: 'yyyy')) {
+                                <span>{{ filterData()?.startdate | date: 'yyyy' }}</span>
+                                }
+    
+                                - {{ filterData()?.enddate | date: 'dd' }}@if ((filterData()?.startdate | date: 'yyyy') !=
+                                (filterData()?.enddate | date: 'yyyy')){
+                                <span>{{filterData()?.enddate | date: 'yyyy'}}</span>
+                                }@else{
+                                <span>, {{ filterData()?.startdate | date: 'yyyy' }}</span>
+                                } -->
+                            </th>
+    
+                            <!-- Gross -->
+                            <th (click)="sort('Total_Gross',serviceTypes())">Total</th>
+                            <th (click)="sort('TotalGross_Pace',serviceTypes())">Pace</th>
+                            <th (click)="sort('Gross_Target',serviceTypes())">Target</th>
+                            <th (click)="sort('Diff',serviceTypes())">Diff</th>
+    
+                            <!-- Cp -->
+                            <th (click)="sort('CPGross',serviceTypes())">Total</th>
+                            <th (click)="sort('CPGrossPace',serviceTypes())">Pace</th>
+                            <th (click)="sort('CPGross_Target',serviceTypes())">Target</th>
+                            <th (click)="sort('CPGross_Diff',serviceTypes())">Diff</th>
+    
+                            <!-- Warranty -->
+                            <th (click)="sort('WarrantyGross',serviceTypes())">Total</th>
+                            <th (click)="sort('WarrantyGrossPace',serviceTypes())">Pace</th>
+                            <th (click)="sort('WarrantyGross_Target',serviceTypes())">Target</th>
+                            <th (click)="sort('WarrantyGross_Diff',serviceTypes())">Diff</th>
+    
+                            <!-- Internal -->
+                            <th (click)="sort('InternalGross',serviceTypes())">Total</th>
+                            <th (click)="sort('InternalGrossPace',serviceTypes())">Pace</th>
+                            <th (click)="sort('InternalGross_Target',serviceTypes())">Target</th>
+                            <th (click)="sort('InternalGross_Diff',serviceTypes())">Diff</th>
+                        </tr>
+                    </thead>
+                    @if(!NoData()){
+                    <tbody>
+                        @for(item of serviceTypes(); let index = $index; track index){
+                        <tr
+                            [ngClass]="{'divBold': item.data1 === 'REPORT TOTALS', 'bdr-tp': (item.data1 != 'REPORT TOTALS' && item.open == true)}">
+                            <td class="d-flex justify-content-between align-items-center main-head bdr-rt"
+                                title="{{item.data1}}"
+                                (click)="(item.Data2 == undefined && item.data1 != 'REPORT TOTALS') && openDetails(item, item, '1')"
+                                [ngStyle]="{'cursor':item.Data2 == undefined ? 'pointer':''}"
+                                [ngClass]="{'divBold': item.data1 === 'REPORT TOTALS'}">
+                                <!-- <span> -->
+                                <!-- {{item.data1}} -->
+                                @if(filterData()?.var1 != 'cdate'){
+                                <!-- <span title="{{(item.data1 == undefined ? 'REPORT TOTALS': item.data1)}}"> -->
+                                {{(item.data1 == undefined || item.data1 == '' || item.data1 == null ? '-' : (
+                                (item.data1.toString() |
+                                slice:0:22) +
+                                (item.data1.toString().length > 22 ? '...' : '') ))}}
+                                <!-- </span> -->
+                                }@else{
+                                <!-- <span title="{{(item.data1 == undefined ? 'REPORT TOTALS': item.data1)}}"> -->
+                                {{( item.data1 == undefined || item.data1 == '' ||
+                                item.data1 == null ? '-' :(item.data1 !='REPORT TOTALS' ?
+                                (item.data1 | date:'MM.dd.yyyy' ): 'REPORT TOTALS' ) )}}
+                                <!-- </span> -->
+                                }
+                                <!-- </span> -->
+                                <span class="px-2">
+                                    @if(item.Data2 != undefined && item.Data2.length > 0){
+                                    @if(item.open == false){
+                                    <img src="images/Add_Circle2.png" class="pointer"
+                                        (click)="expandOpen(index, item.open, item, serviceTypes())">
+                                    }@else{
+                                    <img src="images/Minus_CircleIcon.svg" class="pointer"
+                                        (click)="expandOpen(index, item.open, item, serviceTypes())">
+                                    }
+                                    }
+                                </span>
+                            </td>
+                            <td [ngClass]="{negative: !inTheGreen(item.Total_Gross)}">
+                                <span [ngClass]="{spanalign: valueCheck(item.Total_Gross).value != '-'}">
+                                    {{valueCheck(item.Total_Gross).symbol}}
+                                    <span>{{valueCheck(item.Total_Gross).value}}</span>
+                                </span>
+                            </td>
+                            <td [ngClass]="{negative: !inTheGreen(item.TotalGross_Pace)}">
+                                <span [ngClass]="{spanalign: dateCheck(valueCheck(item.TotalGross_Pace).value) != '-'}">
+                                    {{(item.TotalGross_Pace == 0 || item.TotalGross_Pace == null ||
+                                    dateCheck(item.TotalGross_Pace) == '-')? '':'$'}}
+                                    <span>{{dateCheck(valueCheck(item.TotalGross_Pace).value)}}</span>
+                                </span>
+                            </td>
+                            <td [ngClass]="{negative: !inTheGreen(item.Gross_Target)}">
+                                <span [ngClass]="{spanalign: dateCheck(valueCheck(item.Gross_Target).value) != '-'}">
+                                    {{(item.Gross_Target == 0 || item.Gross_Target == null || dateCheck(item.Gross_Target)
+                                    == '-')? '':'$'}}
+                                    <span>{{dateCheck(valueCheck(item.Gross_Target).value)}}</span>
+                                </span>
+                            </td>
+                            <td class="bdr-rt" [ngClass]="getColorClass(item.Diff)">
+                                <span [ngClass]="{spanalign: dateCheck(valueCheck(item.Diff).value) != '-'}">
+                                    {{(item.Diff == 0 || item.Diff == null || dateCheck(item.Diff) == '-')? '':'$'}}
+                                    <span>{{dateCheck(valueCheck(item.Diff).value)}}</span>
+                                </span>
+                            </td>
+    
+                            <td [ngClass]="{negative: !inTheGreen(item.CPGross)}">
+                                <span [ngClass]="{spanalign: valueCheck(item.CPGross).value != '-'}">
+                                    {{valueCheck(item.CPGross).symbol}}
+                                    <span>{{valueCheck(item.CPGross).value}}</span>
+                                </span>
+                            </td>
+                            <td [ngClass]="{negative: !inTheGreen(item.CPGrossPace)}">
+                                <span [ngClass]="{spanalign: dateCheck(valueCheck(item.CPGrossPace).value) != '-'}">
+                                    {{(item.CPGrossPace == 0 || item.CPGrossPace == null || dateCheck(item.CPGrossPace) ==
+                                    '-')? '':'$'}}
+                                    <span>{{dateCheck(valueCheck(item.CPGrossPace).value)}}</span>
+                                </span>
+                            </td>
+                            <td [ngClass]="{negative: !inTheGreen(item.CPGross_Target)}">
+                                <span [ngClass]="{spanalign: dateCheck(valueCheck(item.CPGross_Target).value) != '-'}">
+                                    {{(item.CPGross_Target == 0 || item.CPGross_Target == null ||
+                                    dateCheck(item.CPGross_Target) == '-')? '':'$'}}
+                                    <span>{{dateCheck(valueCheck(item.CPGross_Target).value)}}</span>
+                                </span>
+                            </td>
+                            <td class="bdr-rt" [ngClass]="getColorClass(item.CPGross_Diff)">
+                                <span [ngClass]="{spanalign: dateCheck(valueCheck(item.CPGross_Diff).value) != '-'}">
+                                    {{(item.CPGross_Diff == 0 || item.CPGross_Diff == null || dateCheck(item.CPGross_Diff)
+                                    == '-')? '':'$'}}
+                                    <span>{{dateCheck(valueCheck(item.CPGross_Diff).value)}}</span>
+                                </span>
+                            </td>
+    
+                            <td [ngClass]="{negative: !inTheGreen(item.WarrantyGross)}">
+                                <span [ngClass]="{spanalign: valueCheck(item.WarrantyGross).value != '-'}">
+                                    {{valueCheck(item.WarrantyGross).symbol}}
+                                    <span>{{valueCheck(item.WarrantyGross).value}}</span>
+                                </span>
+                            </td>
+                            <td [ngClass]="{negative: !inTheGreen(item.WarrantyGrossPace)}">
+                                <span [ngClass]="{spanalign: dateCheck(valueCheck(item.WarrantyGrossPace).value) != '-'}">
+                                    {{(item.WarrantyGrossPace == 0 || item.WarrantyGrossPace == null ||
+                                    dateCheck(item.WarrantyGrossPace) == '-')? '':'$'}}
+                                    <span>{{dateCheck(valueCheck(item.WarrantyGrossPace).value)}}</span>
+                                </span>
+                            </td>
+                            <td [ngClass]="{negative: !inTheGreen(item.WarrantyGross_Target)}">
+                                <span
+                                    [ngClass]="{spanalign: dateCheck(valueCheck(item.WarrantyGross_Target).value) != '-'}">
+                                    {{(item.WarrantyGross_Target == 0 || item.WarrantyGross_Target == null ||
+                                    dateCheck(item.WarrantyGross_Target) == '-')? '':'$'}}
+                                    <span>{{dateCheck(valueCheck(item.WarrantyGross_Target).value)}}</span>
+                                </span>
+                            </td>
+                            <td class="bdr-rt" [ngClass]="getColorClass(item.WarrantyGross_Diff)">
+                                <span [ngClass]="{spanalign: dateCheck(valueCheck(item.WarrantyGross_Diff).value) != '-'}">
+                                    {{(item.WarrantyGross_Diff == 0 || item.WarrantyGross_Diff == null ||
+                                    dateCheck(item.WarrantyGross_Diff) == '-')? '':'$'}}
+                                    <span>{{dateCheck(valueCheck(item.WarrantyGross_Diff).value)}}</span>
+                                </span>
+                            </td>
+    
+                            <td [ngClass]="{negative: !inTheGreen(item.InternalGross)}">
+                                <span [ngClass]="{spanalign: valueCheck(item.InternalGross).value != '-'}">
+                                    {{valueCheck(item.InternalGross).symbol}}
+                                    <span>{{valueCheck(item.InternalGross).value}}</span>
+                                </span>
+                            </td>
+                            <td [ngClass]="{negative: !inTheGreen(item.InternalGrossPace)}">
+                                <span [ngClass]="{spanalign: dateCheck(valueCheck(item.InternalGrossPace).value) != '-'}">
+                                    {{(item.InternalGrossPace == 0 || item.InternalGrossPace == null ||
+                                    dateCheck(item.InternalGrossPace) == '-')? '':'$'}}
+                                    <span>{{dateCheck(valueCheck(item.InternalGrossPace).value)}}</span>
+                                </span>
+                            </td>
+                            <td [ngClass]="{negative: !inTheGreen(item.InternalGross_Target)}">
+                                <span
+                                    [ngClass]="{spanalign: dateCheck(valueCheck(item.InternalGross_Target).value) != '-'}">
+                                    {{(item.InternalGross_Target == 0 || item.InternalGross_Target == null ||
+                                    dateCheck(item.InternalGross_Target) == '-')? '':'$'}}
+                                    <span>{{dateCheck(valueCheck(item.InternalGross_Target).value)}}</span>
+                                </span>
+                            </td>
+                            <td [ngClass]="getColorClass(item.InternalGross_Diff)">
+                                <span [ngClass]="{spanalign: dateCheck(valueCheck(item.InternalGross_Diff).value) != '-'}">
+                                    {{(item.InternalGross_Diff == 0 || item.InternalGross_Diff == null ||
+                                    dateCheck(item.InternalGross_Diff) == '-')? '':'$'}}
+                                    <span>{{dateCheck(valueCheck(item.InternalGross_Diff).value)}}</span>
+                                </span>
+                            </td>
+                        </tr>
+                        @if(item.Data2 != undefined && item.Data2.length > 0 && item.open == true ){
+                        @for(sub of item.Data2; let subI = $index; track sub){
+                        <ng-container>
+                            <tr class="member-row"
+                                [ngClass]="{'bdr-bt': (sub.SubData == undefined || sub.SubData.length == 0) && item.Data2.length == (subI + 1)}">
+                                <td class="bdr-rt" (click)="openDetails(sub, item, '2')" title="{{sub.data2}}">
+                                    <!-- {{sub.data2}} -->
+                                    @if(filterData()?.var2 != 'cdate'){
+                                    <!-- <span> -->
+                                    {{(sub.data2 == undefined || sub.data2 == '' || sub.data2 == null ? '--' : (
+                                    (sub.data2.toString() |
+                                    slice:0:15) +
+                                    (sub.data2.toString().length > 15 ? '...' : '') ))}}
+                                    <!-- </span> -->
+                                    }@else{
+                                    <!-- <span> -->
+                                    {{( sub.data2 == undefined || sub.data2 == '' || sub.data2 ==
+                                    null ? '-' : (sub.data2 | date:'MM.dd.yyyy') )}}
+                                    <!-- </span> -->
+                                    }
+                                </td>
+                                <td [ngClass]="{negative: !inTheGreen(sub.Total_Gross)}">
+                                    <span [ngClass]="{spanalign: valueCheck(sub.Total_Gross).value != '-'}">
+                                        {{valueCheck(sub.Total_Gross).symbol}}
+                                        <span>{{valueCheck(sub.Total_Gross).value}}</span>
+                                    </span>
+                                </td>
+                                <td [ngClass]="{negative: !inTheGreen(sub.TotalGross_Pace)}">
+                                    <span [ngClass]="{spanalign: dateCheck(valueCheck(sub.TotalGross_Pace).value) != '-'}">
+                                        {{(sub.TotalGross_Pace == 0 || sub.TotalGross_Pace == null ||
+                                        dateCheck(sub.TotalGross_Pace) == '-')? '':'$'}}
+                                        <span>{{dateCheck(valueCheck(sub.TotalGross_Pace).value)}}</span>
+                                    </span>
+                                </td>
+                                <td>-</td>
+                                <td class="bdr-rt">-</td>
+    
+                                <td [ngClass]="{negative: !inTheGreen(sub.CPGross)}">
+                                    <span [ngClass]="{spanalign: valueCheck(sub.CPGross).value != '-'}">
+                                        {{valueCheck(sub.CPGross).symbol}}
+                                        <span>{{valueCheck(sub.CPGross).value}}</span>
+                                    </span>
+                                </td>
+                                <td [ngClass]="{negative: !inTheGreen(sub.CPGrossPace)}">
+                                    <span [ngClass]="{spanalign: dateCheck(valueCheck(sub.CPGrossPace).value) != '-'}">
+                                        {{(sub.CPGrossPace == 0 || sub.CPGrossPace == null || dateCheck(sub.CPGrossPace) ==
+                                        '-')? '':'$'}}
+                                        <span>{{dateCheck(valueCheck(sub.CPGrossPace).value)}}</span>
+                                    </span>
+                                </td>
+                                <td>-</td>
+                                <td class="bdr-rt">-</td>
+    
+                                <td [ngClass]="{negative: !inTheGreen(sub.WarrantyGross)}">
+                                    <span [ngClass]="{spanalign: valueCheck(sub.WarrantyGross).value != '-'}">
+                                        {{valueCheck(sub.WarrantyGross).symbol}}
+                                        <span>{{valueCheck(sub.WarrantyGross).value}}</span>
+                                    </span>
+                                </td>
+                                <td [ngClass]="{negative: !inTheGreen(sub.WarrantyGrossPace)}">
+                                    <span
+                                        [ngClass]="{spanalign: dateCheck(valueCheck(sub.WarrantyGrossPace).value) != '-'}">
+                                        {{(sub.WarrantyGrossPace == 0 || sub.WarrantyGrossPace == null ||
+                                        dateCheck(sub.WarrantyGrossPace) == '-')? '':'$'}}
+                                        <span>{{dateCheck(valueCheck(sub.WarrantyGrossPace).value)}}</span>
+                                    </span>
+                                </td>
+                                <td>-</td>
+                                <td class="bdr-rt">-</td>
+    
+                                <td [ngClass]="{negative: !inTheGreen(sub.InternalGross)}">
+                                    <span [ngClass]="{spanalign: valueCheck(sub.InternalGross).value != '-'}">
+                                        {{valueCheck(sub.InternalGross).symbol}}
+                                        <span>{{valueCheck(sub.InternalGross).value}}</span>
+                                    </span>
+                                </td>
+                                <td [ngClass]="{negative: !inTheGreen(sub.InternalGrossPace)}">
+                                    <span
+                                        [ngClass]="{spanalign: dateCheck(valueCheck(sub.InternalGrossPace).value) != '-'}">
+                                        {{(sub.InternalGrossPace == 0 || sub.InternalGrossPace == null ||
+                                        dateCheck(sub.InternalGrossPace) == '-')? '':'$'}}
+                                        <span>{{dateCheck(valueCheck(sub.InternalGrossPace).value)}}</span>
+                                    </span>
+                                </td>
+                                <td>-</td>
+                                <td>-</td>
+                            </tr>
+    
+                            @if(sub.SubData != undefined && sub.SubData.length > 0){
+                            @for(dt3 of sub.SubData; let dt3I = $index; track dt3){
+                            <ng-container>
+                                <tr class="member-row"
+                                    [ngClass]="{'bdr-bt': item.Data2.length == (subI + 1)  && sub.SubData.length == (dt3I + 1)}">
+                                    <td class="bdr-rt ps-4" (click)="openDetails(dt3, item, '3')">
+                                        <!-- {{dt3.data3}} -->
+                                        @if(filterData()?.var3 != 'cdate'){
+                                        <!-- <span> -->
+                                        {{(dt3.data3 == undefined || dt3.data3 == '' || dt3.data3 == null ? '--' : (
+                                        (dt3.data3.toString() |
+                                        slice:0:15) +
+                                        (dt3.data3.toString().length > 15 ? '...' : '') ))}}
+                                        <!-- </span> -->
+                                        }@else{
+                                        <!-- <span> -->
+                                        {{( dt3.data3 == undefined || dt3.data3 == '' || dt3.data3 ==
+                                        null ? '-' : dt3.data3 | date:'MM.dd.yyyy' )}}
+                                        <!-- </span> -->
+                                        }
+                                    </td>
+                                    <td [ngClass]="{negative: !inTheGreen(dt3.Total_Gross)}">
+                                        <span [ngClass]="{spanalign: valueCheck(dt3.Total_Gross).value != '-'}">
+                                            {{valueCheck(dt3.Total_Gross).symbol}}
+                                            <span>{{valueCheck(dt3.Total_Gross).value}}</span>
+                                        </span>
+                                    </td>
+                                    <td [ngClass]="{negative: !inTheGreen(dt3.TotalGross_Pace)}">
+                                        <span
+                                            [ngClass]="{spanalign: dateCheck(valueCheck(dt3.TotalGross_Pace).value) != '-'}">
+                                            {{(dt3.TotalGross_Pace == 0 || dt3.TotalGross_Pace == null ||
+                                            dateCheck(dt3.TotalGross_Pace) == '-')? '':'$'}}
+                                            <span>{{dateCheck(valueCheck(dt3.TotalGross_Pace).value)}}</span>
+                                        </span>
+                                    </td>
+                                    <td>-</td>
+                                    <td class="bdr-rt">-</td>
+    
+                                    <td [ngClass]="{negative: !inTheGreen(dt3.CPGross)}">
+                                        <span [ngClass]="{spanalign: valueCheck(dt3.CPGross).value != '-'}">
+                                            {{valueCheck(dt3.CPGross).symbol}}
+                                            <span>{{valueCheck(dt3.CPGross).value}}</span>
+                                        </span>
+                                    </td>
+                                    <td [ngClass]="{negative: !inTheGreen(dt3.CPGrossPace)}">
+                                        <span [ngClass]="{spanalign: dateCheck(valueCheck(dt3.CPGrossPace).value) != '-'}">
+                                            {{(dt3.CPGrossPace == 0 || dt3.CPGrossPace == null || dateCheck(dt3.CPGrossPace)
+                                            == '-')? '':'$'}}
+                                            <span>{{dateCheck(valueCheck(dt3.CPGrossPace).value)}}</span>
+                                        </span>
+                                    </td>
+                                    <td>-</td>
+                                    <td class="bdr-rt">-</td>
+    
+                                    <td [ngClass]="{negative: !inTheGreen(dt3.WarrantyGross)}">
+                                        <span [ngClass]="{spanalign: valueCheck(dt3.WarrantyGross).value != '-'}">
+                                            {{valueCheck(dt3.WarrantyGross).symbol}}
+                                            <span>{{valueCheck(dt3.WarrantyGross).value}}</span>
+                                        </span>
+                                    </td>
+                                    <td [ngClass]="{negative: !inTheGreen(dt3.WarrantyGrossPace)}">
+                                        <span
+                                            [ngClass]="{spanalign: dateCheck(valueCheck(dt3.WarrantyGrossPace).value) != '-'}">
+                                            {{(dt3.WarrantyGrossPace == 0 || dt3.WarrantyGrossPace == null ||
+                                            dateCheck(dt3.WarrantyGrossPace) == '-')? '':'$'}}
+                                            <span>{{dateCheck(valueCheck(dt3.WarrantyGrossPace).value)}}</span>
+                                        </span>
+                                    </td>
+                                    <td>-</td>
+                                    <td class="bdr-rt">-</td>
+    
+                                    <td [ngClass]="{negative: !inTheGreen(dt3.InternalGross)}">
+                                        <span [ngClass]="{spanalign: valueCheck(dt3.InternalGross).value != '-'}">
+                                            {{valueCheck(dt3.InternalGross).symbol}}
+                                            <span>{{valueCheck(dt3.InternalGross).value}}</span>
+                                        </span>
+                                    </td>
+                                    <td [ngClass]="{negative: !inTheGreen(dt3.InternalGrossPace)}">
+                                        <span
+                                            [ngClass]="{spanalign: dateCheck(valueCheck(dt3.InternalGrossPace).value) != '-'}">
+                                            {{(dt3.InternalGrossPace == 0 || dt3.InternalGrossPace == null ||
+                                            dateCheck(dt3.InternalGrossPace) == '-')? '':'$'}}
+                                            <span>{{dateCheck(valueCheck(dt3.InternalGrossPace).value)}}</span>
+                                        </span>
+                                    </td>
+                                    <td>-</td>
+                                    <td>-</td>
+                                </tr>
+                            </ng-container>
+                            }
+                            }
+                        </ng-container>
+                        }
+                        }
+                        }
+                    </tbody>
+                    }@else{
+                    <tbody>
+                        <tr>
+                            <td colspan="1" style="font-size: small;font-weight: 600;"></td>
+                            <td colspan="22" style="text-align: center !important;">No Records
+                                Found</td>
+                        </tr>
+                    </tbody>
+                    }
+                </table>
+            </div>
+            }
+    
+            @if(viewTable() == 'Hours'){
+            <div class="performance-scorecard mt-2">
+                <table class="table mb-0 w-100" >
+                    <thead>
+                        <tr class="bdr-btm">
+                            <th>
+                                {{showDate()}}
+                            </th>
+                            <th colspan="4" class="text-center">
+                                <span class="d-flex align-items-center position-relative px-1">
+                                    <div class="head-button" (click)="backToOverview()">
+                                        <i class="fa fa-arrow-left" aria-hidden="true"
+                                            style="cursor: pointer; padding-right: 10px;"></i>
+                                        Back to Overview
+                                    </div><span class="m-auto head-name">Hours</span>
+                                </span>
+                            </th>
+                            <th colspan="4" class="text-center">Customer Pay</th>
+                            <th colspan="4" class="text-center">Warranty</th>
+                            <th colspan="4" class="text-center">Internal</th>
+                        </tr>
+    
+                        <tr>
+                            <th>
+                                <!-- {{ filterData()?.startdate | date: 'dd' }}
+                                @if ((filterData()?.startdate | date: 'yyyy') != (filterData()?.enddate | date: 'yyyy')) {
+                                <span>{{ filterData()?.startdate | date: 'yyyy' }}</span>
+                                }
+    
+                                - {{ filterData()?.enddate | date: 'dd'}}@if ((filterData()?.startdate | date: 'yyyy') !=
+                                (filterData()?.enddate | date: 'yyyy')) {
+                                <span>{{filterData()?.enddate | date: 'yyyy'}}</span>
+                                } @else {
+                                <span>, {{ filterData()?.startdate | date: 'yyyy' }}</span>
+                                } -->
+                            </th>
+    
+                            <!-- Gross -->
+                            <th (click)="sort('Total_Hours',serviceHours())">Total</th>
+                            <th (click)="sort('TotalHours_PACE',serviceHours())">Pace</th>
+                            <th (click)="sort('ROHours_Target',serviceHours())">Target</th>
+                            <th (click)="sort('HoursDiff',serviceHours())">Diff</th>
+    
+                            <!-- Cp -->
+                            <th (click)="sort('Total_Hours_CP',serviceHours())">Total</th>
+                            <th (click)="sort('TotalHours_PACE_CP',serviceHours())">Pace</th>
+                            <th (click)="sort('ROHours_Target_CP',serviceHours())">Target</th>
+                            <th (click)="sort('HoursDiff_CP',serviceHours())">Diff</th>
+    
+                            <!-- Warranty -->
+                            <th (click)="sort('Total_Hours_WP',serviceHours())">Total</th>
+                            <th (click)="sort('TotalHours_PACE_WP',serviceHours())">Pace</th>
+                            <th (click)="sort('ROHours_Target_WP',serviceHours())">Target</th>
+                            <th (click)="sort('HoursDiff_WP',serviceHours())">Diff</th>
+    
+                            <!-- Internal -->
+                            <th (click)="sort('Total_Hours_IP',serviceHours())">Total</th>
+                            <th (click)="sort('TotalHours_PACE_IP',serviceHours())">Pace</th>
+                            <th (click)="sort('ROHours_Target_IP',serviceHours())">Target</th>
+                            <th (click)="sort('HoursDiff_IP',serviceHours())">Diff</th>
+                        </tr>
+                    </thead>
+                    @if(!NoData()){
+                    <tbody>
+                        @for(item of serviceHours(); let index = $index; track index){
+                        <tr
+                            [ngClass]="{'divBold': item.data1 === 'REPORT TOTALS', 'bdr-tp': (item.data1 != 'REPORT TOTALS' && item.open == true)}">
+                            <td class="d-flex justify-content-between align-items-center main-head bdr-rt"
+                                title="{{item.data1}}"
+                                (click)="( item.Data2 == undefined && item.data1 != 'REPORT TOTALS') && openDetails(item, item, '1')"
+                                [ngStyle]="{'cursor':item.Data2 == undefined ? 'pointer':''}"
+                                [ngClass]="{'divBold': item.data1 === 'REPORT TOTALS'}">
+                                <!-- <span> -->
+                                <!-- {{item.data1}} -->
+                                @if(filterData()?.var1 != 'cdate'){
+                                <!-- <span title="{{(item.data1 == undefined ? 'REPORT TOTALS': item.data1)}}"> -->
+                                {{(item.data1 == undefined || item.data1 == '' || item.data1 == null ? '-' : (
+                                (item.data1.toString() |
+                                slice:0:22) +
+                                (item.data1.toString().length > 22 ? '...' : '') ))}}
+                                <!-- </span> -->
+                                }@else{
+                                <!-- <span title="{{(item.data1 == undefined ? 'REPORT TOTALS': item.data1)}}"> -->
+                                {{( item.data1 == undefined || item.data1 == '' ||
+                                item.data1 == null ? '-' :(item.data1 !='REPORT TOTALS' ?
+                                (item.data1 | date:'MM.dd.yyyy' ): 'REPORT TOTALS' ) )}}
+                                <!-- </span> -->
+                                }
+                                <!-- </span> -->
+                                <span class="px-2">
+                                    @if(item.Data2 != undefined && item.Data2.length > 0){
+                                    @if(item.open == false){
+                                    <img src="images/Add_Circle2.png" class="pointer"
+                                        (click)="expandOpen(index, item.open, item, serviceHours())">
+                                    }@else{
+                                    <img src="images/Minus_CircleIcon.svg" class="pointer"
+                                        (click)="expandOpen(index, item.open, item, serviceHours())">
+                                    }
+                                    }
+                                </span>
+                            </td>
+                            <td [ngClass]="{negative: !inTheGreen(item.Total_Hours)}">{{item.Total_Hours | ValueExistence}}</td>
+                            <td [ngClass]="{negative: !inTheGreen(item.TotalHours_PACE)}">{{dateCheck(item.TotalHours_PACE |
+                                ValueExistence)}}</td>
+                            <td [ngClass]="{negative: !inTheGreen(item.ROHours_Target)}">{{dateCheck(item.ROHours_Target |
+                                ValueExistence)}}</td>
+                            <td class="bdr-rt" [ngClass]="getColorClass(item.HoursDiff)">{{dateCheck(item.HoursDiff |
+                                ValueExistence)}}</td>
+    
+                            <td [ngClass]="{negative: !inTheGreen(item.Total_Hours_CP)}">{{item.Total_Hours_CP |
+                                ValueExistence}}</td>
+                            <td [ngClass]="{negative: !inTheGreen(item.TotalHours_PACE_CP)}">
+                                {{dateCheck(item.TotalHours_PACE_CP | ValueExistence)}}</td>
+                            <td [ngClass]="{negative: !inTheGreen(item.ROHours_Target_CP)}">
+                                {{dateCheck(item.ROHours_Target_CP | ValueExistence)}}</td>
+                            <td class="bdr-rt" [ngClass]="getColorClass(item.HoursDiff_CP)">{{dateCheck(item.HoursDiff_CP |
+                                ValueExistence)}}</td>
+    
+                            <td [ngClass]="{negative: !inTheGreen(item.Total_Hours_WP)}">{{item.Total_Hours_WP |
+                                ValueExistence}}</td>
+                            <td [ngClass]="{negative: !inTheGreen(item.TotalHours_PACE_WP)}">
+                                {{dateCheck(item.TotalHours_PACE_WP | ValueExistence)}}</td>
+                            <td [ngClass]="{negative: !inTheGreen(item.ROHours_Target_WP)}">
+                                {{dateCheck(item.ROHours_Target_WP | ValueExistence)}}</td>
+                            <td class="bdr-rt" [ngClass]="getColorClass(item.HoursDiff_WP)">{{dateCheck(item.HoursDiff_WP |
+                                ValueExistence)}}</td>
+    
+                            <td [ngClass]="{negative: !inTheGreen(item.Total_Hours_IP)}">{{item.Total_Hours_IP |
+                                ValueExistence}}</td>
+                            <td [ngClass]="{negative: !inTheGreen(item.TotalHours_PACE_IP)}">
+                                {{dateCheck(item.TotalHours_PACE_IP | ValueExistence)}}</td>
+                            <td [ngClass]="{negative: !inTheGreen(item.ROHours_Target_IP)}">
+                                {{dateCheck(item.ROHours_Target_IP | ValueExistence)}}</td>
+                            <td [ngClass]="getColorClass(item.HoursDiff_IP)">{{dateCheck(item.HoursDiff_IP | ValueExistence)}}
+                            </td>
+                        </tr>
+                        @if(item.Data2 != undefined && item.Data2.length > 0 && item.open == true){
+                        @for(sub of item.Data2; let subI = $index; track sub){
+                        <ng-container>
+                            <tr class="member-row"
+                                [ngClass]="{'bdr-bt': (sub.SubData == undefined || sub.SubData.length == 0) && item.Data2.length == (subI + 1)}">
+                                <td class="bdr-rt" (click)="openDetails(sub, item, '2')" title="{{sub.data2}}">
+                                    <!-- {{sub.data2}} -->
+                                    @if(filterData()?.var2 != 'cdate'){
+                                    <!-- <span> -->
+                                    {{(sub.data2 == undefined || sub.data2 == '' || sub.data2 == null ? '--' : (
+                                    (sub.data2.toString() |
+                                    slice:0:15) +
+                                    (sub.data2.toString().length > 15 ? '...' : '') ))}}
+                                    <!-- </span> -->
+                                    }@else{
+                                    <!-- <span> -->
+                                    {{( sub.data2 == undefined || sub.data2 == '' || sub.data2 ==
+                                    null) ? '-' : (sub.data2 | date:'MM.dd.yyyy')}}
+                                    <!-- </span> -->
+                                    }
+                                </td>
+                                <td [ngClass]="{negative: !inTheGreen(sub.Total_Hours)}">{{sub.Total_Hours | ValueExistence}}
+                                </td>
+                                <td [ngClass]="{negative: !inTheGreen(sub.TotalHours_PACE)}">{{dateCheck(sub.TotalHours_PACE
+                                    | ValueExistence)}}</td>
+                                <td>-</td>
+                                <td class="bdr-rt">-</td>
+    
+                                <td [ngClass]="{negative: !inTheGreen(sub.Total_Hourscp)}">{{sub.Total_Hourscp |
+                                    ValueExistence}}</td>
+                                <td [ngClass]="{negative: !inTheGreen(sub.TotalHours_PACEcp)}">
+                                    {{dateCheck(sub.TotalHours_PACEcp | ValueExistence)}}</td>
+                                <td>-</td>
+                                <td class="bdr-rt">-</td>
+    
+                                <td [ngClass]="{negative: !inTheGreen(sub.Total_Hourswp)}">{{sub.Total_Hourswp |
+                                    ValueExistence}}</td>
+                                <td [ngClass]="{negative: !inTheGreen(sub.TotalHours_PACEwp)}">
+                                    {{dateCheck(sub.TotalHours_PACEwp | ValueExistence)}}</td>
+                                <td>-</td>
+                                <td class="bdr-rt">-</td>
+    
+                                <td [ngClass]="{negative: !inTheGreen(sub.Total_Hoursip)}">{{sub.Total_Hoursip |
+                                    ValueExistence}}</td>
+                                <td [ngClass]="{negative: !inTheGreen(sub.TotalHours_PACEip)}">
+                                    {{dateCheck(sub.TotalHours_PACEip | ValueExistence)}}</td>
+                                <td>-</td>
+                                <td>-</td>
+                            </tr>
+    
+                            @if(sub.SubData != undefined && sub.SubData.length > 0){
+                            @for(dt3 of sub.SubData;let dt3I = $index; track dt3){
+                            <ng-container>
+                                <tr class="member-row"
+                                    [ngClass]="{'bdr-bt': item.Data2.length == (subI + 1)  && sub.SubData.length == (dt3I + 1)}">
+                                    <td class="bdr-rt ps-4" (click)="openDetails(dt3, item, '3')" title="{{dt3.data3}}">
+                                        <!-- {{dt3.data3}} -->
+                                        @if(filterData()?.var3 != 'cdate'){
+                                        <!-- <span> -->
+                                        {{(dt3.data3 == undefined || dt3.data3 == '' || dt3.data3 == null ? '--' : (
+                                        (dt3.data3.toString() |
+                                        slice:0:15) +
+                                        (dt3.data3.toString().length > 15 ? '...' : '') ))}}
+                                        <!-- </span> -->
+                                        }@else{
+                                        <!-- <span> -->
+                                        {{( dt3.data3 == undefined || dt3.data3 == '' || dt3.data3 ==
+                                        null) ? '-' : (dt3.data3 | date:'MM.dd.yyyy' )}}
+                                        <!-- </span> -->
+                                        }
+                                    </td>
+                                    <td [ngClass]="{negative: !inTheGreen(dt3.Total_Hours)}">{{dt3.Total_Hours |
+                                        ValueExistence}}</td>
+                                    <td [ngClass]="{negative: !inTheGreen(dt3.TotalHours_PACE)}">
+                                        {{dateCheck(dt3.TotalHours_PACE | ValueExistence)}}</td>
+                                    <td>-</td>
+                                    <td class="bdr-rt">-</td>
+    
+                                    <td [ngClass]="{negative: !inTheGreen(dt3.Total_Hourscp)}">{{dt3.Total_Hourscp |
+                                        ValueExistence}}</td>
+                                    <td [ngClass]="{negative: !inTheGreen(dt3.TotalHours_PACEcp)}">
+                                        {{dateCheck(dt3.TotalHours_PACEcp | ValueExistence)}}</td>
+                                    <td>-</td>
+                                    <td class="bdr-rt">-</td>
+    
+                                    <td [ngClass]="{negative: !inTheGreen(dt3.Total_Hourswp)}">{{dt3.Total_Hourswp |
+                                        ValueExistence}}</td>
+                                    <td [ngClass]="{negative: !inTheGreen(dt3.TotalHours_PACEwp)}">
+                                        {{dateCheck(dt3.TotalHours_PACEwp | ValueExistence)}}</td>
+                                    <td>-</td>
+                                    <td class="bdr-rt">-</td>
+    
+                                    <td [ngClass]="{negative: !inTheGreen(dt3.Total_Hoursip)}">{{dt3.Total_Hoursip |
+                                        ValueExistence}}</td>
+                                    <td [ngClass]="{negative: !inTheGreen(dt3.TotalHours_PACEip)}">
+                                        {{dateCheck(dt3.TotalHours_PACEip | ValueExistence)}}</td>
+                                    <td>-</td>
+                                    <td>-</td>
+                                </tr>
+                            </ng-container>
+                            }
+                            }
+                        </ng-container>
+                        }
+                        }
+                        }
+                    </tbody>
+                    }@else{
+                    <tbody>
+                        <tr>
+                            <td colspan="1" style="font-size: small;font-weight: 600;"></td>
+                            <td colspan="22" style="text-align: center !important;">No Records
+                                Found</td>
+                        </tr>
+                    </tbody>
+                    }
+                </table>
+            </div>
+            }
+    
+            @if(viewTable() == 'Ro'){
+            <div class="performance-scorecard mt-2">
+                <table class="table mb-0 w-100" >
+                    <thead>
+                        <tr class="bdr-btm">
+                            <th>
+                                {{showDate()}}
+                            </th>
+                            <th colspan="4" class="text-center bdr-rt">
+                                <span class="d-flex align-items-center position-relative px-1">
+                                    <div class="head-button" (click)="backToOverview()">
+                                        <i class="fa fa-arrow-left" aria-hidden="true"
+                                            style="cursor: pointer; padding-right: 10px;"></i>
+                                        Back to Overview
+                                    </div><span class="m-auto head-name">Repair Orders</span>
+                                </span>
+                            </th>
+                            <th colspan="4" class="text-center">Customer Pay</th>
+                            <th colspan="4" class="text-center">Warranty</th>
+                            <th colspan="4" class="text-center">Internal</th>
+                        </tr>
+    
+                        <tr>
+                            <th>
+                                <!-- {{ filterData()?.startdate | date: 'dd' }}
+                                @if ((filterData()?.startdate | date: 'yyyy') != (filterData()?.enddate | date: 'yyyy')) {
+                                <span>{{ filterData()?.startdate | date: 'yyyy' }}</span>
+                                }
+    
+                                - {{ filterData()?.enddate | date: 'dd' }}@if ((filterData()?.startdate | date: 'yyyy') !=
+                                (filterData()?.enddate | date: 'yyyy')) {
+                                <span>{{filterData()?.enddate | date: 'yyyy'}}</span>
+                                } @else {
+                                <span>, {{ filterData()?.startdate | date: 'yyyy' }}</span>
+                                } -->
+                            </th>
+    
+                            <!-- Gross -->
+                            <th (click)="sort('Repair_Orders',serviceRos())">Total</th>
+                            <th (click)="sort('Total_ROPACE',serviceRos())">Pace</th>
+                            <th (click)="sort('ROHours_Target',serviceRos())">Target</th>
+                            <th (click)="sort('Diff',serviceRos())">Diff</th>
+    
+                            <!-- Cp -->
+                            <th (click)="sort('Total_RO_CP',serviceRos())">Total</th>
+                            <th (click)="sort('RO_PACE_CP',serviceRos())">Pace</th>
+                            <th (click)="sort('ROHours_Target_CP',serviceRos())">Target</th>
+                            <th (click)="sort('HoursDiff_CP',serviceRos())">Diff</th>
+    
+                            <!-- Warranty -->
+                            <th (click)="sort('Total_RO_WP',serviceRos())">Total</th>
+                            <th (click)="sort('RO_PACE_WP',serviceRos())">Pace</th>
+                            <th (click)="sort('ROHours_Target_WP',serviceRos())">Target</th>
+                            <th (click)="sort('HoursDiff_WP',serviceRos())">Diff</th>
+    
+                            <!-- Internal -->
+                            <th (click)="sort('Total_RO_IP',serviceRos())">Total</th>
+                            <th (click)="sort('RO_PACE_IP',serviceRos())">Pace</th>
+                            <th (click)="sort('ROHours_Target_IP',serviceRos())">Target</th>
+                            <th (click)="sort('HoursDiff_IP',serviceRos())">Diff</th>
+                        </tr>
+                    </thead>
+                    @if(!NoData()){
+                    <tbody>
+                        @for(item of serviceRos(); let index = $index; track index){
+                        <tr
+                            [ngClass]="{'divBold': item.data1 === 'REPORT TOTALS', 'bdr-tp': (item.data1 != 'REPORT TOTALS' && item.open == true)}">
+                            <td class="d-flex justify-content-between align-items-center main-head bdr-rt"
+                                title="{{item.data1}}"
+                                (click)="(item.Data2 == undefined && item.data1 != 'REPORT TOTALS') && openDetails(item, item, '1')"
+                                [ngStyle]="{'cursor':item.Data2 == undefined ? 'pointer':''}"
+                                [ngClass]="{'divBold': item.data1 === 'REPORT TOTALS'}">
+                                <!-- <span>
+                                    {{item.data1}}
+                                </span> -->
+                                @if(filterData()?.var1 != 'cdate'){
+                                <!-- <span title="{{(item.data1 == undefined ? 'REPORT TOTALS': item.data1)}}"> -->
+                                {{(item.data1 == undefined || item.data1 == '' || item.data1 == null ? '-' : (
+                                (item.data1.toString() |
+                                slice:0:22) +
+                                (item.data1.toString().length > 22 ? '...' : '') ))}}
+                                <!-- </span> -->
+                                }@else{
+                                <!-- <span title="{{(item.data1 == undefined ? 'REPORT TOTALS': item.data1)}}"> -->
+                                {{( item.data1 == undefined || item.data1 == '' ||
+                                item.data1 == null ? '-' :(item.data1 !='REPORT TOTALS' ?
+                                (item.data1 | date:'MM.dd.yyyy' ): 'REPORT TOTALS' ) )}}
+                                <!-- </span> -->
+                                }
+                                <span class="px-2">
+                                    @if(item.Data2 != undefined && item.Data2.length > 0){
+                                    @if(item.open == false){
+                                    <img src="images/Add_Circle2.png" class="pointer"
+                                        (click)="expandOpen(index, item.open, item, serviceHours())">
+                                    }@else{
+                                    <img src="images/Minus_CircleIcon.svg" class="pointer"
+                                        (click)="expandOpen(index, item.open, item, serviceHours())">
+                                    }
+                                    }
+                                </span>
+                            </td>
+                            <td [ngClass]="{negative: !inTheGreen(item.Repair_Orders)}">{{item.Repair_Orders | ValueExistence}}
+                            </td>
+                            <td [ngClass]="{negative: !inTheGreen(item.Total_ROPACE)}">{{dateCheck(item.Total_ROPACE |
+                                ValueExistence)}}</td>
+                            <td [ngClass]="{negative: !inTheGreen(item.ROHours_Target)}">{{dateCheck(item.ROHours_Target |
+                                ValueExistence)}}</td>
+                            <td class="bdr-rt" [ngClass]="getColorClass(item.Diff)">{{dateCheck(item.Diff | ValueExistence)}}
+                            </td>
+    
+                            <td [ngClass]="{negative: !inTheGreen(item.Total_RO_CP)}">{{item.Total_RO_CP | ValueExistence}}</td>
+                            <td [ngClass]="{negative: !inTheGreen(item.RO_PACE_CP)}">{{dateCheck(item.RO_PACE_CP |
+                                ValueExistence)}}</td>
+                            <td [ngClass]="{negative: !inTheGreen(item.ROHours_Target_CP)}">
+                                {{dateCheck(item.ROHours_Target_CP | ValueExistence)}}</td>
+                            <td class="bdr-rt" [ngClass]="getColorClass(item.HoursDiff_CP)">{{dateCheck(item.HoursDiff_CP |
+                                ValueExistence)}}</td>
+    
+                            <td [ngClass]="{negative: !inTheGreen(item.Total_RO_WP)}">{{item.Total_RO_WP | ValueExistence}}</td>
+                            <td [ngClass]="{negative: !inTheGreen(item.RO_PACE_WP)}">{{dateCheck(item.RO_PACE_WP |
+                                ValueExistence)}}</td>
+                            <td [ngClass]="{negative: !inTheGreen(item.ROHours_Target_WP)}">
+                                {{dateCheck(item.ROHours_Target_WP | ValueExistence)}}</td>
+                            <td class="bdr-rt" [ngClass]="getColorClass(item.HoursDiff_WP)">{{dateCheck(item.HoursDiff_WP |
+                                ValueExistence)}}</td>
+    
+                            <td [ngClass]="{negative: !inTheGreen(item.Total_RO_IP)}">{{item.Total_RO_IP | ValueExistence}}</td>
+                            <td [ngClass]="{negative: !inTheGreen(item.RO_PACE_IP)}">{{dateCheck(item.RO_PACE_IP |
+                                ValueExistence)}}</td>
+                            <td [ngClass]="{negative: !inTheGreen(item.ROHours_Target_IP)}">
+                                {{dateCheck(item.ROHours_Target_IP | ValueExistence)}}</td>
+                            <td [ngClass]="getColorClass(item.HoursDiff_IP)">{{dateCheck(item.HoursDiff_IP | ValueExistence)}}
+                            </td>
+                        </tr>
+                        @if(item.Data2 != undefined && item.Data2.length > 0 && item.open == true ){
+                        @for(sub of item.Data2; let subI= $index; track sub){
+                        <ng-container>
+                            <tr class="member-row"
+                                [ngClass]="{'bdr-bt': (sub.SubData == undefined || sub.SubData.length == 0) && item.Data2.length == (subI + 1)}">
+                                <td class="bdr-rt" (click)="openDetails(sub, item, '2')" title="{{sub.data2}}">
+                                    <!-- {{sub.data2}} -->
+                                    @if(filterData()?.var2 != 'cdate'){
+                                    <!-- <span> -->
+                                    {{(sub.data2 == undefined || sub.data2 == '' || sub.data2 == null ? '--' : (
+                                    (sub.data2.toString() |
+                                    slice:0:15) +
+                                    (sub.data2.toString().length > 15 ? '...' : '') ))}}
+                                    <!-- </span> -->
+                                    }@else{
+                                    <!-- <span> -->
+                                    {{( sub.data2 == undefined || sub.data2 == '' || sub.data2 ==
+                                    null ? '-' : sub.data2 | date:'MM.dd.yyyy' )}}
+                                    <!-- </span> -->
+                                    }
+                                </td>
+                                <td [ngClass]="{negative: !inTheGreen(sub.Total_Hours)}">{{sub.Total_Hours | ValueExistence}}
+                                </td>
+                                <td [ngClass]="{negative: !inTheGreen(sub.TotalHours_PACE)}">{{dateCheck(sub.TotalHours_PACE
+                                    | ValueExistence)}}</td>
+                                <td>-</td>
+                                <td class="bdr-rt">-</td>
+    
+                                <td [ngClass]="{negative: !inTheGreen(sub.Total_Hourscp)}">{{sub.Total_Hourscp |
+                                    ValueExistence}}</td>
+                                <td [ngClass]="{negative: !inTheGreen(sub.TotalHours_PACEcp)}">
+                                    {{dateCheck(sub.TotalHours_PACEcp | ValueExistence)}}</td>
+                                <td>-</td>
+                                <td class="bdr-rt">-</td>
+    
+                                <td [ngClass]="{negative: !inTheGreen(sub.Total_Hourswp)}">{{sub.Total_Hourswp |
+                                    ValueExistence}}</td>
+                                <td [ngClass]="{negative: !inTheGreen(sub.TotalHours_PACEwp)}">
+                                    {{dateCheck(sub.TotalHours_PACEwp | ValueExistence)}}</td>
+                                <td>-</td>
+                                <td class="bdr-rt">-</td>
+    
+                                <td [ngClass]="{negative: !inTheGreen(sub.Total_Hoursip)}">{{sub.Total_Hoursip |
+                                    ValueExistence}}</td>
+                                <td [ngClass]="{negative: !inTheGreen(sub.TotalHours_PACEip)}">
+                                    {{dateCheck(sub.TotalHours_PACEip | ValueExistence)}}</td>
+                                <td>-</td>
+                                <td>-</td>
+                            </tr>
+                            @if(sub.SubData != undefined && sub.SubData.length > 0){
+                            @for(dt3 of sub.SubData; let dt3I = $index; track dt3){
+                            <ng-container>
+                                <tr class="member-row"
+                                    [ngClass]="{'bdr-bt': item.Data2.length == (subI + 1)  && sub.SubData.length == (dt3I + 1)}">
+                                    <td class="bdr-rt ps-4" (click)="openDetails(dt3, item, '3')" title="{{dt3.data3}}">
+                                        <!-- {{dt3.data3}} -->
+                                        @if(filterData()?.var3 != 'cdate'){
+                                        <!-- <span> -->
+                                        {{(dt3.data3 == undefined || dt3.data3 == '' || dt3.data3 == null ? '--' : (
+                                        (dt3.data3.toString() |
+                                        slice:0:15) +
+                                        (dt3.data3.toString().length > 15 ? '...' : '') ))}}
+                                        <!-- </span> -->
+                                        }@else{
+                                        <!-- <span> -->
+                                        {{( dt3.data3 == undefined || dt3.data3 == '' || dt3.data3 ==
+                                        null ? '-' : dt3.data3 | date:'MM.dd.yyyy' )}}
+                                        <!-- </span> -->
+                                        }
+                                    </td>
+                                    <td [ngClass]="{negative: !inTheGreen(dt3.Total_Hours)}">{{dt3.Total_Hours |
+                                        ValueExistence}}</td>
+                                    <td [ngClass]="{negative: !inTheGreen(dt3.TotalHours_PACE)}">
+                                        {{dateCheck(dt3.TotalHours_PACE | ValueExistence)}}</td>
+                                    <td>-</td>
+                                    <td class="bdr-rt">-</td>
+    
+                                    <td [ngClass]="{negative: !inTheGreen(dt3.Total_Hourscp)}">{{dt3.Total_Hourscp |
+                                        ValueExistence}}</td>
+                                    <td [ngClass]="{negative: !inTheGreen(dt3.TotalHours_PACEcp)}">
+                                        {{dateCheck(dt3.TotalHours_PACEcp | ValueExistence)}}</td>
+                                    <td>-</td>
+                                    <td class="bdr-rt">-</td>
+    
+                                    <td [ngClass]="{negative: !inTheGreen(dt3.Total_Hourswp)}">{{dt3.Total_Hourswp |
+                                        ValueExistence}}</td>
+                                    <td [ngClass]="{negative: !inTheGreen(dt3.TotalHours_PACEwp)}">
+                                        {{dateCheck(dt3.TotalHours_PACEwp | ValueExistence)}}</td>
+                                    <td>-</td>
+                                    <td class="bdr-rt">-</td>
+    
+                                    <td [ngClass]="{negative: !inTheGreen(dt3.Total_Hoursip)}">{{dt3.Total_Hoursip |
+                                        ValueExistence}}</td>
+                                    <td [ngClass]="{negative: !inTheGreen(dt3.TotalHours_PACEip)}">
+                                        {{dateCheck(dt3.TotalHours_PACEip | ValueExistence)}}</td>
+                                    <td>-</td>
+                                    <td>-</td>
+                                </tr>
+                            </ng-container> 
+                            }
+                            }
+                        </ng-container>
+                        }
+                        }
+                        }
+                    </tbody>
+                    }@else{
+                    <tbody>
+                        <tr>
+                            <td colspan="1" style="font-size: small;font-weight: 600;"></td>
+                            <td colspan="22" style="text-align: center !important;">No Records
+                                Found</td>
+                        </tr>
+                    </tbody>
+                    }
+                </table>
+            </div>
+            }
+        </div>
+    </div>
+    <!-- </div> -->
