@@ -89,6 +89,6 @@ export const routes: Routes = [
   { path: 'CarDealsV2', loadComponent: () => import('./Reports/Others/CarDeals/dashboard/dashboard').then(m => m.Dashboard) },
   { path: 'CITV2', loadComponent: () => import('./Reports/Services/CITFloorplan/dashboard/dashboard').then(m => m.Dashboard) },
 
-
+{path:'demo', loadComponent: () => import('./demo/demo').then(m => m.Demo)},
 
 ];
