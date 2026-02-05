@@ -164,7 +164,7 @@ export class Dashboard implements OnInit {
     if (localStorage.getItem('userInfo') != null && localStorage.getItem('userInfo') != undefined) {
      
       this.storeIds = JSON.parse(localStorage.getItem('userInfo')!).user_Info.ustores.split(',')[0]
-  console.log(this.storeIds)
+  console.log(this.storeIds,'..................')
   
     }
     if (this.shared.common.groupsandstores.length > 0) {
