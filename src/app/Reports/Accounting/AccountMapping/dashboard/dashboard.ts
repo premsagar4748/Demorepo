@@ -162,7 +162,10 @@ export class Dashboard implements OnInit {
     private ngbmodalActive: NgbActiveModal,
   ) {
     if (localStorage.getItem('userInfo') != null && localStorage.getItem('userInfo') != undefined) {
+     
       this.storeIds = JSON.parse(localStorage.getItem('userInfo')!).user_Info.ustores.split(',')[0]
+  console.log(this.storeIds)
+  
     }
     if (this.shared.common.groupsandstores.length > 0) {
       this.groupsArray = this.shared.common.groupsandstores.filter((val: any) => val.sg_id != this.shared.common.reconID);
