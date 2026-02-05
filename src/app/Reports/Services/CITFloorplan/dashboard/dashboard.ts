@@ -78,6 +78,12 @@ export class Dashboard implements OnInit {
   allordebit: any = 'dr';
   financeManagerId: any = '0';
 
+
+
+
+
+
+  
   // header & widgets
   header: any = [
     {
@@ -195,7 +201,7 @@ export class Dashboard implements OnInit {
     if (localStorage.getItem('userInfo') != null && localStorage.getItem('userInfo') != undefined) {
       this.storeIds = JSON.parse(localStorage.getItem('userInfo')!).user_Info.ustores.split(',')
       this.storeIds = JSON.parse(localStorage.getItem('userInfo')!).user_Info.ustores.split(',')
-
+console.log(this.storeIds,'storeids......................................................')
     }
     if (this.shared.common.groupsandstores.length > 0) {
       this.groupsArray = this.shared.common.groupsandstores.filter((val: any) => val.sg_id != this.shared.common.reconID);
